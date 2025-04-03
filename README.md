@@ -4,7 +4,7 @@
 https://www.youtube.com/watch?v=v9W5CzJkOV8&ab_channel=catblue
 
 ## To-do List
-- [ ] Clean up Makefile (import from 470)
+- [X] Clean up Makefile (import from 470)
 - [ ] Write C program & compile
 - [ ] Calculate the latency of switching kernel in C (CPU)
 - [ ] Estimate the latency of switching kernel in RTL (Hardware)

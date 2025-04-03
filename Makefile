@@ -99,13 +99,10 @@
 # uncomment this to use with testrunner.sh
 # export N = 4
 
-# the Verilog Compiler command and arguments
-export CLOCK_PERIOD = 8.5
 
 # the Verilog Compiler command and arguments
 VCS =  vcs -sverilog -xprop=tmerge +vc -Mupdate -Mdir=build/csrc -line -full64 -kdb -lca -nc \
       -debug_access+all+reverse -debug_region+cell+lib +memcbk $(VCS_BAD_WARNINGS) \
-      +define+CLOCK_PERIOD=$(CLOCK_PERIOD) \
       +incdir+verilog/
 # a SYNTH define is added when compiling for synthesis that can be used in testbenches
 
@@ -113,12 +110,6 @@ RUN_VERDI = -gui=verdi -verdi_opts "-ultra"
 
 # remove certain warnings that generate MB of text but can be safely ignored
 VCS_BAD_WARNINGS = +warn=noTFIPC +warn=noDEBUG_DEP +warn=noENUMASSIGN +warn=noLCA_FEATURES_ENABLED
-
-# a reference library of standard structural cells that we link against when synthesizing
-LIB = /afs/umich.edu/class/eecs470/lib/verilog/lec25dscc25.v
-
-# the EECS 470 synthesis script
-TCL_SCRIPT = synth/470synth.tcl
 
 # Set the shell's pipefail option: causes return values through pipes to match the last non-zero value
 # (useful for, i.e. piping to `tee`)
@@ -218,196 +209,6 @@ MODULES = cpu
 
 ALL_HEADERS = $(CPU_HEADERS)
 
-# MULT_FILES = verilog/sys_defs.svh
-# build/mult.simv: $(MULT_FILES)
-# build/mult.cov: $(MULT_FILES)
-# synth/mult.vg: $(MULT_FILES)
-
-# RS_FILES = verilog/sys_defs.svh verilog/psel_gen.sv
-# build/rs.simv: $(RS_FILES)
-# build/rs.cov: $(RS_FILES)
-# synth/rs.vg: $(RS_FILES)
-# rs.cov: $(RS_FILES)
-# synth/rs.vg: $(RS_FILES)
-
-# ROB_FILES = verilog/sys_defs.svh \
-# 			verilog/ROB_FIFO.sv	 \
-# 			verilog/memDP.sv
-# build/rob.simv: $(ROB_FILES)
-# build/rob.cov: $(ROB_FILES)
-# build/rob.cov.simv: $(ROB_FILES)
-# rob.cov: $(ROB_FILES)
-# synth/rob.vg: $(ROB_FILES)
-
-
-# BINARY_ENCODER =	verilog/sys_defs.svh
-
-# BINARY_ENCODER2 =	verilog/sys_defs.svh
-
-# build/binary_encoder.simv: $(BINARY_ENCODER)
-# build/binary_encoder.cov: $(BINARY_ENCODER)
-# build/binary_encoder.cov.simv: $(BINARY_ENCODER)
-# synth/binary_encoder.vg: $(BINARY_ENCODER)
-# synth/binary_encoder2.vg: $(BINARY_ENCODER2)
-
-# FREELIST_FILES =	verilog/sys_defs.svh		\
-# 					verilog/binary_encoder.sv	\
-# 					verilog/psel_gen.sv
-# build/freelist.simv: $(FREELIST_FILES)
-# build/freelist.cov: $(FREELIST_FILES)
-# build/freelist.cov.simv: $(FREELIST_FILES)
-# freelist.cov: $(FREELIST_FILES)
-# synth/freelist.vg: $(FREELIST_FILES)
-
-# MAPTABLE_FILES =	verilog/sys_defs.svh		\
-# 					verilog/binary_encoder.sv	\
-# 					verilog/freelist.sv			\
-# 					verilog/psel_gen.sv
-# build/maptable.simv: $(MAPTABLE_FILES)
-# build/maptable.cov: $(MAPTABLE_FILES)
-# build/maptable.cov.simv: $(MAPTABLE_FILES)
-# maptable.cov: $(MAPTABLE_FILES)
-# synth/maptable.vg: $(MAPTABLE_FILES)
-
-# BPRED_FILES =	verilog/sys_defs.svh 	\
-# 				verilog/binary_encoder.sv	\
-# 				verilog/memDP.sv
-# build/bpred.simv: $(BPRED_FILES)
-# build/bpred.cov: $(BPRED_FILES)
-# build/bpred.cov.simv: $(BPRED_FILES)
-# bpred.cov: $(BPRED_FILES)
-# synth/bpred.vg: $(BPRED_FILES)
-
-
-# ISSUE_FILES = verilog/sys_defs.svh \
-# 			  verilog/psel_gen_msb.sv \
-# 			  verilog/regfile.sv \
-# 			  verilog/memDP.sv
-# build/issue.simv: $(ISSUE_FILES)
-# build/issue.cov: $(ISSUE_FILES)
-# build/issue.cov.simv: $(ISSUE_FILES)
-# issue.cov: $(ISSUE_FILES)
-# synth/issue.vg: $(ISSUE_FILES)
-
-# FU_FILES = verilog/sys_defs.svh verilog/mult.sv verilog/allocation.sv verilog/load.sv verilog/store.sv
-
-# build/fu.simv: $(FU_FILES)
-# build/fu.cov: $(FU_FILES)
-# build/fu.cov.simv: $(FU_FILES)
-# synth/fu.vg: $(FU_FILES)
-
-# AL_FILES = verilog/sys_defs.svh
-
-# build/allocation.simv: $(AL_FILES)
-# build/allocation.cov: $(AL_FILES)
-# build/allocation.cov.simv: $(AL_FILES)
-# synth/allocation.vg: $(AL_FILES)
-
-# BACKEND_FILES = verilog/sys_defs.svh 		\
-# 				verilog/psel_gen_msb.sv 	\
-# 				verilog/regfile.sv 			\
-# 				verilog/memDP.sv     		\
-# 				verilog/mult.sv      		\
-# 				verilog/load.sv      		\
-# 				verilog/store.sv     		\
-# 				verilog/execute.sv     		\
-# 				verilog/issue.sv     		\
-# 				verilog/branchfu.sv			\
-# 				verilog/writeback.sv
-
-
-# build/backend.simv: $(BACKEND_FILES)
-# build/backend.cov: $(BACKEND_FILES)
-# build/backend.cov.simv: $(BACKEND_FILES)
-# synth/backend.vg: $(BACKEND_FILES)
-
-# PSEL_MSB_FILES = verilog/sys_defs.svh
-# build/psel_gen_msb.simv: $(PSEL_MSB_FILES)
-# build/psel_gen_msb.cov: $(PSEL_MSB_FILES)
-# synth/psel_gen_msb.vg: $(PSEL_MSB_FILES)
-
-
-# FRONTEND_FILES= verilog/sys_defs.svh		\
-# 				verilog/decoder.sv
-
-
-# FRONTEND_TESTBENCH = 	test/pipeline_print.c \
-# 						test/decode_inst.c \
-# 						test/mem.sv
-
-# build/frontend.simv: $(FRONTEND_FILES) $(FRONTEND_TESTBENCH)
-# build/frontend.cov: $(FRONTEND_FILES) $(FRONTEND_TESTBENCH)
-# synth/frontend.vg: $(FRONTEND_FILES)
-
-# DCACHE_FILES = verilog/sys_defs.svh verilog/memDP.sv
-# build/dcache.simv: $(DCACHE_FILES)
-# build/dcache.cov: $(DCACHE_FILES)
-# synth/cache.vg: $(DCACHE_FILES)
-
-# DCACHE_WRAPPER_FILES = verilog/sys_defs.svh verilog/memDP.sv verilog/mshr.sv verilog/dcache.sv
-# DCACHE_TESTBENCH = 	test/pipeline_print.c \
-# 					test/decode_inst.c \
-# 					test/mem.sv
-# build/dcache_wrapper.simv: $(DCACHE_WRAPPER_FILES) $(DCACHE_TESTBENCH)
-# build/dcache_wrapper.cov: $(DCACHE_WRAPPER_FILES) $(DCACHE_TESTBENCH)
-# synth/dcache_wrapper.vg: $(DCACHE_WRAPPER_FILES)
-
-
-# FRONTEND_MEM_FILES = verilog/sys_defs.svh verilog/memDP.sv verilog/mshr.sv verilog/dcache.sv verilog/dcache_wrapper.sv \
-# 					verilog/lsq.sv	\
-# 					verilog/psel_gen.sv \
-# 					verilog/binary_encoder.sv	\
-# 					verilog/alu.sv
-# FRONTEND_MEM_TESTBENCH =test/pipeline_print.c \
-# 						test/decode_inst.c \
-# 						test/mem.sv
-# build/frontend_mem.simv: $(FRONTEND_MEM_FILES) $(FRONTEND_MEM_TESTBENCH)
-# build/frontend_mem.cov: $(FRONTEND_MEM_FILES) $(FRONTEND_MEM_TESTBENCH)
-# synth/frontend_mem.vg: $(FRONTEND_MEM_FILES)
-
-
-# # MSHR
-# MSHR = verilog/sys_defs.svh verilog/memDP.sv
-
-# MSHR_TESTBENCH = 	test/pipeline_print.c \
-# 					test/decode_inst.c \
-# 					test/mem.sv
-# build/mshr.simv: $(MSHR) $(MSHR_TESTBENCH)
-# build/mshr.cov: $(MSHR) $(MSHR_TESTBENCH)
-# synth/mshr.vg: $(MSHR)
-
-# # icache
-# ICACHE = verilog/sys_defs.svh verilog/memDP.sv verilog/mshr.sv
-# ICACHE_TESTBENCH =	test/pipeline_print.c \
-# 					test/decode_inst.c \
-# 					test/mem.sv
-
-# build/icache2.simv: $(ICACHE) $(ICACHE_TESTBENCH)
-# build/icache2.cov: $(ICACHE) $(ICACHE_TESTBENCH)
-# synth/icache2.vg: $(ICACHE)
-
-# #load store queue
-# LSQ_FILES = verilog/sys_defs.svh      \
-# 			verilog/psel_gen.sv       \
-# 			verilog/binary_encoder.sv \
-# 			verilog/ISA.svh           \
-# 			verilog/backend.sv        \
-# 			verilog/execute.sv        \
-# 			verilog/psel_gen_msb.sv   \
-# 			verilog/issue.sv          \
-# 			verilog/execute.sv        \
-# 			verilog/writeback.sv      \
-# 			verilog/store.sv          \
-# 			verilog/load.sv           \
-# 			verilog/regfile.sv        \
-# 			verilog/mult.sv           \
-# 			verilog/branchfu.sv       \
-# 			verilog/memDP.sv
-
-# build/lsq.simv: $(LSQ_FILES)
-# build/lsq.cov: $(LSQ_FILES)
-# synth/lsq.vg: $(LSQ_FILES)
-
 ##################################
 # ---- Main R10K Definition ---- #
 ##################################
@@ -466,7 +267,7 @@ CPU_HEADERS = verilog/sys_defs.svh \
 
 # test/cpu_test.sv is implicit
 CPU_TESTBENCH = test/pipeline_print.c \
-			    test/decode_inst.c \
+				test/decode_inst.c \
                 test/mem.sv
 # NOTE: you CANNOT alter the given memory module
 
@@ -580,49 +381,6 @@ $(MODULES:%=build/%.syn.simv): build/%.syn.simv: test/%_test.sv synth/%.vg | bui
 	$(VCS) +define+SYNTH $(filter-out $(ALL_HEADERS),$^) $(LIB) -o $@
 	@$(call PRINT_COLOR, 6, finished compiling $@)
 
-##############################
-# ---- Coverage targets ---- #
-##############################
-
-# This section adds targets to run module testbenches with coverage output
-
-# Additional VCS argument for both building and running with coverage output
-VCS_COVG = -cm line+tgl+cond+branch
-
-$(MODULES:%=build/%.cov.simv): build/%.cov.simv: test/%_test.sv verilog/%.sv | build
-	@$(call PRINT_COLOR, 5, compiling the coverage executable $@)
-	@$(call PRINT_COLOR, 3, NOTE: if this is slow to startup: run '"module load vcs verdi synopsys-synth"')
-	$(VCS) $(VCS_COVG) $(filter-out $(ALL_HEADERS),$^) -o $@
-	@$(call PRINT_COLOR, 6, finished compiling $@)
-
-# Run the testbench to produce a *.vdb directory with coverage info
-$(MODULES:%=build/%.cov.simv.out): %.cov.simv.out: %.cov.simv | build
-	@$(call PRINT_COLOR, 5, running $<)
-	cd build && ./$(<F) $(VCS_COVG) | tee $(@F)
-	@$(call PRINT_COLOR, 2, created coverage dir $<.vdb and saved output to $@)
-
-# A layer of indirection for the coverage output dir
-build/%.cov.simv.vdb: build/%.cov.simv.out ;
-
-# Use urg to generate human-readable reports in text mode (alternative is html)
-$(MODULES:%=cov_report_%): cov_report_%: build/%.cov.simv.vdb
-	@$(call PRINT_COLOR, 5, outputting coverage report in $@)
-	module load vcs && cd build && urg -format text -dir $*.cov.simv.vdb -report ../$@
-	@$(call PRINT_COLOR, 2, coverage report is in $@)
-
-# view the coverage hierarchy report
-$(MODULES:=.cov): %.cov: cov_report_%
-	@$(call PRINT_COLOR, 2, printing coverage hierarchy - open '$<' for more)
-	cat $</hierarchy.txt
-
-# open the coverage info in verdi
-$(MODULES:=.cov.verdi): %.cov.verdi: build/%.cov.simv
-	@$(call PRINT_COLOR, 5, running verdi for $* coverage)
-	cd build && ./$(<F) $(RUN_VERDI) -cov -covdir $(<F).vdb
-	./$< $(RUN_VERDI) -cov -covdir $<.vdb
-
-.PHONY: %.cov %.cov.verdi
-
 #############################
 # ---- Visual Debugger ---- #
 #############################
@@ -707,8 +465,15 @@ programs/mem/%.mem: programs/mem/%.elf
 	@$(call PRINT_COLOR, 3, for \*.c sources also try: '"make $*.debug.dump"')
 
 # compile all programs in one command (use 'make -j' to run multithreaded)
-compile_all: $(PROGRAMS:programs/%=programs/mem/%=.mem)
+compile_all: $(PROGRAMS:programs/%=programs/mem/%.mem)
 .PHONY: compile_all
+
+# compile: programs/mem/scheduler.elf
+# 	$(ELF2HEX) 8 32768 $< > programs/mem/scheduler.mem
+# 	@$(call PRINT_COLOR, 6, created memory file $@)
+# 	@$(call PRINT_COLOR, 3, NOTE: to see RISC-V assembly run: '"make $*.dump"')
+# 	@$(call PRINT_COLOR, 3, for \*.c sources also try: '"make $*.debug.dump"')
+# .PHONY: compile
 
 ########################
 # ---- Dump Files ---- #
