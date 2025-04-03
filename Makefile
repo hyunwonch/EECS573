@@ -459,7 +459,7 @@ programs/mem/%.debug.elf: %.c $(CRT) $(LINKERS) | programs/mem
 
 # turn any elf file into a hex memory file ready for the testbench
 programs/mem/%.mem: programs/mem/%.elf
-	$(ELF2HEX) 8 8192 $< > $@
+	$(ELF2HEX) 8 262144 $< > $@
 	@$(call PRINT_COLOR, 6, created memory file $@)
 	@$(call PRINT_COLOR, 3, NOTE: to see RISC-V assembly run: '"make $*.dump"')
 	@$(call PRINT_COLOR, 3, for \*.c sources also try: '"make $*.debug.dump"')
