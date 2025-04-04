@@ -1,0 +1,52 @@
+test/cpu_test.sv:212 NO "a non-instrumentable statement" (218)
+test/cpu_test.sv:270 NO "a non-pure function call: decode_inst__IMP_DPI_WR_" (279)
+test/cpu_test.sv:290 NO "a non-pure function call: decode_inst__IMP_DPI_WR_" (279)
+test/cpu_test.sv:293 NO "a non-pure function call: decode_inst__IMP_DPI_WR_" (279)
+test/cpu_test.sv:329 YES
+test/cpu_test.sv:340 YES
+test/cpu_test.sv:361 YES
+test/cpu_test.sv:382 NO "a non-pure function call: decode_inst__IMP_DPI_WR_" (383)
+test/mem.sv:50 YES
+verilog/cpu.sv:92 YES
+verilog/cpu.sv:117 YES
+verilog/cpu.sv:133 YES
+verilog/cpu.sv:186 YES
+verilog/cpu.sv:199 YES
+verilog/cpu.sv:236 YES
+verilog/cpu.sv:256 YES
+verilog/cpu.sv:269 YES
+verilog/cpu.sv:279 YES
+verilog/cpu.sv:302 YES
+verilog/cpu.sv:311 YES
+verilog/cpu.sv:330 YES
+verilog/cpu.sv:347 YES
+verilog/cpu.sv:360 YES
+verilog/cpu.sv:371 YES
+verilog/cpu.sv:382 YES
+verilog/cpu.sv:413 YES
+verilog/cpu.sv:460 YES
+verilog/cpu.sv:504 YES
+verilog/cpu.sv:515 YES
+verilog/cpu.sv:520 YES
+verilog/cpu.sv:531 YES
+verilog/cpu.sv:552 YES
+verilog/cpu.sv:594 YES
+verilog/cpu.sv:606 YES
+verilog/cpu.sv:622 YES
+verilog/cpu.sv:651 YES
+verilog/regfile.sv:26 YES
+verilog/regfile.sv:37 YES
+verilog/regfile.sv:47 YES
+verilog/stage_if.sv:27 YES
+verilog/stage_id.sv:105 YES
+verilog/stage_ex.sv:52 YES
+verilog/stage_ex.sv:63 YES
+verilog/stage_ex.sv:121 YES
+verilog/stage_ex.sv:162 YES
+verilog/stage_ex.sv:185 YES
+verilog/stage_mem.sv:50 YES
+==================================================
+X P R O P   S T A T I S T I C S
+instrumentable assignments:    276
+instrumented assignments:      261
+instrumentation success rate:  94%

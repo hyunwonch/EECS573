@@ -1,3 +1,7 @@
 
 # Folder
 RISC-V
+basic/
+build/
+output/
+reference/

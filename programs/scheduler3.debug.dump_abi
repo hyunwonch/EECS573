@@ -1,0 +1,4405 @@
+
+programs/mem/scheduler3.debug.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <crt>:
+
+.global crt
+.section .text.prologue, "ax"
+.align 4
+crt:
+    nop
+   0:	00000013          	addi	zero,zero,0
+    la ra, exit
+   4:	00000097          	auipc	ra,0x0
+   8:	09c08093          	addi	ra,ra,156 # a0 <exit>
+    la sp, _sp
+   c:	00010117          	auipc	sp,0x10
+  10:	ff410113          	addi	sp,sp,-12 # 10000 <_sp>
+    mv s0, sp
+  14:	00010413          	addi	s0,sp,0
+    la gp, __global_pointer$
+  18:	00001197          	auipc	gp,0x1
+  1c:	fe818193          	addi	gp,gp,-24 # 1000 <__global_pointer$>
+    li tp, 0
+  20:	00000213          	addi	tp,zero,0
+    li t0, 0
+  24:	00000293          	addi	t0,zero,0
+    li t1, 0
+  28:	00000313          	addi	t1,zero,0
+    li t2, 0
+  2c:	00000393          	addi	t2,zero,0
+    li s1, 0
+  30:	00000493          	addi	s1,zero,0
+    li a0, 0
+  34:	00000513          	addi	a0,zero,0
+    li a1, 0
+  38:	00000593          	addi	a1,zero,0
+    li a2, 0
+  3c:	00000613          	addi	a2,zero,0
+    li a3, 0
+  40:	00000693          	addi	a3,zero,0
+    li a4, 0
+  44:	00000713          	addi	a4,zero,0
+    li a5, 0
+  48:	00000793          	addi	a5,zero,0
+    li a6, 0
+  4c:	00000813          	addi	a6,zero,0
+    li a7, 0
+  50:	00000893          	addi	a7,zero,0
+    li s2, 0
+  54:	00000913          	addi	s2,zero,0
+    li s3, 0
+  58:	00000993          	addi	s3,zero,0
+    li s4, 0
+  5c:	00000a13          	addi	s4,zero,0
+    li s5, 0
+  60:	00000a93          	addi	s5,zero,0
+    li s6, 0
+  64:	00000b13          	addi	s6,zero,0
+    li s7, 0
+  68:	00000b93          	addi	s7,zero,0
+    li s8, 0
+  6c:	00000c13          	addi	s8,zero,0
+    li s9, 0
+  70:	00000c93          	addi	s9,zero,0
+    li s10, 0
+  74:	00000d13          	addi	s10,zero,0
+    li s11, 0
+  78:	00000d93          	addi	s11,zero,0
+    li t3, 0
+  7c:	00000e13          	addi	t3,zero,0
+    li t4, 0
+  80:	00000e93          	addi	t4,zero,0
+    li t5, 0
+  84:	00000f13          	addi	t5,zero,0
+    li t6, 0
+  88:	00000f93          	addi	t6,zero,0
+    j main
+  8c:	0280006f          	jal	zero,b4 <main>
+	...
+
+000000a0 <exit>:
+
+.global exit
+.section .text
+.align 4
+exit:
+    la sp, _sp
+  a0:	00010117          	auipc	sp,0x10
+  a4:	f6010113          	addi	sp,sp,-160 # 10000 <_sp>
+    sw a0, -8(sp)
+  a8:	fea12c23          	sw	a0,-8(sp)
+    nop
+  ac:	00000013          	addi	zero,zero,0
+    wfi
+  b0:	10500073          	wfi
+
+000000b4 <main>:
+// unsigned char memory_data[DATA_SIZE];
+
+
+
+int main(void)
+{
+  b4:	f7010113          	addi	sp,sp,-144
+  b8:	08812623          	sw	s0,140(sp)
+  bc:	09010413          	addi	s0,sp,144
+
+    // Main scheduling loop (runs indefinitely)
+
+    // offload_task(memory_data, 0);
+
+    a = 0;
+  c0:	fe042623          	sw	zero,-20(s0)
+    b = 20;
+  c4:	01400793          	addi	a5,zero,20
+  c8:	f6f42823          	sw	a5,-144(s0)
+
+    if (b == 1) {
+  cc:	f7042703          	lw	a4,-144(s0)
+  d0:	00100793          	addi	a5,zero,1
+  d4:	02f71a63          	bne	a4,a5,108 <main+0x54>
+        for (int i = 0; i < 50; i++) {
+  d8:	fe042423          	sw	zero,-24(s0)
+  dc:	01c0006f          	jal	zero,f8 <main+0x44>
+            a = a + 1;
+  e0:	fec42783          	lw	a5,-20(s0)
+  e4:	00178793          	addi	a5,a5,1
+  e8:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 50; i++) {
+  ec:	fe842783          	lw	a5,-24(s0)
+  f0:	00178793          	addi	a5,a5,1
+  f4:	fef42423          	sw	a5,-24(s0)
+  f8:	fe842703          	lw	a4,-24(s0)
+  fc:	03100793          	addi	a5,zero,49
+ 100:	fee7d0e3          	bge	a5,a4,e0 <main+0x2c>
+ 104:	6cc0006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 2) {
+ 108:	f7042703          	lw	a4,-144(s0)
+ 10c:	00200793          	addi	a5,zero,2
+ 110:	02f71a63          	bne	a4,a5,144 <main+0x90>
+        for (int i = 0; i < 10; i++) {
+ 114:	fe042223          	sw	zero,-28(s0)
+ 118:	01c0006f          	jal	zero,134 <main+0x80>
+            a = a + 1;
+ 11c:	fec42783          	lw	a5,-20(s0)
+ 120:	00178793          	addi	a5,a5,1
+ 124:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 10; i++) {
+ 128:	fe442783          	lw	a5,-28(s0)
+ 12c:	00178793          	addi	a5,a5,1
+ 130:	fef42223          	sw	a5,-28(s0)
+ 134:	fe442703          	lw	a4,-28(s0)
+ 138:	00900793          	addi	a5,zero,9
+ 13c:	fee7d0e3          	bge	a5,a4,11c <main+0x68>
+ 140:	6900006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 3) {
+ 144:	f7042703          	lw	a4,-144(s0)
+ 148:	00300793          	addi	a5,zero,3
+ 14c:	02f71a63          	bne	a4,a5,180 <main+0xcc>
+        for (int i = 0; i < 10; i++) {
+ 150:	fe042023          	sw	zero,-32(s0)
+ 154:	01c0006f          	jal	zero,170 <main+0xbc>
+            a = a + 1;
+ 158:	fec42783          	lw	a5,-20(s0)
+ 15c:	00178793          	addi	a5,a5,1
+ 160:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 10; i++) {
+ 164:	fe042783          	lw	a5,-32(s0)
+ 168:	00178793          	addi	a5,a5,1
+ 16c:	fef42023          	sw	a5,-32(s0)
+ 170:	fe042703          	lw	a4,-32(s0)
+ 174:	00900793          	addi	a5,zero,9
+ 178:	fee7d0e3          	bge	a5,a4,158 <main+0xa4>
+ 17c:	6540006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 4) {
+ 180:	f7042703          	lw	a4,-144(s0)
+ 184:	00400793          	addi	a5,zero,4
+ 188:	02f71a63          	bne	a4,a5,1bc <main+0x108>
+        for (int i = 0; i < 100; i++) {
+ 18c:	fc042e23          	sw	zero,-36(s0)
+ 190:	01c0006f          	jal	zero,1ac <main+0xf8>
+            a = a + 1;
+ 194:	fec42783          	lw	a5,-20(s0)
+ 198:	00178793          	addi	a5,a5,1
+ 19c:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 100; i++) {
+ 1a0:	fdc42783          	lw	a5,-36(s0)
+ 1a4:	00178793          	addi	a5,a5,1
+ 1a8:	fcf42e23          	sw	a5,-36(s0)
+ 1ac:	fdc42703          	lw	a4,-36(s0)
+ 1b0:	06300793          	addi	a5,zero,99
+ 1b4:	fee7d0e3          	bge	a5,a4,194 <main+0xe0>
+ 1b8:	6180006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 5) {
+ 1bc:	f7042703          	lw	a4,-144(s0)
+ 1c0:	00500793          	addi	a5,zero,5
+ 1c4:	02f71a63          	bne	a4,a5,1f8 <main+0x144>
+        for (int i = 0; i < 50; i++) {
+ 1c8:	fc042c23          	sw	zero,-40(s0)
+ 1cc:	01c0006f          	jal	zero,1e8 <main+0x134>
+            a = a + 1;
+ 1d0:	fec42783          	lw	a5,-20(s0)
+ 1d4:	00178793          	addi	a5,a5,1
+ 1d8:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 50; i++) {
+ 1dc:	fd842783          	lw	a5,-40(s0)
+ 1e0:	00178793          	addi	a5,a5,1
+ 1e4:	fcf42c23          	sw	a5,-40(s0)
+ 1e8:	fd842703          	lw	a4,-40(s0)
+ 1ec:	03100793          	addi	a5,zero,49
+ 1f0:	fee7d0e3          	bge	a5,a4,1d0 <main+0x11c>
+ 1f4:	5dc0006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 6) {
+ 1f8:	f7042703          	lw	a4,-144(s0)
+ 1fc:	00600793          	addi	a5,zero,6
+ 200:	02f71a63          	bne	a4,a5,234 <main+0x180>
+        for (int i = 0; i < 60; i++) {
+ 204:	fc042a23          	sw	zero,-44(s0)
+ 208:	01c0006f          	jal	zero,224 <main+0x170>
+            a = a + 1;
+ 20c:	fec42783          	lw	a5,-20(s0)
+ 210:	00178793          	addi	a5,a5,1
+ 214:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 60; i++) {
+ 218:	fd442783          	lw	a5,-44(s0)
+ 21c:	00178793          	addi	a5,a5,1
+ 220:	fcf42a23          	sw	a5,-44(s0)
+ 224:	fd442703          	lw	a4,-44(s0)
+ 228:	03b00793          	addi	a5,zero,59
+ 22c:	fee7d0e3          	bge	a5,a4,20c <main+0x158>
+ 230:	5a00006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 7) {
+ 234:	f7042703          	lw	a4,-144(s0)
+ 238:	00700793          	addi	a5,zero,7
+ 23c:	02f71a63          	bne	a4,a5,270 <main+0x1bc>
+        for (int i = 0; i < 70; i++) {
+ 240:	fc042823          	sw	zero,-48(s0)
+ 244:	01c0006f          	jal	zero,260 <main+0x1ac>
+            a = a + 1;
+ 248:	fec42783          	lw	a5,-20(s0)
+ 24c:	00178793          	addi	a5,a5,1
+ 250:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 70; i++) {
+ 254:	fd042783          	lw	a5,-48(s0)
+ 258:	00178793          	addi	a5,a5,1
+ 25c:	fcf42823          	sw	a5,-48(s0)
+ 260:	fd042703          	lw	a4,-48(s0)
+ 264:	04500793          	addi	a5,zero,69
+ 268:	fee7d0e3          	bge	a5,a4,248 <main+0x194>
+ 26c:	5640006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 8) {
+ 270:	f7042703          	lw	a4,-144(s0)
+ 274:	00800793          	addi	a5,zero,8
+ 278:	02f71a63          	bne	a4,a5,2ac <main+0x1f8>
+        for (int i = 0; i < 80; i++) {
+ 27c:	fc042623          	sw	zero,-52(s0)
+ 280:	01c0006f          	jal	zero,29c <main+0x1e8>
+            a = a + 1;
+ 284:	fec42783          	lw	a5,-20(s0)
+ 288:	00178793          	addi	a5,a5,1
+ 28c:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 80; i++) {
+ 290:	fcc42783          	lw	a5,-52(s0)
+ 294:	00178793          	addi	a5,a5,1
+ 298:	fcf42623          	sw	a5,-52(s0)
+ 29c:	fcc42703          	lw	a4,-52(s0)
+ 2a0:	04f00793          	addi	a5,zero,79
+ 2a4:	fee7d0e3          	bge	a5,a4,284 <main+0x1d0>
+ 2a8:	5280006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 9) {
+ 2ac:	f7042703          	lw	a4,-144(s0)
+ 2b0:	00900793          	addi	a5,zero,9
+ 2b4:	02f71a63          	bne	a4,a5,2e8 <main+0x234>
+        for (int i = 0; i < 90; i++) {
+ 2b8:	fc042423          	sw	zero,-56(s0)
+ 2bc:	01c0006f          	jal	zero,2d8 <main+0x224>
+            a = a + 1;
+ 2c0:	fec42783          	lw	a5,-20(s0)
+ 2c4:	00178793          	addi	a5,a5,1
+ 2c8:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 90; i++) {
+ 2cc:	fc842783          	lw	a5,-56(s0)
+ 2d0:	00178793          	addi	a5,a5,1
+ 2d4:	fcf42423          	sw	a5,-56(s0)
+ 2d8:	fc842703          	lw	a4,-56(s0)
+ 2dc:	05900793          	addi	a5,zero,89
+ 2e0:	fee7d0e3          	bge	a5,a4,2c0 <main+0x20c>
+ 2e4:	4ec0006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 10) {
+ 2e8:	f7042703          	lw	a4,-144(s0)
+ 2ec:	00a00793          	addi	a5,zero,10
+ 2f0:	02f71a63          	bne	a4,a5,324 <main+0x270>
+        for (int i = 0; i < 100; i++) {
+ 2f4:	fc042223          	sw	zero,-60(s0)
+ 2f8:	01c0006f          	jal	zero,314 <main+0x260>
+            a = a + 1;
+ 2fc:	fec42783          	lw	a5,-20(s0)
+ 300:	00178793          	addi	a5,a5,1
+ 304:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 100; i++) {
+ 308:	fc442783          	lw	a5,-60(s0)
+ 30c:	00178793          	addi	a5,a5,1
+ 310:	fcf42223          	sw	a5,-60(s0)
+ 314:	fc442703          	lw	a4,-60(s0)
+ 318:	06300793          	addi	a5,zero,99
+ 31c:	fee7d0e3          	bge	a5,a4,2fc <main+0x248>
+ 320:	4b00006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 11) {
+ 324:	f7042703          	lw	a4,-144(s0)
+ 328:	00b00793          	addi	a5,zero,11
+ 32c:	02f71a63          	bne	a4,a5,360 <main+0x2ac>
+        for (int i = 0; i < 110; i++) {
+ 330:	fc042023          	sw	zero,-64(s0)
+ 334:	01c0006f          	jal	zero,350 <main+0x29c>
+            a = a + 1;
+ 338:	fec42783          	lw	a5,-20(s0)
+ 33c:	00178793          	addi	a5,a5,1
+ 340:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 110; i++) {
+ 344:	fc042783          	lw	a5,-64(s0)
+ 348:	00178793          	addi	a5,a5,1
+ 34c:	fcf42023          	sw	a5,-64(s0)
+ 350:	fc042703          	lw	a4,-64(s0)
+ 354:	06d00793          	addi	a5,zero,109
+ 358:	fee7d0e3          	bge	a5,a4,338 <main+0x284>
+ 35c:	4740006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 12) {
+ 360:	f7042703          	lw	a4,-144(s0)
+ 364:	00c00793          	addi	a5,zero,12
+ 368:	02f71a63          	bne	a4,a5,39c <main+0x2e8>
+        for (int i = 0; i < 120; i++) {
+ 36c:	fa042e23          	sw	zero,-68(s0)
+ 370:	01c0006f          	jal	zero,38c <main+0x2d8>
+            a = a + 1;
+ 374:	fec42783          	lw	a5,-20(s0)
+ 378:	00178793          	addi	a5,a5,1
+ 37c:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 120; i++) {
+ 380:	fbc42783          	lw	a5,-68(s0)
+ 384:	00178793          	addi	a5,a5,1
+ 388:	faf42e23          	sw	a5,-68(s0)
+ 38c:	fbc42703          	lw	a4,-68(s0)
+ 390:	07700793          	addi	a5,zero,119
+ 394:	fee7d0e3          	bge	a5,a4,374 <main+0x2c0>
+ 398:	4380006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 13) {
+ 39c:	f7042703          	lw	a4,-144(s0)
+ 3a0:	00d00793          	addi	a5,zero,13
+ 3a4:	02f71a63          	bne	a4,a5,3d8 <main+0x324>
+        for (int i = 0; i < 130; i++) {
+ 3a8:	fa042c23          	sw	zero,-72(s0)
+ 3ac:	01c0006f          	jal	zero,3c8 <main+0x314>
+            a = a + 1;
+ 3b0:	fec42783          	lw	a5,-20(s0)
+ 3b4:	00178793          	addi	a5,a5,1
+ 3b8:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 130; i++) {
+ 3bc:	fb842783          	lw	a5,-72(s0)
+ 3c0:	00178793          	addi	a5,a5,1
+ 3c4:	faf42c23          	sw	a5,-72(s0)
+ 3c8:	fb842703          	lw	a4,-72(s0)
+ 3cc:	08100793          	addi	a5,zero,129
+ 3d0:	fee7d0e3          	bge	a5,a4,3b0 <main+0x2fc>
+ 3d4:	3fc0006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 14) {
+ 3d8:	f7042703          	lw	a4,-144(s0)
+ 3dc:	00e00793          	addi	a5,zero,14
+ 3e0:	02f71a63          	bne	a4,a5,414 <main+0x360>
+        for (int i = 0; i < 140; i++) {
+ 3e4:	fa042a23          	sw	zero,-76(s0)
+ 3e8:	01c0006f          	jal	zero,404 <main+0x350>
+            a = a + 1;
+ 3ec:	fec42783          	lw	a5,-20(s0)
+ 3f0:	00178793          	addi	a5,a5,1
+ 3f4:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 140; i++) {
+ 3f8:	fb442783          	lw	a5,-76(s0)
+ 3fc:	00178793          	addi	a5,a5,1
+ 400:	faf42a23          	sw	a5,-76(s0)
+ 404:	fb442703          	lw	a4,-76(s0)
+ 408:	08b00793          	addi	a5,zero,139
+ 40c:	fee7d0e3          	bge	a5,a4,3ec <main+0x338>
+ 410:	3c00006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 15) {
+ 414:	f7042703          	lw	a4,-144(s0)
+ 418:	00f00793          	addi	a5,zero,15
+ 41c:	02f71a63          	bne	a4,a5,450 <main+0x39c>
+        for (int i = 0; i < 150; i++) {
+ 420:	fa042823          	sw	zero,-80(s0)
+ 424:	01c0006f          	jal	zero,440 <main+0x38c>
+            a = a + 1;
+ 428:	fec42783          	lw	a5,-20(s0)
+ 42c:	00178793          	addi	a5,a5,1
+ 430:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 150; i++) {
+ 434:	fb042783          	lw	a5,-80(s0)
+ 438:	00178793          	addi	a5,a5,1
+ 43c:	faf42823          	sw	a5,-80(s0)
+ 440:	fb042703          	lw	a4,-80(s0)
+ 444:	09500793          	addi	a5,zero,149
+ 448:	fee7d0e3          	bge	a5,a4,428 <main+0x374>
+ 44c:	3840006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 16) {
+ 450:	f7042703          	lw	a4,-144(s0)
+ 454:	01000793          	addi	a5,zero,16
+ 458:	02f71a63          	bne	a4,a5,48c <main+0x3d8>
+        for (int i = 0; i < 160; i++) {
+ 45c:	fa042623          	sw	zero,-84(s0)
+ 460:	01c0006f          	jal	zero,47c <main+0x3c8>
+            a = a + 1;
+ 464:	fec42783          	lw	a5,-20(s0)
+ 468:	00178793          	addi	a5,a5,1
+ 46c:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 160; i++) {
+ 470:	fac42783          	lw	a5,-84(s0)
+ 474:	00178793          	addi	a5,a5,1
+ 478:	faf42623          	sw	a5,-84(s0)
+ 47c:	fac42703          	lw	a4,-84(s0)
+ 480:	09f00793          	addi	a5,zero,159
+ 484:	fee7d0e3          	bge	a5,a4,464 <main+0x3b0>
+ 488:	3480006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 17) {
+ 48c:	f7042703          	lw	a4,-144(s0)
+ 490:	01100793          	addi	a5,zero,17
+ 494:	02f71a63          	bne	a4,a5,4c8 <main+0x414>
+        for (int i = 0; i < 170; i++) {
+ 498:	fa042423          	sw	zero,-88(s0)
+ 49c:	01c0006f          	jal	zero,4b8 <main+0x404>
+            a = a + 1;
+ 4a0:	fec42783          	lw	a5,-20(s0)
+ 4a4:	00178793          	addi	a5,a5,1
+ 4a8:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 170; i++) {
+ 4ac:	fa842783          	lw	a5,-88(s0)
+ 4b0:	00178793          	addi	a5,a5,1
+ 4b4:	faf42423          	sw	a5,-88(s0)
+ 4b8:	fa842703          	lw	a4,-88(s0)
+ 4bc:	0a900793          	addi	a5,zero,169
+ 4c0:	fee7d0e3          	bge	a5,a4,4a0 <main+0x3ec>
+ 4c4:	30c0006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 18) {
+ 4c8:	f7042703          	lw	a4,-144(s0)
+ 4cc:	01200793          	addi	a5,zero,18
+ 4d0:	02f71a63          	bne	a4,a5,504 <main+0x450>
+        for (int i = 0; i < 180; i++) {
+ 4d4:	fa042223          	sw	zero,-92(s0)
+ 4d8:	01c0006f          	jal	zero,4f4 <main+0x440>
+            a = a + 1;
+ 4dc:	fec42783          	lw	a5,-20(s0)
+ 4e0:	00178793          	addi	a5,a5,1
+ 4e4:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 180; i++) {
+ 4e8:	fa442783          	lw	a5,-92(s0)
+ 4ec:	00178793          	addi	a5,a5,1
+ 4f0:	faf42223          	sw	a5,-92(s0)
+ 4f4:	fa442703          	lw	a4,-92(s0)
+ 4f8:	0b300793          	addi	a5,zero,179
+ 4fc:	fee7d0e3          	bge	a5,a4,4dc <main+0x428>
+ 500:	2d00006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 19) {
+ 504:	f7042703          	lw	a4,-144(s0)
+ 508:	01300793          	addi	a5,zero,19
+ 50c:	02f71a63          	bne	a4,a5,540 <main+0x48c>
+        for (int i = 0; i < 190; i++) {
+ 510:	fa042023          	sw	zero,-96(s0)
+ 514:	01c0006f          	jal	zero,530 <main+0x47c>
+            a = a + 1;
+ 518:	fec42783          	lw	a5,-20(s0)
+ 51c:	00178793          	addi	a5,a5,1
+ 520:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 190; i++) {
+ 524:	fa042783          	lw	a5,-96(s0)
+ 528:	00178793          	addi	a5,a5,1
+ 52c:	faf42023          	sw	a5,-96(s0)
+ 530:	fa042703          	lw	a4,-96(s0)
+ 534:	0bd00793          	addi	a5,zero,189
+ 538:	fee7d0e3          	bge	a5,a4,518 <main+0x464>
+ 53c:	2940006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 20) {
+ 540:	f7042703          	lw	a4,-144(s0)
+ 544:	01400793          	addi	a5,zero,20
+ 548:	02f71a63          	bne	a4,a5,57c <main+0x4c8>
+        for (int i = 0; i < 200; i++) {
+ 54c:	f8042e23          	sw	zero,-100(s0)
+ 550:	01c0006f          	jal	zero,56c <main+0x4b8>
+            a = a + 1;
+ 554:	fec42783          	lw	a5,-20(s0)
+ 558:	00178793          	addi	a5,a5,1
+ 55c:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 200; i++) {
+ 560:	f9c42783          	lw	a5,-100(s0)
+ 564:	00178793          	addi	a5,a5,1
+ 568:	f8f42e23          	sw	a5,-100(s0)
+ 56c:	f9c42703          	lw	a4,-100(s0)
+ 570:	0c700793          	addi	a5,zero,199
+ 574:	fee7d0e3          	bge	a5,a4,554 <main+0x4a0>
+ 578:	2580006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 21) {
+ 57c:	f7042703          	lw	a4,-144(s0)
+ 580:	01500793          	addi	a5,zero,21
+ 584:	02f71a63          	bne	a4,a5,5b8 <main+0x504>
+        for (int i = 0; i < 210; i++) {
+ 588:	f8042c23          	sw	zero,-104(s0)
+ 58c:	01c0006f          	jal	zero,5a8 <main+0x4f4>
+            a = a + 1;
+ 590:	fec42783          	lw	a5,-20(s0)
+ 594:	00178793          	addi	a5,a5,1
+ 598:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 210; i++) {
+ 59c:	f9842783          	lw	a5,-104(s0)
+ 5a0:	00178793          	addi	a5,a5,1
+ 5a4:	f8f42c23          	sw	a5,-104(s0)
+ 5a8:	f9842703          	lw	a4,-104(s0)
+ 5ac:	0d100793          	addi	a5,zero,209
+ 5b0:	fee7d0e3          	bge	a5,a4,590 <main+0x4dc>
+ 5b4:	21c0006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 22) {
+ 5b8:	f7042703          	lw	a4,-144(s0)
+ 5bc:	01600793          	addi	a5,zero,22
+ 5c0:	02f71a63          	bne	a4,a5,5f4 <main+0x540>
+        for (int i = 0; i < 220; i++) {
+ 5c4:	f8042a23          	sw	zero,-108(s0)
+ 5c8:	01c0006f          	jal	zero,5e4 <main+0x530>
+            a = a + 1;
+ 5cc:	fec42783          	lw	a5,-20(s0)
+ 5d0:	00178793          	addi	a5,a5,1
+ 5d4:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 220; i++) {
+ 5d8:	f9442783          	lw	a5,-108(s0)
+ 5dc:	00178793          	addi	a5,a5,1
+ 5e0:	f8f42a23          	sw	a5,-108(s0)
+ 5e4:	f9442703          	lw	a4,-108(s0)
+ 5e8:	0db00793          	addi	a5,zero,219
+ 5ec:	fee7d0e3          	bge	a5,a4,5cc <main+0x518>
+ 5f0:	1e00006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 23) {
+ 5f4:	f7042703          	lw	a4,-144(s0)
+ 5f8:	01700793          	addi	a5,zero,23
+ 5fc:	02f71a63          	bne	a4,a5,630 <main+0x57c>
+        for (int i = 0; i < 230; i++) {
+ 600:	f8042823          	sw	zero,-112(s0)
+ 604:	01c0006f          	jal	zero,620 <main+0x56c>
+            a = a + 1;
+ 608:	fec42783          	lw	a5,-20(s0)
+ 60c:	00178793          	addi	a5,a5,1
+ 610:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 230; i++) {
+ 614:	f9042783          	lw	a5,-112(s0)
+ 618:	00178793          	addi	a5,a5,1
+ 61c:	f8f42823          	sw	a5,-112(s0)
+ 620:	f9042703          	lw	a4,-112(s0)
+ 624:	0e500793          	addi	a5,zero,229
+ 628:	fee7d0e3          	bge	a5,a4,608 <main+0x554>
+ 62c:	1a40006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 24) {
+ 630:	f7042703          	lw	a4,-144(s0)
+ 634:	01800793          	addi	a5,zero,24
+ 638:	02f71a63          	bne	a4,a5,66c <main+0x5b8>
+        for (int i = 0; i < 240; i++) {
+ 63c:	f8042623          	sw	zero,-116(s0)
+ 640:	01c0006f          	jal	zero,65c <main+0x5a8>
+            a = a + 1;
+ 644:	fec42783          	lw	a5,-20(s0)
+ 648:	00178793          	addi	a5,a5,1
+ 64c:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 240; i++) {
+ 650:	f8c42783          	lw	a5,-116(s0)
+ 654:	00178793          	addi	a5,a5,1
+ 658:	f8f42623          	sw	a5,-116(s0)
+ 65c:	f8c42703          	lw	a4,-116(s0)
+ 660:	0ef00793          	addi	a5,zero,239
+ 664:	fee7d0e3          	bge	a5,a4,644 <main+0x590>
+ 668:	1680006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 25) {
+ 66c:	f7042703          	lw	a4,-144(s0)
+ 670:	01900793          	addi	a5,zero,25
+ 674:	02f71a63          	bne	a4,a5,6a8 <main+0x5f4>
+        for (int i = 0; i < 250; i++) {
+ 678:	f8042423          	sw	zero,-120(s0)
+ 67c:	01c0006f          	jal	zero,698 <main+0x5e4>
+            a = a + 1;
+ 680:	fec42783          	lw	a5,-20(s0)
+ 684:	00178793          	addi	a5,a5,1
+ 688:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 250; i++) {
+ 68c:	f8842783          	lw	a5,-120(s0)
+ 690:	00178793          	addi	a5,a5,1
+ 694:	f8f42423          	sw	a5,-120(s0)
+ 698:	f8842703          	lw	a4,-120(s0)
+ 69c:	0f900793          	addi	a5,zero,249
+ 6a0:	fee7d0e3          	bge	a5,a4,680 <main+0x5cc>
+ 6a4:	12c0006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 26) {
+ 6a8:	f7042703          	lw	a4,-144(s0)
+ 6ac:	01a00793          	addi	a5,zero,26
+ 6b0:	02f71a63          	bne	a4,a5,6e4 <main+0x630>
+        for (int i = 0; i < 260; i++) {
+ 6b4:	f8042223          	sw	zero,-124(s0)
+ 6b8:	01c0006f          	jal	zero,6d4 <main+0x620>
+            a = a + 1;
+ 6bc:	fec42783          	lw	a5,-20(s0)
+ 6c0:	00178793          	addi	a5,a5,1
+ 6c4:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 260; i++) {
+ 6c8:	f8442783          	lw	a5,-124(s0)
+ 6cc:	00178793          	addi	a5,a5,1
+ 6d0:	f8f42223          	sw	a5,-124(s0)
+ 6d4:	f8442703          	lw	a4,-124(s0)
+ 6d8:	10300793          	addi	a5,zero,259
+ 6dc:	fee7d0e3          	bge	a5,a4,6bc <main+0x608>
+ 6e0:	0f00006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 27) {
+ 6e4:	f7042703          	lw	a4,-144(s0)
+ 6e8:	01b00793          	addi	a5,zero,27
+ 6ec:	02f71a63          	bne	a4,a5,720 <main+0x66c>
+        for (int i = 0; i < 270; i++) {
+ 6f0:	f8042023          	sw	zero,-128(s0)
+ 6f4:	01c0006f          	jal	zero,710 <main+0x65c>
+            a = a + 1;
+ 6f8:	fec42783          	lw	a5,-20(s0)
+ 6fc:	00178793          	addi	a5,a5,1
+ 700:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 270; i++) {
+ 704:	f8042783          	lw	a5,-128(s0)
+ 708:	00178793          	addi	a5,a5,1
+ 70c:	f8f42023          	sw	a5,-128(s0)
+ 710:	f8042703          	lw	a4,-128(s0)
+ 714:	10d00793          	addi	a5,zero,269
+ 718:	fee7d0e3          	bge	a5,a4,6f8 <main+0x644>
+ 71c:	0b40006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 28) {
+ 720:	f7042703          	lw	a4,-144(s0)
+ 724:	01c00793          	addi	a5,zero,28
+ 728:	02f71a63          	bne	a4,a5,75c <main+0x6a8>
+        for (int i = 0; i < 280; i++) {
+ 72c:	f6042e23          	sw	zero,-132(s0)
+ 730:	01c0006f          	jal	zero,74c <main+0x698>
+            a = a + 1;
+ 734:	fec42783          	lw	a5,-20(s0)
+ 738:	00178793          	addi	a5,a5,1
+ 73c:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 280; i++) {
+ 740:	f7c42783          	lw	a5,-132(s0)
+ 744:	00178793          	addi	a5,a5,1
+ 748:	f6f42e23          	sw	a5,-132(s0)
+ 74c:	f7c42703          	lw	a4,-132(s0)
+ 750:	11700793          	addi	a5,zero,279
+ 754:	fee7d0e3          	bge	a5,a4,734 <main+0x680>
+ 758:	0780006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 29) {
+ 75c:	f7042703          	lw	a4,-144(s0)
+ 760:	01d00793          	addi	a5,zero,29
+ 764:	02f71a63          	bne	a4,a5,798 <main+0x6e4>
+        for (int i = 0; i < 290; i++) {
+ 768:	f6042c23          	sw	zero,-136(s0)
+ 76c:	01c0006f          	jal	zero,788 <main+0x6d4>
+            a = a + 1;
+ 770:	fec42783          	lw	a5,-20(s0)
+ 774:	00178793          	addi	a5,a5,1
+ 778:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 290; i++) {
+ 77c:	f7842783          	lw	a5,-136(s0)
+ 780:	00178793          	addi	a5,a5,1
+ 784:	f6f42c23          	sw	a5,-136(s0)
+ 788:	f7842703          	lw	a4,-136(s0)
+ 78c:	12100793          	addi	a5,zero,289
+ 790:	fee7d0e3          	bge	a5,a4,770 <main+0x6bc>
+ 794:	03c0006f          	jal	zero,7d0 <main+0x71c>
+        }
+    } else if (b == 30) {
+ 798:	f7042703          	lw	a4,-144(s0)
+ 79c:	01e00793          	addi	a5,zero,30
+ 7a0:	02f71863          	bne	a4,a5,7d0 <main+0x71c>
+        for (int i = 0; i < 300; i++) {
+ 7a4:	f6042a23          	sw	zero,-140(s0)
+ 7a8:	01c0006f          	jal	zero,7c4 <main+0x710>
+            a = a + 1;
+ 7ac:	fec42783          	lw	a5,-20(s0)
+ 7b0:	00178793          	addi	a5,a5,1
+ 7b4:	fef42623          	sw	a5,-20(s0)
+        for (int i = 0; i < 300; i++) {
+ 7b8:	f7442783          	lw	a5,-140(s0)
+ 7bc:	00178793          	addi	a5,a5,1
+ 7c0:	f6f42a23          	sw	a5,-140(s0)
+ 7c4:	f7442703          	lw	a4,-140(s0)
+ 7c8:	12b00793          	addi	a5,zero,299
+ 7cc:	fee7d0e3          	bge	a5,a4,7ac <main+0x6f8>
+        }
+    }
+
+
+    return 0;
+ 7d0:	00000793          	addi	a5,zero,0
+}
+ 7d4:	00078513          	addi	a0,a5,0
+ 7d8:	08c12403          	lw	s0,140(sp)
+ 7dc:	09010113          	addi	sp,sp,144
+ 7e0:	00008067          	jalr	zero,0(ra)
+	...
+
+Disassembly of section .riscv.attributes:
+
+00000000 <.riscv.attributes>:
+    nop
+   0:	2041                	c.jal	80 <crt+0x80>
+   2:	0000                	c.unimp
+    la ra, exit
+   4:	7200                	c.flw	fs0,32(a2)
+   6:	7369                	c.lui	t1,0xffffa
+   8:	01007663          	bgeu	zero,a6,14 <crt+0x14>
+    la sp, _sp
+   c:	0016                	c.slli	zero,0x5
+   e:	0000                	c.unimp
+  10:	1004                	c.addi4spn	s1,sp,32
+  12:	7205                	c.lui	tp,0xfffe1
+    mv s0, sp
+  14:	3376                	c.fldsp	ft6,376(sp)
+  16:	6932                	c.flwsp	fs2,12(sp)
+    la gp, __global_pointer$
+  18:	7032                	c.flwsp	ft0,44(sp)
+  1a:	5f30                	c.lw	a2,120(a4)
+  1c:	326d                	c.jal	fffff9c6 <_sp+0xfffef9c6>
+  1e:	3070                	c.fld	fa2,224(s0)
+	...
+
+Disassembly of section .comment:
+
+00000000 <.comment>:
+    nop
+   0:	3a434347          	fmsub.d	ft6,ft6,ft4,ft7,rmm
+    la ra, exit
+   4:	2820                	c.fld	fs0,80(s0)
+   6:	29554e47          	fmsub.s	ft8,fa0,fs5,ft5,rmm
+   a:	3920                	c.fld	fs0,112(a0)
+    la sp, _sp
+   c:	322e                	c.fldsp	ft4,232(sp)
+   e:	302e                	c.fldsp	ft0,232(sp)
+	...
+
+Disassembly of section .debug_line:
+
+00000000 <.debug_line>:
+    nop
+   0:	011d                	c.addi	sp,7
+   2:	0000                	c.unimp
+    la ra, exit
+   4:	00250003          	lb	zero,2(a0)
+   8:	0000                	c.unimp
+   a:	0101                	c.addi	sp,0
+    la sp, _sp
+   c:	000d0efb          	0xd0efb
+  10:	0101                	c.addi	sp,0
+  12:	0101                	c.addi	sp,0
+    mv s0, sp
+  14:	0000                	c.unimp
+  16:	0100                	c.addi4spn	s0,sp,128
+    la gp, __global_pointer$
+  18:	0000                	c.unimp
+  1a:	7001                	c.lui	zero,0xfffe0
+  1c:	6f72                	c.flwsp	ft10,28(sp)
+  1e:	6d617267          	0x6d617267
+    li tp, 0
+  22:	63000073          	0x63000073
+    li t0, 0
+  26:	7472                	c.flwsp	fs0,60(sp)
+    li t1, 0
+  28:	732e                	c.flwsp	ft6,232(sp)
+  2a:	0100                	c.addi4spn	s0,sp,128
+    li t2, 0
+  2c:	0000                	c.unimp
+  2e:	0000                	c.unimp
+    li s1, 0
+  30:	0205                	c.addi	tp,1
+  32:	0000                	c.unimp
+    li a0, 0
+  34:	0000                	c.unimp
+  36:	03010d03          	lb	s10,48(sp)
+    li a1, 0
+  3a:	0901                	c.addi	s2,0
+    li a2, 0
+  3c:	0004                	0x4
+  3e:	0301                	c.addi	t1,0
+    li a3, 0
+  40:	0901                	c.addi	s2,0
+  42:	0008                	0x8
+    li a4, 0
+  44:	0301                	c.addi	t1,0
+  46:	0901                	c.addi	s2,0
+    li a5, 0
+  48:	0008                	0x8
+  4a:	0301                	c.addi	t1,0
+    li a6, 0
+  4c:	0901                	c.addi	s2,0
+  4e:	0004                	0x4
+    li a7, 0
+  50:	0301                	c.addi	t1,0
+  52:	0901                	c.addi	s2,0
+    li s2, 0
+  54:	0008                	0x8
+  56:	0301                	c.addi	t1,0
+    li s3, 0
+  58:	0901                	c.addi	s2,0
+  5a:	0004                	0x4
+    li s4, 0
+  5c:	0301                	c.addi	t1,0
+  5e:	0901                	c.addi	s2,0
+    li s5, 0
+  60:	0004                	0x4
+  62:	0301                	c.addi	t1,0
+    li s6, 0
+  64:	0901                	c.addi	s2,0
+  66:	0004                	0x4
+    li s7, 0
+  68:	0301                	c.addi	t1,0
+  6a:	0901                	c.addi	s2,0
+    li s8, 0
+  6c:	0004                	0x4
+  6e:	0301                	c.addi	t1,0
+    li s9, 0
+  70:	0901                	c.addi	s2,0
+  72:	0004                	0x4
+    li s10, 0
+  74:	0301                	c.addi	t1,0
+  76:	0901                	c.addi	s2,0
+    li s11, 0
+  78:	0004                	0x4
+  7a:	0301                	c.addi	t1,0
+    li t3, 0
+  7c:	0901                	c.addi	s2,0
+  7e:	0004                	0x4
+    li t4, 0
+  80:	0301                	c.addi	t1,0
+  82:	0901                	c.addi	s2,0
+    li t5, 0
+  84:	0004                	0x4
+  86:	0301                	c.addi	t1,0
+    li t6, 0
+  88:	0901                	c.addi	s2,0
+  8a:	0004                	0x4
+    j main
+  8c:	0301                	c.addi	t1,0
+  8e:	0901                	c.addi	s2,0
+  90:	0004                	0x4
+  92:	0301                	c.addi	t1,0
+  94:	0901                	c.addi	s2,0
+  96:	0004                	0x4
+  98:	0301                	c.addi	t1,0
+  9a:	0901                	c.addi	s2,0
+  9c:	0004                	0x4
+  9e:	0301                	c.addi	t1,0
+    la sp, _sp
+  a0:	0901                	c.addi	s2,0
+  a2:	0004                	0x4
+  a4:	0301                	c.addi	t1,0
+  a6:	0901                	c.addi	s2,0
+    sw a0, -8(sp)
+  a8:	0004                	0x4
+  aa:	0301                	c.addi	t1,0
+    nop
+  ac:	0901                	c.addi	s2,0
+  ae:	0004                	0x4
+    wfi
+  b0:	0301                	c.addi	t1,0
+  b2:	0901                	c.addi	s2,0
+{
+  b4:	0004                	0x4
+  b6:	0301                	c.addi	t1,0
+  b8:	0901                	c.addi	s2,0
+  ba:	0004                	0x4
+  bc:	0301                	c.addi	t1,0
+  be:	0901                	c.addi	s2,0
+    a = 0;
+  c0:	0004                	0x4
+  c2:	0301                	c.addi	t1,0
+    b = 20;
+  c4:	0901                	c.addi	s2,0
+  c6:	0004                	0x4
+  c8:	0301                	c.addi	t1,0
+  ca:	0901                	c.addi	s2,0
+    if (b == 1) {
+  cc:	0004                	0x4
+  ce:	0301                	c.addi	t1,0
+  d0:	0901                	c.addi	s2,0
+  d2:	0004                	0x4
+  d4:	0301                	c.addi	t1,0
+  d6:	0901                	c.addi	s2,0
+        for (int i = 0; i < 50; i++) {
+  d8:	0004                	0x4
+  da:	0301                	c.addi	t1,0
+  dc:	0901                	c.addi	s2,0
+  de:	0004                	0x4
+            a = a + 1;
+  e0:	0301                	c.addi	t1,0
+  e2:	0901                	c.addi	s2,0
+  e4:	0004                	0x4
+  e6:	0301                	c.addi	t1,0
+  e8:	0901                	c.addi	s2,0
+  ea:	0004                	0x4
+        for (int i = 0; i < 50; i++) {
+  ec:	0301                	c.addi	t1,0
+  ee:	0901                	c.addi	s2,0
+  f0:	0004                	0x4
+  f2:	0301                	c.addi	t1,0
+  f4:	0901                	c.addi	s2,0
+  f6:	0004                	0x4
+  f8:	0901                	c.addi	s2,0
+  fa:	0004                	0x4
+  fc:	0100                	c.addi4spn	s0,sp,128
+  fe:	0001                	c.addi	zero,0
+ 100:	0205                	c.addi	tp,1
+ 102:	00a0                	c.addi4spn	s0,sp,72
+ 104:	0000                	c.unimp
+ 106:	03013303          	0x3013303
+    } else if (b == 2) {
+ 10a:	0901                	c.addi	s2,0
+ 10c:	0008                	0x8
+ 10e:	0301                	c.addi	t1,0
+ 110:	0901                	c.addi	s2,0
+ 112:	0004                	0x4
+        for (int i = 0; i < 10; i++) {
+ 114:	0301                	c.addi	t1,0
+ 116:	0901                	c.addi	s2,0
+ 118:	0004                	0x4
+ 11a:	0901                	c.addi	s2,0
+            a = a + 1;
+ 11c:	0004                	0x4
+ 11e:	0100                	c.addi4spn	s0,sp,128
+ 120:	7b01                	c.lui	s6,0xfffe0
+ 122:	0008                	0x8
+ 124:	0300                	c.addi4spn	s0,sp,384
+ 126:	3d00                	c.fld	fs0,56(a0)
+        for (int i = 0; i < 10; i++) {
+ 128:	0001                	c.addi	zero,0
+ 12a:	0100                	c.addi4spn	s0,sp,128
+ 12c:	fb01                	c.bnez	a4,3c <crt+0x3c>
+ 12e:	0d0e                	c.slli	s10,0x3
+ 130:	0100                	c.addi4spn	s0,sp,128
+ 132:	0101                	c.addi	sp,0
+ 134:	0001                	c.addi	zero,0
+ 136:	0000                	c.unimp
+ 138:	0001                	c.addi	zero,0
+ 13a:	0100                	c.addi4spn	s0,sp,128
+ 13c:	7270                	c.flw	fa2,100(a2)
+ 13e:	6172676f          	jal	a4,26f54 <_sp+0x16f54>
+ 142:	736d                	c.lui	t1,0xffffb
+    } else if (b == 3) {
+ 144:	2f00                	c.fld	fs0,24(a4)
+ 146:	6661                	c.lui	a2,0x18
+ 148:	65652f73          	csrrs	t5,0x656,a0
+ 14c:	752e7363          	bgeu	t3,s2,892 <_ebss+0x52>
+        for (int i = 0; i < 10; i++) {
+ 150:	696d                	c.lui	s2,0x1b
+ 152:	652e6863          	bltu	t3,s2,7a2 <main+0x6ee>
+ 156:	7564                	c.flw	fs1,108(a0)
+            a = a + 1;
+ 158:	666f732f          	0x666f732f
+ 15c:	2f74                	c.fld	fa3,216(a4)
+ 15e:	6d75                	c.lui	s10,0x1d
+ 160:	7369722f          	0x7369722f
+        for (int i = 0; i < 10; i++) {
+ 164:	392d7663          	bgeu	s10,s2,4f0 <main+0x43c>
+ 168:	322e                	c.fldsp	ft4,232(sp)
+ 16a:	62696c2f          	0x62696c2f
+ 16e:	6363672f          	0x6363672f
+ 172:	7369722f          	0x7369722f
+ 176:	34367663          	bgeu	a2,gp,4c2 <main+0x40e>
+ 17a:	752d                	c.lui	a0,0xfffeb
+ 17c:	6b6e                	c.flwsp	fs6,216(sp)
+ 17e:	6f6e                	c.flwsp	ft10,216(sp)
+    } else if (b == 4) {
+ 180:	652d6e77          	0x652d6e77
+ 184:	666c                	c.flw	fa1,76(a2)
+ 186:	322e392f          	0x322e392f
+ 18a:	302e                	c.fldsp	ft0,232(sp)
+        for (int i = 0; i < 100; i++) {
+ 18c:	636e692f          	0x636e692f
+ 190:	756c                	c.flw	fa1,108(a0)
+ 192:	6564                	c.flw	fs1,76(a0)
+            a = a + 1;
+ 194:	2f00                	c.fld	fs0,24(a4)
+ 196:	6661                	c.lui	a2,0x18
+ 198:	65652f73          	csrrs	t5,0x656,a0
+ 19c:	752e7363          	bgeu	t3,s2,8e2 <_ebss+0xa2>
+        for (int i = 0; i < 100; i++) {
+ 1a0:	696d                	c.lui	s2,0x1b
+ 1a2:	652e6863          	bltu	t3,s2,7f2 <main+0x73e>
+ 1a6:	7564                	c.flw	fs1,108(a0)
+ 1a8:	666f732f          	0x666f732f
+ 1ac:	2f74                	c.fld	fa3,216(a4)
+ 1ae:	6d75                	c.lui	s10,0x1d
+ 1b0:	7369722f          	0x7369722f
+ 1b4:	392d7663          	bgeu	s10,s2,540 <main+0x48c>
+ 1b8:	322e                	c.fldsp	ft4,232(sp)
+ 1ba:	7369722f          	0x7369722f
+    } else if (b == 5) {
+ 1be:	34367663          	bgeu	a2,gp,50a <main+0x456>
+ 1c2:	752d                	c.lui	a0,0xfffeb
+ 1c4:	6b6e                	c.flwsp	fs6,216(sp)
+ 1c6:	6f6e                	c.flwsp	ft10,216(sp)
+        for (int i = 0; i < 50; i++) {
+ 1c8:	652d6e77          	0x652d6e77
+ 1cc:	666c                	c.flw	fa1,76(a2)
+ 1ce:	636e692f          	0x636e692f
+            a = a + 1;
+ 1d2:	756c                	c.flw	fa1,108(a0)
+ 1d4:	6564                	c.flw	fs1,76(a0)
+ 1d6:	7379732f          	0x7379732f
+ 1da:	2f00                	c.fld	fs0,24(a4)
+        for (int i = 0; i < 50; i++) {
+ 1dc:	6661                	c.lui	a2,0x18
+ 1de:	65652f73          	csrrs	t5,0x656,a0
+ 1e2:	752e7363          	bgeu	t3,s2,928 <_ebss+0xe8>
+ 1e6:	696d                	c.lui	s2,0x1b
+ 1e8:	652e6863          	bltu	t3,s2,838 <main+0x784>
+ 1ec:	7564                	c.flw	fs1,108(a0)
+ 1ee:	666f732f          	0x666f732f
+ 1f2:	2f74                	c.fld	fa3,216(a4)
+ 1f4:	6d75                	c.lui	s10,0x1d
+ 1f6:	7369722f          	0x7369722f
+    } else if (b == 6) {
+ 1fa:	392d7663          	bgeu	s10,s2,586 <main+0x4d2>
+ 1fe:	322e                	c.fldsp	ft4,232(sp)
+ 200:	7369722f          	0x7369722f
+        for (int i = 0; i < 60; i++) {
+ 204:	34367663          	bgeu	a2,gp,550 <main+0x49c>
+ 208:	752d                	c.lui	a0,0xfffeb
+ 20a:	6b6e                	c.flwsp	fs6,216(sp)
+            a = a + 1;
+ 20c:	6f6e                	c.flwsp	ft10,216(sp)
+ 20e:	652d6e77          	0x652d6e77
+ 212:	666c                	c.flw	fa1,76(a2)
+ 214:	636e692f          	0x636e692f
+        for (int i = 0; i < 60; i++) {
+ 218:	756c                	c.flw	fa1,108(a0)
+ 21a:	6564                	c.flw	fs1,76(a0)
+ 21c:	0000                	c.unimp
+ 21e:	65686373          	csrrsi	t1,0x656,16
+ 222:	7564                	c.flw	fs1,108(a0)
+ 224:	656c                	c.flw	fa1,76(a0)
+ 226:	3372                	c.fldsp	ft6,312(sp)
+ 228:	632e                	c.flwsp	ft6,200(sp)
+ 22a:	0100                	c.addi4spn	s0,sp,128
+ 22c:	0000                	c.unimp
+ 22e:	64647473          	csrrci	s0,0x646,8
+ 232:	6665                	c.lui	a2,0x19
+    } else if (b == 7) {
+ 234:	682e                	c.flwsp	fa6,200(sp)
+ 236:	0200                	c.addi4spn	s0,sp,256
+ 238:	0000                	c.unimp
+ 23a:	745f 7079 7365      	0x73657079745f
+        for (int i = 0; i < 70; i++) {
+ 240:	682e                	c.flwsp	fa6,200(sp)
+ 242:	0300                	c.addi4spn	s0,sp,384
+ 244:	0000                	c.unimp
+ 246:	6572                	c.flwsp	fa0,28(sp)
+            a = a + 1;
+ 248:	6e65                	c.lui	t3,0x19
+ 24a:	2e74                	c.fld	fa3,216(a2)
+ 24c:	0068                	c.addi4spn	a0,sp,12
+ 24e:	6c000003          	lb	zero,1728(zero) # 6c0 <main+0x60c>
+ 252:	2e6b636f          	jal	t1,b6538 <_sp+0xa6538>
+        for (int i = 0; i < 70; i++) {
+ 256:	0068                	c.addi4spn	a0,sp,12
+ 258:	73000003          	lb	zero,1840(zero) # 730 <main+0x67c>
+ 25c:	6474                	c.flw	fa3,76(s0)
+ 25e:	696c                	c.flw	fa1,84(a0)
+ 260:	2e62                	c.fldsp	ft8,24(sp)
+ 262:	0068                	c.addi4spn	a0,sp,12
+ 264:	0004                	0x4
+ 266:	0000                	c.unimp
+ 268:	0105                	c.addi	sp,1
+ 26a:	0500                	c.addi4spn	s0,sp,640
+ 26c:	b402                	c.fsdsp	ft0,40(sp)
+ 26e:	0000                	c.unimp
+    } else if (b == 8) {
+ 270:	0300                	c.addi4spn	s0,sp,384
+ 272:	0705010f          	0x705010f
+ 276:	0c090e03          	lb	t3,192(s2) # 1b0c0 <_sp+0xb0c0>
+ 27a:	0100                	c.addi4spn	s0,sp,128
+        for (int i = 0; i < 80; i++) {
+ 27c:	04090103          	lb	sp,64(s2)
+ 280:	0100                	c.addi4spn	s0,sp,128
+ 282:	0805                	c.addi	a6,1
+            a = a + 1;
+ 284:	08090203          	lb	tp,128(s2)
+ 288:	0100                	c.addi4spn	s0,sp,128
+ 28a:	1205                	c.addi	tp,-31
+ 28c:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 80; i++) {
+ 290:	0100                	c.addi4spn	s0,sp,128
+ 292:	0905                	c.addi	s2,1
+ 294:	04090003          	lb	zero,64(s2)
+ 298:	0100                	c.addi4spn	s0,sp,128
+ 29a:	0f05                	c.addi	t5,1
+ 29c:	0200                	c.addi4spn	s0,sp,256
+ 29e:	0304                	c.addi4spn	s1,sp,384
+ 2a0:	04090103          	lb	sp,64(s2)
+ 2a4:	0100                	c.addi4spn	s0,sp,128
+ 2a6:	2205                	c.jal	3c6 <main+0x312>
+ 2a8:	0200                	c.addi4spn	s0,sp,256
+ 2aa:	0304                	c.addi4spn	s1,sp,384
+    } else if (b == 9) {
+ 2ac:	0c097f03          	0xc097f03
+ 2b0:	0100                	c.addi4spn	s0,sp,128
+ 2b2:	0905                	c.addi	s2,1
+ 2b4:	0200                	c.addi4spn	s0,sp,256
+ 2b6:	0104                	c.addi4spn	s1,sp,128
+        for (int i = 0; i < 90; i++) {
+ 2b8:	0c090003          	lb	zero,192(s2)
+ 2bc:	0100                	c.addi4spn	s0,sp,128
+ 2be:	0f05                	c.addi	t5,1
+            a = a + 1;
+ 2c0:	10090303          	lb	t1,256(s2)
+ 2c4:	0100                	c.addi4spn	s0,sp,128
+ 2c6:	1205                	c.addi	tp,-31
+ 2c8:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 90; i++) {
+ 2cc:	0100                	c.addi4spn	s0,sp,128
+ 2ce:	0905                	c.addi	s2,1
+ 2d0:	04090003          	lb	zero,64(s2)
+ 2d4:	0100                	c.addi4spn	s0,sp,128
+ 2d6:	0f05                	c.addi	t5,1
+ 2d8:	0200                	c.addi4spn	s0,sp,256
+ 2da:	0304                	c.addi4spn	s1,sp,384
+ 2dc:	04090103          	lb	sp,64(s2)
+ 2e0:	0100                	c.addi4spn	s0,sp,128
+ 2e2:	2205                	c.jal	402 <main+0x34e>
+ 2e4:	0200                	c.addi4spn	s0,sp,256
+ 2e6:	0304                	c.addi4spn	s1,sp,384
+    } else if (b == 10) {
+ 2e8:	0c097f03          	0xc097f03
+ 2ec:	0100                	c.addi4spn	s0,sp,128
+ 2ee:	0905                	c.addi	s2,1
+ 2f0:	0200                	c.addi4spn	s0,sp,256
+ 2f2:	0104                	c.addi4spn	s1,sp,128
+        for (int i = 0; i < 100; i++) {
+ 2f4:	0c090003          	lb	zero,192(s2)
+ 2f8:	0100                	c.addi4spn	s0,sp,128
+ 2fa:	0f05                	c.addi	t5,1
+            a = a + 1;
+ 2fc:	10090303          	lb	t1,256(s2)
+ 300:	0100                	c.addi4spn	s0,sp,128
+ 302:	1205                	c.addi	tp,-31
+ 304:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 100; i++) {
+ 308:	0100                	c.addi4spn	s0,sp,128
+ 30a:	0905                	c.addi	s2,1
+ 30c:	04090003          	lb	zero,64(s2)
+ 310:	0100                	c.addi4spn	s0,sp,128
+ 312:	0f05                	c.addi	t5,1
+ 314:	0200                	c.addi4spn	s0,sp,256
+ 316:	0304                	c.addi4spn	s1,sp,384
+ 318:	04090103          	lb	sp,64(s2)
+ 31c:	0100                	c.addi4spn	s0,sp,128
+ 31e:	2205                	c.jal	43e <main+0x38a>
+ 320:	0200                	c.addi4spn	s0,sp,256
+ 322:	0304                	c.addi4spn	s1,sp,384
+    } else if (b == 11) {
+ 324:	0c097f03          	0xc097f03
+ 328:	0100                	c.addi4spn	s0,sp,128
+ 32a:	0905                	c.addi	s2,1
+ 32c:	0200                	c.addi4spn	s0,sp,256
+ 32e:	0104                	c.addi4spn	s1,sp,128
+        for (int i = 0; i < 110; i++) {
+ 330:	0c090003          	lb	zero,192(s2)
+ 334:	0100                	c.addi4spn	s0,sp,128
+ 336:	0f05                	c.addi	t5,1
+            a = a + 1;
+ 338:	10090303          	lb	t1,256(s2)
+ 33c:	0100                	c.addi4spn	s0,sp,128
+ 33e:	1205                	c.addi	tp,-31
+ 340:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 110; i++) {
+ 344:	0100                	c.addi4spn	s0,sp,128
+ 346:	0905                	c.addi	s2,1
+ 348:	04090003          	lb	zero,64(s2)
+ 34c:	0100                	c.addi4spn	s0,sp,128
+ 34e:	0f05                	c.addi	t5,1
+ 350:	0200                	c.addi4spn	s0,sp,256
+ 352:	0304                	c.addi4spn	s1,sp,384
+ 354:	04090103          	lb	sp,64(s2)
+ 358:	0100                	c.addi4spn	s0,sp,128
+ 35a:	2305                	c.jal	87a <_ebss+0x3a>
+ 35c:	0200                	c.addi4spn	s0,sp,256
+ 35e:	0304                	c.addi4spn	s1,sp,384
+    } else if (b == 12) {
+ 360:	0c097f03          	0xc097f03
+ 364:	0100                	c.addi4spn	s0,sp,128
+ 366:	0905                	c.addi	s2,1
+ 368:	0200                	c.addi4spn	s0,sp,256
+ 36a:	0104                	c.addi4spn	s1,sp,128
+        for (int i = 0; i < 120; i++) {
+ 36c:	0c090003          	lb	zero,192(s2)
+ 370:	0100                	c.addi4spn	s0,sp,128
+ 372:	0f05                	c.addi	t5,1
+            a = a + 1;
+ 374:	10090303          	lb	t1,256(s2)
+ 378:	0100                	c.addi4spn	s0,sp,128
+ 37a:	1205                	c.addi	tp,-31
+ 37c:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 120; i++) {
+ 380:	0100                	c.addi4spn	s0,sp,128
+ 382:	0905                	c.addi	s2,1
+ 384:	04090003          	lb	zero,64(s2)
+ 388:	0100                	c.addi4spn	s0,sp,128
+ 38a:	0f05                	c.addi	t5,1
+ 38c:	0200                	c.addi4spn	s0,sp,256
+ 38e:	0304                	c.addi4spn	s1,sp,384
+ 390:	04090103          	lb	sp,64(s2)
+ 394:	0100                	c.addi4spn	s0,sp,128
+ 396:	2205                	c.jal	4b6 <main+0x402>
+ 398:	0200                	c.addi4spn	s0,sp,256
+ 39a:	0304                	c.addi4spn	s1,sp,384
+    } else if (b == 13) {
+ 39c:	0c097f03          	0xc097f03
+ 3a0:	0100                	c.addi4spn	s0,sp,128
+ 3a2:	0905                	c.addi	s2,1
+ 3a4:	0200                	c.addi4spn	s0,sp,256
+ 3a6:	0104                	c.addi4spn	s1,sp,128
+        for (int i = 0; i < 130; i++) {
+ 3a8:	0c090003          	lb	zero,192(s2)
+ 3ac:	0100                	c.addi4spn	s0,sp,128
+ 3ae:	0f05                	c.addi	t5,1
+            a = a + 1;
+ 3b0:	10090303          	lb	t1,256(s2)
+ 3b4:	0100                	c.addi4spn	s0,sp,128
+ 3b6:	1205                	c.addi	tp,-31
+ 3b8:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 130; i++) {
+ 3bc:	0100                	c.addi4spn	s0,sp,128
+ 3be:	0905                	c.addi	s2,1
+ 3c0:	04090003          	lb	zero,64(s2)
+ 3c4:	0100                	c.addi4spn	s0,sp,128
+ 3c6:	0f05                	c.addi	t5,1
+ 3c8:	0200                	c.addi4spn	s0,sp,256
+ 3ca:	0304                	c.addi4spn	s1,sp,384
+ 3cc:	04090103          	lb	sp,64(s2)
+ 3d0:	0100                	c.addi4spn	s0,sp,128
+ 3d2:	2205                	c.jal	4f2 <main+0x43e>
+ 3d4:	0200                	c.addi4spn	s0,sp,256
+ 3d6:	0304                	c.addi4spn	s1,sp,384
+    } else if (b == 14) {
+ 3d8:	0c097f03          	0xc097f03
+ 3dc:	0100                	c.addi4spn	s0,sp,128
+ 3de:	0905                	c.addi	s2,1
+ 3e0:	0200                	c.addi4spn	s0,sp,256
+ 3e2:	0104                	c.addi4spn	s1,sp,128
+        for (int i = 0; i < 140; i++) {
+ 3e4:	0c090003          	lb	zero,192(s2)
+ 3e8:	0100                	c.addi4spn	s0,sp,128
+ 3ea:	0f05                	c.addi	t5,1
+            a = a + 1;
+ 3ec:	10090303          	lb	t1,256(s2)
+ 3f0:	0100                	c.addi4spn	s0,sp,128
+ 3f2:	1205                	c.addi	tp,-31
+ 3f4:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 140; i++) {
+ 3f8:	0100                	c.addi4spn	s0,sp,128
+ 3fa:	0905                	c.addi	s2,1
+ 3fc:	04090003          	lb	zero,64(s2)
+ 400:	0100                	c.addi4spn	s0,sp,128
+ 402:	0f05                	c.addi	t5,1
+ 404:	0200                	c.addi4spn	s0,sp,256
+ 406:	0304                	c.addi4spn	s1,sp,384
+ 408:	04090103          	lb	sp,64(s2)
+ 40c:	0100                	c.addi4spn	s0,sp,128
+ 40e:	2205                	c.jal	52e <main+0x47a>
+ 410:	0200                	c.addi4spn	s0,sp,256
+ 412:	0304                	c.addi4spn	s1,sp,384
+    } else if (b == 15) {
+ 414:	0c097f03          	0xc097f03
+ 418:	0100                	c.addi4spn	s0,sp,128
+ 41a:	0905                	c.addi	s2,1
+ 41c:	0200                	c.addi4spn	s0,sp,256
+ 41e:	0104                	c.addi4spn	s1,sp,128
+        for (int i = 0; i < 150; i++) {
+ 420:	0c090003          	lb	zero,192(s2)
+ 424:	0100                	c.addi4spn	s0,sp,128
+ 426:	0f05                	c.addi	t5,1
+            a = a + 1;
+ 428:	10090303          	lb	t1,256(s2)
+ 42c:	0100                	c.addi4spn	s0,sp,128
+ 42e:	1205                	c.addi	tp,-31
+ 430:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 150; i++) {
+ 434:	0100                	c.addi4spn	s0,sp,128
+ 436:	0905                	c.addi	s2,1
+ 438:	04090003          	lb	zero,64(s2)
+ 43c:	0100                	c.addi4spn	s0,sp,128
+ 43e:	0f05                	c.addi	t5,1
+ 440:	0200                	c.addi4spn	s0,sp,256
+ 442:	0304                	c.addi4spn	s1,sp,384
+ 444:	04090103          	lb	sp,64(s2)
+ 448:	0100                	c.addi4spn	s0,sp,128
+ 44a:	2205                	c.jal	56a <main+0x4b6>
+ 44c:	0200                	c.addi4spn	s0,sp,256
+ 44e:	0304                	c.addi4spn	s1,sp,384
+    } else if (b == 16) {
+ 450:	0c097f03          	0xc097f03
+ 454:	0100                	c.addi4spn	s0,sp,128
+ 456:	0905                	c.addi	s2,1
+ 458:	0200                	c.addi4spn	s0,sp,256
+ 45a:	0104                	c.addi4spn	s1,sp,128
+        for (int i = 0; i < 160; i++) {
+ 45c:	0c090003          	lb	zero,192(s2)
+ 460:	0100                	c.addi4spn	s0,sp,128
+ 462:	0f05                	c.addi	t5,1
+            a = a + 1;
+ 464:	10090303          	lb	t1,256(s2)
+ 468:	0100                	c.addi4spn	s0,sp,128
+ 46a:	1205                	c.addi	tp,-31
+ 46c:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 160; i++) {
+ 470:	0100                	c.addi4spn	s0,sp,128
+ 472:	0905                	c.addi	s2,1
+ 474:	04090003          	lb	zero,64(s2)
+ 478:	0100                	c.addi4spn	s0,sp,128
+ 47a:	0f05                	c.addi	t5,1
+ 47c:	0200                	c.addi4spn	s0,sp,256
+ 47e:	0304                	c.addi4spn	s1,sp,384
+ 480:	04090103          	lb	sp,64(s2)
+ 484:	0100                	c.addi4spn	s0,sp,128
+ 486:	2205                	c.jal	5a6 <main+0x4f2>
+ 488:	0200                	c.addi4spn	s0,sp,256
+ 48a:	0304                	c.addi4spn	s1,sp,384
+    } else if (b == 17) {
+ 48c:	0c097f03          	0xc097f03
+ 490:	0100                	c.addi4spn	s0,sp,128
+ 492:	0905                	c.addi	s2,1
+ 494:	0200                	c.addi4spn	s0,sp,256
+ 496:	0104                	c.addi4spn	s1,sp,128
+        for (int i = 0; i < 170; i++) {
+ 498:	0c090003          	lb	zero,192(s2)
+ 49c:	0100                	c.addi4spn	s0,sp,128
+ 49e:	0f05                	c.addi	t5,1
+            a = a + 1;
+ 4a0:	10090303          	lb	t1,256(s2)
+ 4a4:	0100                	c.addi4spn	s0,sp,128
+ 4a6:	1205                	c.addi	tp,-31
+ 4a8:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 170; i++) {
+ 4ac:	0100                	c.addi4spn	s0,sp,128
+ 4ae:	0905                	c.addi	s2,1
+ 4b0:	04090003          	lb	zero,64(s2)
+ 4b4:	0100                	c.addi4spn	s0,sp,128
+ 4b6:	0f05                	c.addi	t5,1
+ 4b8:	0200                	c.addi4spn	s0,sp,256
+ 4ba:	0304                	c.addi4spn	s1,sp,384
+ 4bc:	04090103          	lb	sp,64(s2)
+ 4c0:	0100                	c.addi4spn	s0,sp,128
+ 4c2:	2305                	c.jal	9e2 <_ebss+0x1a2>
+ 4c4:	0200                	c.addi4spn	s0,sp,256
+ 4c6:	0304                	c.addi4spn	s1,sp,384
+    } else if (b == 18) {
+ 4c8:	0c097f03          	0xc097f03
+ 4cc:	0100                	c.addi4spn	s0,sp,128
+ 4ce:	0905                	c.addi	s2,1
+ 4d0:	0200                	c.addi4spn	s0,sp,256
+ 4d2:	0104                	c.addi4spn	s1,sp,128
+        for (int i = 0; i < 180; i++) {
+ 4d4:	0c090003          	lb	zero,192(s2)
+ 4d8:	0100                	c.addi4spn	s0,sp,128
+ 4da:	0f05                	c.addi	t5,1
+            a = a + 1;
+ 4dc:	10090303          	lb	t1,256(s2)
+ 4e0:	0100                	c.addi4spn	s0,sp,128
+ 4e2:	1205                	c.addi	tp,-31
+ 4e4:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 180; i++) {
+ 4e8:	0100                	c.addi4spn	s0,sp,128
+ 4ea:	0905                	c.addi	s2,1
+ 4ec:	04090003          	lb	zero,64(s2)
+ 4f0:	0100                	c.addi4spn	s0,sp,128
+ 4f2:	0f05                	c.addi	t5,1
+ 4f4:	0200                	c.addi4spn	s0,sp,256
+ 4f6:	0304                	c.addi4spn	s1,sp,384
+ 4f8:	04090103          	lb	sp,64(s2)
+ 4fc:	0100                	c.addi4spn	s0,sp,128
+ 4fe:	2305                	c.jal	a1e <_ebss+0x1de>
+ 500:	0200                	c.addi4spn	s0,sp,256
+ 502:	0304                	c.addi4spn	s1,sp,384
+    } else if (b == 19) {
+ 504:	0c097f03          	0xc097f03
+ 508:	0100                	c.addi4spn	s0,sp,128
+ 50a:	0905                	c.addi	s2,1
+ 50c:	0200                	c.addi4spn	s0,sp,256
+ 50e:	0104                	c.addi4spn	s1,sp,128
+        for (int i = 0; i < 190; i++) {
+ 510:	0c090003          	lb	zero,192(s2)
+ 514:	0100                	c.addi4spn	s0,sp,128
+ 516:	0f05                	c.addi	t5,1
+            a = a + 1;
+ 518:	10090303          	lb	t1,256(s2)
+ 51c:	0100                	c.addi4spn	s0,sp,128
+ 51e:	1205                	c.addi	tp,-31
+ 520:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 190; i++) {
+ 524:	0100                	c.addi4spn	s0,sp,128
+ 526:	0905                	c.addi	s2,1
+ 528:	04090003          	lb	zero,64(s2)
+ 52c:	0100                	c.addi4spn	s0,sp,128
+ 52e:	0f05                	c.addi	t5,1
+ 530:	0200                	c.addi4spn	s0,sp,256
+ 532:	0304                	c.addi4spn	s1,sp,384
+ 534:	04090103          	lb	sp,64(s2)
+ 538:	0100                	c.addi4spn	s0,sp,128
+ 53a:	2305                	c.jal	a5a <_ebss+0x21a>
+ 53c:	0200                	c.addi4spn	s0,sp,256
+ 53e:	0304                	c.addi4spn	s1,sp,384
+    } else if (b == 20) {
+ 540:	0c097f03          	0xc097f03
+ 544:	0100                	c.addi4spn	s0,sp,128
+ 546:	0905                	c.addi	s2,1
+ 548:	0200                	c.addi4spn	s0,sp,256
+ 54a:	0104                	c.addi4spn	s1,sp,128
+        for (int i = 0; i < 200; i++) {
+ 54c:	0c090003          	lb	zero,192(s2)
+ 550:	0100                	c.addi4spn	s0,sp,128
+ 552:	0f05                	c.addi	t5,1
+            a = a + 1;
+ 554:	10090303          	lb	t1,256(s2)
+ 558:	0100                	c.addi4spn	s0,sp,128
+ 55a:	1205                	c.addi	tp,-31
+ 55c:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 200; i++) {
+ 560:	0100                	c.addi4spn	s0,sp,128
+ 562:	0905                	c.addi	s2,1
+ 564:	04090003          	lb	zero,64(s2)
+ 568:	0100                	c.addi4spn	s0,sp,128
+ 56a:	0f05                	c.addi	t5,1
+ 56c:	0200                	c.addi4spn	s0,sp,256
+ 56e:	0304                	c.addi4spn	s1,sp,384
+ 570:	04090103          	lb	sp,64(s2)
+ 574:	0100                	c.addi4spn	s0,sp,128
+ 576:	2305                	c.jal	a96 <_ebss+0x256>
+ 578:	0200                	c.addi4spn	s0,sp,256
+ 57a:	0304                	c.addi4spn	s1,sp,384
+    } else if (b == 21) {
+ 57c:	0c097f03          	0xc097f03
+ 580:	0100                	c.addi4spn	s0,sp,128
+ 582:	0905                	c.addi	s2,1
+ 584:	0200                	c.addi4spn	s0,sp,256
+ 586:	0104                	c.addi4spn	s1,sp,128
+        for (int i = 0; i < 210; i++) {
+ 588:	0c090003          	lb	zero,192(s2)
+ 58c:	0100                	c.addi4spn	s0,sp,128
+ 58e:	0f05                	c.addi	t5,1
+            a = a + 1;
+ 590:	10090303          	lb	t1,256(s2)
+ 594:	0100                	c.addi4spn	s0,sp,128
+ 596:	1205                	c.addi	tp,-31
+ 598:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 210; i++) {
+ 59c:	0100                	c.addi4spn	s0,sp,128
+ 59e:	0905                	c.addi	s2,1
+ 5a0:	04090003          	lb	zero,64(s2)
+ 5a4:	0100                	c.addi4spn	s0,sp,128
+ 5a6:	0f05                	c.addi	t5,1
+ 5a8:	0200                	c.addi4spn	s0,sp,256
+ 5aa:	0304                	c.addi4spn	s1,sp,384
+ 5ac:	04090103          	lb	sp,64(s2)
+ 5b0:	0100                	c.addi4spn	s0,sp,128
+ 5b2:	2305                	c.jal	ad2 <_ebss+0x292>
+ 5b4:	0200                	c.addi4spn	s0,sp,256
+ 5b6:	0304                	c.addi4spn	s1,sp,384
+    } else if (b == 22) {
+ 5b8:	0c097f03          	0xc097f03
+ 5bc:	0100                	c.addi4spn	s0,sp,128
+ 5be:	0905                	c.addi	s2,1
+ 5c0:	0200                	c.addi4spn	s0,sp,256
+ 5c2:	0104                	c.addi4spn	s1,sp,128
+        for (int i = 0; i < 220; i++) {
+ 5c4:	0c090003          	lb	zero,192(s2)
+ 5c8:	0100                	c.addi4spn	s0,sp,128
+ 5ca:	0f05                	c.addi	t5,1
+            a = a + 1;
+ 5cc:	10090303          	lb	t1,256(s2)
+ 5d0:	0100                	c.addi4spn	s0,sp,128
+ 5d2:	1205                	c.addi	tp,-31
+ 5d4:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 220; i++) {
+ 5d8:	0100                	c.addi4spn	s0,sp,128
+ 5da:	0905                	c.addi	s2,1
+ 5dc:	04090003          	lb	zero,64(s2)
+ 5e0:	0100                	c.addi4spn	s0,sp,128
+ 5e2:	0f05                	c.addi	t5,1
+ 5e4:	0200                	c.addi4spn	s0,sp,256
+ 5e6:	0304                	c.addi4spn	s1,sp,384
+ 5e8:	04090103          	lb	sp,64(s2)
+ 5ec:	0100                	c.addi4spn	s0,sp,128
+ 5ee:	2305                	c.jal	b0e <_ebss+0x2ce>
+ 5f0:	0200                	c.addi4spn	s0,sp,256
+ 5f2:	0304                	c.addi4spn	s1,sp,384
+    } else if (b == 23) {
+ 5f4:	0c097f03          	0xc097f03
+ 5f8:	0100                	c.addi4spn	s0,sp,128
+ 5fa:	0905                	c.addi	s2,1
+ 5fc:	0200                	c.addi4spn	s0,sp,256
+ 5fe:	0104                	c.addi4spn	s1,sp,128
+        for (int i = 0; i < 230; i++) {
+ 600:	0c090003          	lb	zero,192(s2)
+ 604:	0100                	c.addi4spn	s0,sp,128
+ 606:	0f05                	c.addi	t5,1
+            a = a + 1;
+ 608:	10090303          	lb	t1,256(s2)
+ 60c:	0100                	c.addi4spn	s0,sp,128
+ 60e:	1205                	c.addi	tp,-31
+ 610:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 230; i++) {
+ 614:	0100                	c.addi4spn	s0,sp,128
+ 616:	0905                	c.addi	s2,1
+ 618:	04090003          	lb	zero,64(s2)
+ 61c:	0100                	c.addi4spn	s0,sp,128
+ 61e:	0f05                	c.addi	t5,1
+ 620:	0200                	c.addi4spn	s0,sp,256
+ 622:	0304                	c.addi4spn	s1,sp,384
+ 624:	04090103          	lb	sp,64(s2)
+ 628:	0100                	c.addi4spn	s0,sp,128
+ 62a:	2305                	c.jal	b4a <_ebss+0x30a>
+ 62c:	0200                	c.addi4spn	s0,sp,256
+ 62e:	0304                	c.addi4spn	s1,sp,384
+    } else if (b == 24) {
+ 630:	0c097f03          	0xc097f03
+ 634:	0100                	c.addi4spn	s0,sp,128
+ 636:	0905                	c.addi	s2,1
+ 638:	0200                	c.addi4spn	s0,sp,256
+ 63a:	0104                	c.addi4spn	s1,sp,128
+        for (int i = 0; i < 240; i++) {
+ 63c:	0c090003          	lb	zero,192(s2)
+ 640:	0100                	c.addi4spn	s0,sp,128
+ 642:	0f05                	c.addi	t5,1
+            a = a + 1;
+ 644:	10090303          	lb	t1,256(s2)
+ 648:	0100                	c.addi4spn	s0,sp,128
+ 64a:	1205                	c.addi	tp,-31
+ 64c:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 240; i++) {
+ 650:	0100                	c.addi4spn	s0,sp,128
+ 652:	0905                	c.addi	s2,1
+ 654:	04090003          	lb	zero,64(s2)
+ 658:	0100                	c.addi4spn	s0,sp,128
+ 65a:	0f05                	c.addi	t5,1
+ 65c:	0200                	c.addi4spn	s0,sp,256
+ 65e:	0304                	c.addi4spn	s1,sp,384
+ 660:	04090103          	lb	sp,64(s2)
+ 664:	0100                	c.addi4spn	s0,sp,128
+ 666:	2305                	c.jal	b86 <_ebss+0x346>
+ 668:	0200                	c.addi4spn	s0,sp,256
+ 66a:	0304                	c.addi4spn	s1,sp,384
+    } else if (b == 25) {
+ 66c:	0c097f03          	0xc097f03
+ 670:	0100                	c.addi4spn	s0,sp,128
+ 672:	0905                	c.addi	s2,1
+ 674:	0200                	c.addi4spn	s0,sp,256
+ 676:	0104                	c.addi4spn	s1,sp,128
+        for (int i = 0; i < 250; i++) {
+ 678:	0c090003          	lb	zero,192(s2)
+ 67c:	0100                	c.addi4spn	s0,sp,128
+ 67e:	0f05                	c.addi	t5,1
+            a = a + 1;
+ 680:	10090303          	lb	t1,256(s2)
+ 684:	0100                	c.addi4spn	s0,sp,128
+ 686:	1205                	c.addi	tp,-31
+ 688:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 250; i++) {
+ 68c:	0100                	c.addi4spn	s0,sp,128
+ 68e:	0905                	c.addi	s2,1
+ 690:	04090003          	lb	zero,64(s2)
+ 694:	0100                	c.addi4spn	s0,sp,128
+ 696:	0f05                	c.addi	t5,1
+ 698:	0200                	c.addi4spn	s0,sp,256
+ 69a:	0304                	c.addi4spn	s1,sp,384
+ 69c:	04090103          	lb	sp,64(s2)
+ 6a0:	0100                	c.addi4spn	s0,sp,128
+ 6a2:	2305                	c.jal	bc2 <_ebss+0x382>
+ 6a4:	0200                	c.addi4spn	s0,sp,256
+ 6a6:	0304                	c.addi4spn	s1,sp,384
+    } else if (b == 26) {
+ 6a8:	0c097f03          	0xc097f03
+ 6ac:	0100                	c.addi4spn	s0,sp,128
+ 6ae:	0905                	c.addi	s2,1
+ 6b0:	0200                	c.addi4spn	s0,sp,256
+ 6b2:	0104                	c.addi4spn	s1,sp,128
+        for (int i = 0; i < 260; i++) {
+ 6b4:	0c090003          	lb	zero,192(s2)
+ 6b8:	0100                	c.addi4spn	s0,sp,128
+ 6ba:	0f05                	c.addi	t5,1
+            a = a + 1;
+ 6bc:	10090303          	lb	t1,256(s2)
+ 6c0:	0100                	c.addi4spn	s0,sp,128
+ 6c2:	1205                	c.addi	tp,-31
+ 6c4:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 260; i++) {
+ 6c8:	0100                	c.addi4spn	s0,sp,128
+ 6ca:	0905                	c.addi	s2,1
+ 6cc:	04090003          	lb	zero,64(s2)
+ 6d0:	0100                	c.addi4spn	s0,sp,128
+ 6d2:	0f05                	c.addi	t5,1
+ 6d4:	0200                	c.addi4spn	s0,sp,256
+ 6d6:	0304                	c.addi4spn	s1,sp,384
+ 6d8:	04090103          	lb	sp,64(s2)
+ 6dc:	0100                	c.addi4spn	s0,sp,128
+ 6de:	2305                	c.jal	bfe <_ebss+0x3be>
+ 6e0:	0200                	c.addi4spn	s0,sp,256
+ 6e2:	0304                	c.addi4spn	s1,sp,384
+    } else if (b == 27) {
+ 6e4:	0c097f03          	0xc097f03
+ 6e8:	0100                	c.addi4spn	s0,sp,128
+ 6ea:	0905                	c.addi	s2,1
+ 6ec:	0200                	c.addi4spn	s0,sp,256
+ 6ee:	0104                	c.addi4spn	s1,sp,128
+        for (int i = 0; i < 270; i++) {
+ 6f0:	0c090003          	lb	zero,192(s2)
+ 6f4:	0100                	c.addi4spn	s0,sp,128
+ 6f6:	0f05                	c.addi	t5,1
+            a = a + 1;
+ 6f8:	10090303          	lb	t1,256(s2)
+ 6fc:	0100                	c.addi4spn	s0,sp,128
+ 6fe:	1205                	c.addi	tp,-31
+ 700:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 270; i++) {
+ 704:	0100                	c.addi4spn	s0,sp,128
+ 706:	0905                	c.addi	s2,1
+ 708:	04090003          	lb	zero,64(s2)
+ 70c:	0100                	c.addi4spn	s0,sp,128
+ 70e:	0f05                	c.addi	t5,1
+ 710:	0200                	c.addi4spn	s0,sp,256
+ 712:	0304                	c.addi4spn	s1,sp,384
+ 714:	04090103          	lb	sp,64(s2)
+ 718:	0100                	c.addi4spn	s0,sp,128
+ 71a:	2305                	c.jal	c3a <_ebss+0x3fa>
+ 71c:	0200                	c.addi4spn	s0,sp,256
+ 71e:	0304                	c.addi4spn	s1,sp,384
+    } else if (b == 28) {
+ 720:	0c097f03          	0xc097f03
+ 724:	0100                	c.addi4spn	s0,sp,128
+ 726:	0905                	c.addi	s2,1
+ 728:	0200                	c.addi4spn	s0,sp,256
+ 72a:	0104                	c.addi4spn	s1,sp,128
+        for (int i = 0; i < 280; i++) {
+ 72c:	0c090003          	lb	zero,192(s2)
+ 730:	0100                	c.addi4spn	s0,sp,128
+ 732:	0f05                	c.addi	t5,1
+            a = a + 1;
+ 734:	10090303          	lb	t1,256(s2)
+ 738:	0100                	c.addi4spn	s0,sp,128
+ 73a:	1205                	c.addi	tp,-31
+ 73c:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 280; i++) {
+ 740:	0100                	c.addi4spn	s0,sp,128
+ 742:	0905                	c.addi	s2,1
+ 744:	04090003          	lb	zero,64(s2)
+ 748:	0100                	c.addi4spn	s0,sp,128
+ 74a:	0f05                	c.addi	t5,1
+ 74c:	0200                	c.addi4spn	s0,sp,256
+ 74e:	0304                	c.addi4spn	s1,sp,384
+ 750:	04090103          	lb	sp,64(s2)
+ 754:	0100                	c.addi4spn	s0,sp,128
+ 756:	2305                	c.jal	c76 <_ebss+0x436>
+ 758:	0200                	c.addi4spn	s0,sp,256
+ 75a:	0304                	c.addi4spn	s1,sp,384
+    } else if (b == 29) {
+ 75c:	0c097f03          	0xc097f03
+ 760:	0100                	c.addi4spn	s0,sp,128
+ 762:	0905                	c.addi	s2,1
+ 764:	0200                	c.addi4spn	s0,sp,256
+ 766:	0104                	c.addi4spn	s1,sp,128
+        for (int i = 0; i < 290; i++) {
+ 768:	0c090003          	lb	zero,192(s2)
+ 76c:	0100                	c.addi4spn	s0,sp,128
+ 76e:	0f05                	c.addi	t5,1
+            a = a + 1;
+ 770:	10090303          	lb	t1,256(s2)
+ 774:	0100                	c.addi4spn	s0,sp,128
+ 776:	1205                	c.addi	tp,-31
+ 778:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 290; i++) {
+ 77c:	0100                	c.addi4spn	s0,sp,128
+ 77e:	0905                	c.addi	s2,1
+ 780:	04090003          	lb	zero,64(s2)
+ 784:	0100                	c.addi4spn	s0,sp,128
+ 786:	0f05                	c.addi	t5,1
+ 788:	0200                	c.addi4spn	s0,sp,256
+ 78a:	0304                	c.addi4spn	s1,sp,384
+ 78c:	04090103          	lb	sp,64(s2)
+ 790:	0100                	c.addi4spn	s0,sp,128
+ 792:	2305                	c.jal	cb2 <_ebss+0x472>
+ 794:	0200                	c.addi4spn	s0,sp,256
+ 796:	0304                	c.addi4spn	s1,sp,384
+    } else if (b == 30) {
+ 798:	0c097f03          	0xc097f03
+ 79c:	0100                	c.addi4spn	s0,sp,128
+ 79e:	0905                	c.addi	s2,1
+ 7a0:	0200                	c.addi4spn	s0,sp,256
+ 7a2:	0104                	c.addi4spn	s1,sp,128
+        for (int i = 0; i < 300; i++) {
+ 7a4:	0c090003          	lb	zero,192(s2)
+ 7a8:	0100                	c.addi4spn	s0,sp,128
+ 7aa:	0f05                	c.addi	t5,1
+            a = a + 1;
+ 7ac:	10090303          	lb	t1,256(s2)
+ 7b0:	0100                	c.addi4spn	s0,sp,128
+ 7b2:	1205                	c.addi	tp,-31
+ 7b4:	0c090103          	lb	sp,192(s2)
+        for (int i = 0; i < 300; i++) {
+ 7b8:	0100                	c.addi4spn	s0,sp,128
+ 7ba:	0905                	c.addi	s2,1
+ 7bc:	04090003          	lb	zero,64(s2)
+ 7c0:	0100                	c.addi4spn	s0,sp,128
+ 7c2:	0f05                	c.addi	t5,1
+ 7c4:	0200                	c.addi4spn	s0,sp,256
+ 7c6:	0304                	c.addi4spn	s1,sp,384
+ 7c8:	04090103          	lb	sp,64(s2)
+ 7cc:	0100                	c.addi4spn	s0,sp,128
+ 7ce:	2305                	c.jal	cee <_ebss+0x4ae>
+    return 0;
+ 7d0:	0200                	c.addi4spn	s0,sp,256
+ 7d2:	0304                	c.addi4spn	s1,sp,384
+}
+ 7d4:	0c097f03          	0xc097f03
+ 7d8:	0100                	c.addi4spn	s0,sp,128
+ 7da:	0905                	c.addi	s2,1
+ 7dc:	0200                	c.addi4spn	s0,sp,256
+ 7de:	0104                	c.addi4spn	s1,sp,128
+ 7e0:	0c090003          	lb	zero,192(s2)
+ 7e4:	0100                	c.addi4spn	s0,sp,128
+ 7e6:	0f05                	c.addi	t5,1
+ 7e8:	10090303          	lb	t1,256(s2)
+ 7ec:	0100                	c.addi4spn	s0,sp,128
+ 7ee:	1205                	c.addi	tp,-31
+ 7f0:	0c090103          	lb	sp,192(s2)
+ 7f4:	0100                	c.addi4spn	s0,sp,128
+ 7f6:	0905                	c.addi	s2,1
+ 7f8:	04090003          	lb	zero,64(s2)
+ 7fc:	0100                	c.addi4spn	s0,sp,128
+ 7fe:	0f05                	c.addi	t5,1
+ 800:	0200                	c.addi4spn	s0,sp,256
+ 802:	0304                	c.addi4spn	s1,sp,384
+ 804:	04090103          	lb	sp,64(s2)
+ 808:	0100                	c.addi4spn	s0,sp,128
+ 80a:	2305                	c.jal	d2a <_ebss+0x4ea>
+ 80c:	0200                	c.addi4spn	s0,sp,256
+ 80e:	0304                	c.addi4spn	s1,sp,384
+ 810:	0c097f03          	0xc097f03
+ 814:	0100                	c.addi4spn	s0,sp,128
+ 816:	0905                	c.addi	s2,1
+ 818:	0200                	c.addi4spn	s0,sp,256
+ 81a:	0104                	c.addi4spn	s1,sp,128
+ 81c:	0c090003          	lb	zero,192(s2)
+ 820:	0100                	c.addi4spn	s0,sp,128
+ 822:	0f05                	c.addi	t5,1
+ 824:	10090303          	lb	t1,256(s2)
+ 828:	0100                	c.addi4spn	s0,sp,128
+ 82a:	1205                	c.addi	tp,-31
+ 82c:	0c090103          	lb	sp,192(s2)
+ 830:	0100                	c.addi4spn	s0,sp,128
+ 832:	0905                	c.addi	s2,1
+ 834:	04090003          	lb	zero,64(s2)
+ 838:	0100                	c.addi4spn	s0,sp,128
+ 83a:	0f05                	c.addi	t5,1
+ 83c:	0200                	c.addi4spn	s0,sp,256
+ 83e:	0304                	c.addi4spn	s1,sp,384
+ 840:	04090103          	lb	sp,64(s2)
+ 844:	0100                	c.addi4spn	s0,sp,128
+ 846:	2305                	c.jal	d66 <_ebss+0x526>
+ 848:	0200                	c.addi4spn	s0,sp,256
+ 84a:	0304                	c.addi4spn	s1,sp,384
+ 84c:	0c097f03          	0xc097f03
+ 850:	0100                	c.addi4spn	s0,sp,128
+ 852:	0905                	c.addi	s2,1
+ 854:	0200                	c.addi4spn	s0,sp,256
+ 856:	0104                	c.addi4spn	s1,sp,128
+ 858:	0c090003          	lb	zero,192(s2)
+ 85c:	0100                	c.addi4spn	s0,sp,128
+ 85e:	0f05                	c.addi	t5,1
+ 860:	10090303          	lb	t1,256(s2)
+ 864:	0100                	c.addi4spn	s0,sp,128
+ 866:	1205                	c.addi	tp,-31
+ 868:	0c090103          	lb	sp,192(s2)
+ 86c:	0100                	c.addi4spn	s0,sp,128
+ 86e:	0905                	c.addi	s2,1
+ 870:	04090003          	lb	zero,64(s2)
+ 874:	0100                	c.addi4spn	s0,sp,128
+ 876:	0f05                	c.addi	t5,1
+ 878:	0200                	c.addi4spn	s0,sp,256
+ 87a:	0304                	c.addi4spn	s1,sp,384
+ 87c:	04090103          	lb	sp,64(s2)
+ 880:	0100                	c.addi4spn	s0,sp,128
+ 882:	2305                	c.jal	da2 <_ebss+0x562>
+ 884:	0200                	c.addi4spn	s0,sp,256
+ 886:	0304                	c.addi4spn	s1,sp,384
+ 888:	0c097f03          	0xc097f03
+ 88c:	0100                	c.addi4spn	s0,sp,128
+ 88e:	0905                	c.addi	s2,1
+ 890:	0200                	c.addi4spn	s0,sp,256
+ 892:	0104                	c.addi4spn	s1,sp,128
+ 894:	0c090003          	lb	zero,192(s2)
+ 898:	0100                	c.addi4spn	s0,sp,128
+ 89a:	0f05                	c.addi	t5,1
+ 89c:	10090303          	lb	t1,256(s2)
+ 8a0:	0100                	c.addi4spn	s0,sp,128
+ 8a2:	1205                	c.addi	tp,-31
+ 8a4:	0c090103          	lb	sp,192(s2)
+ 8a8:	0100                	c.addi4spn	s0,sp,128
+ 8aa:	0905                	c.addi	s2,1
+ 8ac:	04090003          	lb	zero,64(s2)
+ 8b0:	0100                	c.addi4spn	s0,sp,128
+ 8b2:	0f05                	c.addi	t5,1
+ 8b4:	0200                	c.addi4spn	s0,sp,256
+ 8b6:	0304                	c.addi4spn	s1,sp,384
+ 8b8:	04090103          	lb	sp,64(s2)
+ 8bc:	0100                	c.addi4spn	s0,sp,128
+ 8be:	2305                	c.jal	dde <_ebss+0x59e>
+ 8c0:	0200                	c.addi4spn	s0,sp,256
+ 8c2:	0304                	c.addi4spn	s1,sp,384
+ 8c4:	0c097f03          	0xc097f03
+ 8c8:	0100                	c.addi4spn	s0,sp,128
+ 8ca:	0905                	c.addi	s2,1
+ 8cc:	0200                	c.addi4spn	s0,sp,256
+ 8ce:	0104                	c.addi4spn	s1,sp,128
+ 8d0:	0c090003          	lb	zero,192(s2)
+ 8d4:	0100                	c.addi4spn	s0,sp,128
+ 8d6:	0f05                	c.addi	t5,1
+ 8d8:	10090303          	lb	t1,256(s2)
+ 8dc:	0100                	c.addi4spn	s0,sp,128
+ 8de:	1205                	c.addi	tp,-31
+ 8e0:	0c090103          	lb	sp,192(s2)
+ 8e4:	0100                	c.addi4spn	s0,sp,128
+ 8e6:	0905                	c.addi	s2,1
+ 8e8:	04090003          	lb	zero,64(s2)
+ 8ec:	0100                	c.addi4spn	s0,sp,128
+ 8ee:	0f05                	c.addi	t5,1
+ 8f0:	0200                	c.addi4spn	s0,sp,256
+ 8f2:	0304                	c.addi4spn	s1,sp,384
+ 8f4:	04090103          	lb	sp,64(s2)
+ 8f8:	0100                	c.addi4spn	s0,sp,128
+ 8fa:	2305                	c.jal	e1a <_ebss+0x5da>
+ 8fc:	0200                	c.addi4spn	s0,sp,256
+ 8fe:	0304                	c.addi4spn	s1,sp,384
+ 900:	0c097f03          	0xc097f03
+ 904:	0100                	c.addi4spn	s0,sp,128
+ 906:	0905                	c.addi	s2,1
+ 908:	0200                	c.addi4spn	s0,sp,256
+ 90a:	0104                	c.addi4spn	s1,sp,128
+ 90c:	0c090003          	lb	zero,192(s2)
+ 910:	0100                	c.addi4spn	s0,sp,128
+ 912:	0f05                	c.addi	t5,1
+ 914:	10090303          	lb	t1,256(s2)
+ 918:	0100                	c.addi4spn	s0,sp,128
+ 91a:	1205                	c.addi	tp,-31
+ 91c:	0c090103          	lb	sp,192(s2)
+ 920:	0100                	c.addi4spn	s0,sp,128
+ 922:	0905                	c.addi	s2,1
+ 924:	04090003          	lb	zero,64(s2)
+ 928:	0100                	c.addi4spn	s0,sp,128
+ 92a:	0f05                	c.addi	t5,1
+ 92c:	0200                	c.addi4spn	s0,sp,256
+ 92e:	0304                	c.addi4spn	s1,sp,384
+ 930:	04090103          	lb	sp,64(s2)
+ 934:	0100                	c.addi4spn	s0,sp,128
+ 936:	2305                	c.jal	e56 <_ebss+0x616>
+ 938:	0200                	c.addi4spn	s0,sp,256
+ 93a:	0304                	c.addi4spn	s1,sp,384
+ 93c:	0c097f03          	0xc097f03
+ 940:	0100                	c.addi4spn	s0,sp,128
+ 942:	0905                	c.addi	s2,1
+ 944:	0200                	c.addi4spn	s0,sp,256
+ 946:	0104                	c.addi4spn	s1,sp,128
+ 948:	0c090003          	lb	zero,192(s2)
+ 94c:	0100                	c.addi4spn	s0,sp,128
+ 94e:	0f05                	c.addi	t5,1
+ 950:	10090303          	lb	t1,256(s2)
+ 954:	0100                	c.addi4spn	s0,sp,128
+ 956:	1205                	c.addi	tp,-31
+ 958:	0c090103          	lb	sp,192(s2)
+ 95c:	0100                	c.addi4spn	s0,sp,128
+ 95e:	0905                	c.addi	s2,1
+ 960:	04090003          	lb	zero,64(s2)
+ 964:	0100                	c.addi4spn	s0,sp,128
+ 966:	0f05                	c.addi	t5,1
+ 968:	0200                	c.addi4spn	s0,sp,256
+ 96a:	0304                	c.addi4spn	s1,sp,384
+ 96c:	04090103          	lb	sp,64(s2)
+ 970:	0100                	c.addi4spn	s0,sp,128
+ 972:	2305                	c.jal	e92 <_ebss+0x652>
+ 974:	0200                	c.addi4spn	s0,sp,256
+ 976:	0304                	c.addi4spn	s1,sp,384
+ 978:	0c097f03          	0xc097f03
+ 97c:	0100                	c.addi4spn	s0,sp,128
+ 97e:	0905                	c.addi	s2,1
+ 980:	0200                	c.addi4spn	s0,sp,256
+ 982:	0104                	c.addi4spn	s1,sp,128
+ 984:	0c090003          	lb	zero,192(s2)
+ 988:	0100                	c.addi4spn	s0,sp,128
+ 98a:	0c05                	c.addi	s8,1
+ 98c:	0c090603          	lb	a2,192(s2)
+ 990:	0100                	c.addi4spn	s0,sp,128
+ 992:	0105                	c.addi	sp,1
+ 994:	04090103          	lb	sp,64(s2)
+ 998:	0100                	c.addi4spn	s0,sp,128
+ 99a:	1009                	c.addi	zero,-30
+ 99c:	0000                	c.unimp
+ 99e:	0101                	c.addi	sp,0
+
+Disassembly of section .debug_info:
+
+00000000 <.debug_info>:
+    nop
+   0:	001e                	c.slli	zero,0x7
+   2:	0000                	c.unimp
+    la ra, exit
+   4:	0002                	c.slli64	zero
+   6:	0000                	c.unimp
+   8:	0000                	c.unimp
+   a:	0104                	c.addi4spn	s1,sp,128
+	...
+    la gp, __global_pointer$
+  18:	0000000f          	fence	unknown,unknown
+  1c:	003c                	c.addi4spn	a5,sp,8
+  1e:	0000                	c.unimp
+    li tp, 0
+  20:	8001                	c.srli64	s0
+  22:	0c89                	c.addi	s9,2
+    li t0, 0
+  24:	0000                	c.unimp
+  26:	0004                	0x4
+    li t1, 0
+  28:	0012                	c.slli	zero,0x4
+  2a:	0000                	c.unimp
+    li t2, 0
+  2c:	0104                	c.addi4spn	s1,sp,128
+  2e:	02ce                	c.slli	t0,0x13
+    li s1, 0
+  30:	0000                	c.unimp
+  32:	e20c                	c.fsw	fa1,0(a2)
+    li a0, 0
+  34:	0f000003          	lb	zero,240(zero) # f0 <main+0x3c>
+    li a1, 0
+  38:	0000                	c.unimp
+  3a:	b400                	c.fsd	fs0,40(s0)
+    li a2, 0
+  3c:	0000                	c.unimp
+  3e:	3000                	c.fld	fs0,32(s0)
+    li a3, 0
+  40:	21000007          	0x21000007
+    li a4, 0
+  44:	0001                	c.addi	zero,0
+  46:	0200                	c.addi4spn	s0,sp,256
+    li a5, 0
+  48:	0601                	c.addi	a2,0
+  4a:	02bd                	c.addi	t0,15
+    li a6, 0
+  4c:	0000                	c.unimp
+  4e:	0102                	c.slli64	sp
+    li a7, 0
+  50:	bb08                	c.fsd	fa0,48(a4)
+  52:	0002                	c.slli64	zero
+    li s2, 0
+  54:	0200                	c.addi4spn	s0,sp,256
+  56:	0502                	c.slli64	a0
+    li s3, 0
+  58:	0342                	c.slli	t1,0x10
+  5a:	0000                	c.unimp
+    li s4, 0
+  5c:	0202                	c.slli64	tp
+  5e:	0001ed07          	0x1ed07
+    li s5, 0
+  62:	0200                	c.addi4spn	s0,sp,256
+    li s6, 0
+  64:	0504                	c.addi4spn	s1,sp,640
+  66:	00e9                	c.addi	ra,26
+    li s7, 0
+  68:	0000                	c.unimp
+  6a:	0402                	c.slli64	s0
+    li s8, 0
+  6c:	00009807          	0x9807
+    li s9, 0
+  70:	0200                	c.addi4spn	s0,sp,256
+  72:	0508                	c.addi4spn	a0,sp,640
+    li s10, 0
+  74:	00e4                	c.addi4spn	s1,sp,76
+  76:	0000                	c.unimp
+    li s11, 0
+  78:	0802                	c.slli64	a6
+  7a:	00009307          	0x9307
+    li t3, 0
+  7e:	0300                	c.addi4spn	s0,sp,384
+    li t4, 0
+  80:	0504                	c.addi4spn	s1,sp,640
+  82:	6e69                	c.lui	t3,0x1a
+    li t5, 0
+  84:	0074                	c.addi4spn	a3,sp,12
+  86:	0402                	c.slli64	s0
+    li t6, 0
+  88:	00009d07          	0x9d07
+    j main
+  8c:	0200                	c.addi4spn	s0,sp,256
+  8e:	0410                	c.addi4spn	a2,sp,512
+  90:	025f 0000 3004      	0x30040000025f
+  96:	0002                	c.slli64	zero
+  98:	0200                	c.addi4spn	s0,sp,256
+  9a:	015e                	c.slli	sp,0x17
+  9c:	00006417          	auipc	s0,0x6
+    la sp, _sp
+  a0:	0500                	c.addi4spn	s0,sp,640
+  a2:	0298                	c.addi4spn	a4,sp,320
+  a4:	0000                	c.unimp
+  a6:	410e2e03          	lw	t3,1040(t3) # 1a410 <_sp+0xa410>
+    sw a0, -8(sp)
+  aa:	0000                	c.unimp
+    nop
+  ac:	0500                	c.addi4spn	s0,sp,640
+  ae:	040e                	c.slli	s0,0x3
+    wfi
+  b0:	0000                	c.unimp
+  b2:	410e7403          	0x410e7403
+{
+  b6:	0000                	c.unimp
+  b8:	0500                	c.addi4spn	s0,sp,640
+  ba:	0490                	c.addi4spn	a2,sp,576
+  bc:	0000                	c.unimp
+  be:	5d179303          	lh	t1,1489(a5)
+    a = 0;
+  c2:	0000                	c.unimp
+    b = 20;
+  c4:	0600                	c.addi4spn	s0,sp,768
+  c6:	0304                	c.addi4spn	s1,sp,384
+  c8:	03a5                	c.addi	t2,9
+  ca:	00c5                	c.addi	ra,17
+    if (b == 1) {
+  cc:	0000                	c.unimp
+  ce:	00022a07          	flw	fs4,0(tp) # fffe1000 <_sp+0xfffd1000>
+  d2:	0300                	c.addi4spn	s0,sp,384
+  d4:	00720ca7          	0x720ca7
+        for (int i = 0; i < 50; i++) {
+  d8:	0000                	c.unimp
+  da:	0001c907          	flq	fs2,0(gp) # 1000 <__global_pointer$>
+  de:	0300                	c.addi4spn	s0,sp,384
+            a = a + 1;
+  e0:	13a8                	c.addi4spn	a0,sp,488
+  e2:	00c5                	c.addi	ra,17
+  e4:	0000                	c.unimp
+  e6:	0800                	c.addi4spn	s0,sp,16
+  e8:	002c                	c.addi4spn	a1,sp,8
+  ea:	0000                	c.unimp
+        for (int i = 0; i < 50; i++) {
+  ec:	00d5                	c.addi	ra,21
+  ee:	0000                	c.unimp
+  f0:	6409                	c.lui	s0,0x2
+  f2:	0000                	c.unimp
+  f4:	0300                	c.addi4spn	s0,sp,384
+  f6:	0a00                	c.addi4spn	s0,sp,272
+  f8:	0308                	c.addi4spn	a0,sp,384
+  fa:	09a2                	c.slli	s3,0x8
+  fc:	00f9                	c.addi	ra,30
+  fe:	0000                	c.unimp
+ 100:	0003f80b          	0x3f80b
+ 104:	0300                	c.addi4spn	s0,sp,384
+ 106:	07a4                	c.addi4spn	s1,sp,968
+    } else if (b == 2) {
+ 108:	005d                	c.addi	zero,23
+ 10a:	0000                	c.unimp
+ 10c:	0b00                	c.addi4spn	s0,sp,400
+ 10e:	0400                	c.addi4spn	s0,sp,512
+ 110:	0000                	c.unimp
+ 112:	a305a903          	lw	s2,-1488(a1)
+        for (int i = 0; i < 10; i++) {
+ 116:	0000                	c.unimp
+ 118:	0400                	c.addi4spn	s0,sp,512
+ 11a:	0500                	c.addi4spn	s0,sp,640
+            a = a + 1;
+ 11c:	036a                	c.slli	t1,0x1a
+ 11e:	0000                	c.unimp
+ 120:	d503aa03          	lw	s4,-688(t2)
+ 124:	0000                	c.unimp
+ 126:	0c00                	c.addi4spn	s0,sp,528
+        for (int i = 0; i < 10; i++) {
+ 128:	0504                	c.addi4spn	s1,sp,640
+ 12a:	0446                	c.slli	s0,0x11
+ 12c:	0000                	c.unimp
+ 12e:	1604                	c.addi4spn	s1,sp,800
+ 130:	4819                	c.li	a6,6
+ 132:	0000                	c.unimp
+ 134:	0500                	c.addi4spn	s0,sp,640
+ 136:	02a9                	c.addi	t0,10
+ 138:	0000                	c.unimp
+ 13a:	0c05                	c.addi	s8,1
+ 13c:	5d0d                	c.li	s10,-29
+ 13e:	0000                	c.unimp
+ 140:	0500                	c.addi4spn	s0,sp,640
+ 142:	018c                	c.addi4spn	a1,sp,192
+    } else if (b == 3) {
+ 144:	0000                	c.unimp
+ 146:	2304                	c.fld	fs1,0(a4)
+ 148:	0001131b          	0x1131b
+ 14c:	0d00                	c.addi4spn	s0,sp,656
+ 14e:	019d                	c.addi	gp,7
+        for (int i = 0; i < 10; i++) {
+ 150:	0000                	c.unimp
+ 152:	0418                	c.addi4spn	a4,sp,512
+ 154:	0834                	c.addi4spn	a3,sp,24
+ 156:	0185                	c.addi	gp,1
+            a = a + 1;
+ 158:	0000                	c.unimp
+ 15a:	00038b0b          	0x38b0b
+ 15e:	0400                	c.addi4spn	s0,sp,512
+ 160:	1336                	c.slli	t1,0x2d
+ 162:	0185                	c.addi	gp,1
+        for (int i = 0; i < 10; i++) {
+ 164:	0000                	c.unimp
+ 166:	0e00                	c.addi4spn	s0,sp,784
+ 168:	6b5f 0400 0737      	0x73704006b5f
+ 16e:	005d                	c.addi	zero,23
+ 170:	0000                	c.unimp
+ 172:	0b04                	c.addi4spn	s1,sp,400
+ 174:	000003d3          	fadd.s	ft7,ft0,ft0,rne
+ 178:	3704                	c.fld	fs1,40(a4)
+ 17a:	00005d0b          	0x5d0b
+ 17e:	0800                	c.addi4spn	s0,sp,16
+    } else if (b == 4) {
+ 180:	0001860b          	0x1860b
+ 184:	0400                	c.addi4spn	s0,sp,512
+ 186:	005d1437          	lui	s0,0x5d1
+ 18a:	0000                	c.unimp
+        for (int i = 0; i < 100; i++) {
+ 18c:	0b0c                	c.addi4spn	a1,sp,400
+ 18e:	0000047b          	0x47b
+ 192:	3704                	c.fld	fs1,40(a4)
+            a = a + 1;
+ 194:	00005d1b          	0x5d1b
+ 198:	1000                	c.addi4spn	s0,sp,32
+ 19a:	5f0e                	c.lwsp	t5,224(sp)
+ 19c:	0078                	c.addi4spn	a4,sp,12
+ 19e:	3804                	c.fld	fs1,48(s0)
+        for (int i = 0; i < 100; i++) {
+ 1a0:	00018b0b          	0x18b0b
+ 1a4:	1400                	c.addi4spn	s0,sp,544
+ 1a6:	0f00                	c.addi4spn	s0,sp,912
+ 1a8:	2b04                	c.fld	fs1,16(a4)
+ 1aa:	0001                	c.addi	zero,0
+ 1ac:	0800                	c.addi4spn	s0,sp,16
+ 1ae:	00000107          	0x107
+ 1b2:	0000019b          	0x19b
+ 1b6:	6409                	c.lui	s0,0x2
+ 1b8:	0000                	c.unimp
+ 1ba:	0000                	c.unimp
+    } else if (b == 5) {
+ 1bc:	0d00                	c.addi4spn	s0,sp,656
+ 1be:	01c4                	c.addi4spn	s1,sp,196
+ 1c0:	0000                	c.unimp
+ 1c2:	0424                	c.addi4spn	s1,sp,520
+ 1c4:	083c                	c.addi4spn	a5,sp,24
+ 1c6:	021e                	c.slli	tp,0x7
+        for (int i = 0; i < 50; i++) {
+ 1c8:	0000                	c.unimp
+ 1ca:	0000db0b          	0xdb0b
+ 1ce:	0400                	c.addi4spn	s0,sp,512
+            a = a + 1;
+ 1d0:	093e                	c.slli	s2,0xf
+ 1d2:	005d                	c.addi	zero,23
+ 1d4:	0000                	c.unimp
+ 1d6:	0b00                	c.addi4spn	s0,sp,400
+ 1d8:	0416                	c.slli	s0,0x5
+ 1da:	0000                	c.unimp
+        for (int i = 0; i < 50; i++) {
+ 1dc:	3f04                	c.fld	fs1,56(a4)
+ 1de:	5d09                	c.li	s10,-30
+ 1e0:	0000                	c.unimp
+ 1e2:	0400                	c.addi4spn	s0,sp,512
+ 1e4:	0000fe0b          	0xfe0b
+ 1e8:	0400                	c.addi4spn	s0,sp,512
+ 1ea:	0940                	c.addi4spn	s0,sp,148
+ 1ec:	005d                	c.addi	zero,23
+ 1ee:	0000                	c.unimp
+ 1f0:	0b08                	c.addi4spn	a0,sp,400
+ 1f2:	04f9                	c.addi	s1,30
+ 1f4:	0000                	c.unimp
+ 1f6:	4104                	c.lw	s1,0(a0)
+    } else if (b == 6) {
+ 1f8:	5d09                	c.li	s10,-30
+ 1fa:	0000                	c.unimp
+ 1fc:	0c00                	c.addi4spn	s0,sp,528
+ 1fe:	0002720b          	0x2720b
+ 202:	0400                	c.addi4spn	s0,sp,512
+        for (int i = 0; i < 60; i++) {
+ 204:	0942                	c.slli	s2,0x10
+ 206:	005d                	c.addi	zero,23
+ 208:	0000                	c.unimp
+ 20a:	0b10                	c.addi4spn	a2,sp,400
+            a = a + 1;
+ 20c:	024c                	c.addi4spn	a1,sp,260
+ 20e:	0000                	c.unimp
+ 210:	4304                	c.lw	s1,0(a4)
+ 212:	5d09                	c.li	s10,-30
+ 214:	0000                	c.unimp
+ 216:	1400                	c.addi4spn	s0,sp,544
+        for (int i = 0; i < 60; i++) {
+ 218:	0004800b          	0x4800b
+ 21c:	0400                	c.addi4spn	s0,sp,512
+ 21e:	0944                	c.addi4spn	s1,sp,148
+ 220:	005d                	c.addi	zero,23
+ 222:	0000                	c.unimp
+ 224:	0b18                	c.addi4spn	a4,sp,400
+ 226:	034c                	c.addi4spn	a1,sp,388
+ 228:	0000                	c.unimp
+ 22a:	4504                	c.lw	s1,8(a0)
+ 22c:	5d09                	c.li	s10,-30
+ 22e:	0000                	c.unimp
+ 230:	1c00                	c.addi4spn	s0,sp,560
+ 232:	0004bb0b          	0x4bb0b
+    } else if (b == 7) {
+ 236:	0400                	c.addi4spn	s0,sp,512
+ 238:	0946                	c.slli	s2,0x11
+ 23a:	005d                	c.addi	zero,23
+ 23c:	0000                	c.unimp
+ 23e:	0020                	c.addi4spn	s0,sp,8
+        for (int i = 0; i < 70; i++) {
+ 240:	0d10                	c.addi4spn	a2,sp,656
+ 242:	0001                	c.addi	zero,0
+ 244:	0800                	c.addi4spn	s0,sp,16
+ 246:	0401                	c.addi	s0,0
+            a = a + 1;
+ 248:	0263084f          	fnmadd.d	fa6,ft6,ft6,ft0,rne
+ 24c:	0000                	c.unimp
+ 24e:	0001790b          	0x1790b
+ 252:	0400                	c.addi4spn	s0,sp,512
+        for (int i = 0; i < 70; i++) {
+ 254:	0a50                	c.addi4spn	a2,sp,276
+ 256:	00000263          	beq	zero,zero,25a <main+0x1a6>
+ 25a:	0b00                	c.addi4spn	s0,sp,400
+ 25c:	0048                	c.addi4spn	a0,sp,4
+ 25e:	0000                	c.unimp
+ 260:	5104                	c.lw	s1,32(a0)
+ 262:	6309                	c.lui	t1,0x2
+ 264:	0002                	c.slli64	zero
+ 266:	8000                	0x8000
+ 268:	3811                	c.jal	fffffa7c <_sp+0xfffefa7c>
+ 26a:	0004                	0x4
+ 26c:	0400                	c.addi4spn	s0,sp,512
+ 26e:	01070a53          	fadd.s	fs4,fa4,fa6,rne
+    } else if (b == 8) {
+ 272:	0000                	c.unimp
+ 274:	0100                	c.addi4spn	s0,sp,128
+ 276:	3211                	c.jal	fffffb7a <_sp+0xfffefb7a>
+ 278:	0001                	c.addi	zero,0
+ 27a:	0400                	c.addi4spn	s0,sp,512
+        for (int i = 0; i < 80; i++) {
+ 27c:	0a56                	c.slli	s4,0x15
+ 27e:	00000107          	0x107
+ 282:	0104                	c.addi4spn	s1,sp,128
+            a = a + 1;
+ 284:	0800                	c.addi4spn	s0,sp,16
+ 286:	0105                	c.addi	sp,1
+ 288:	0000                	c.unimp
+ 28a:	00000273          	0x273
+ 28e:	6409                	c.lui	s0,0x2
+        for (int i = 0; i < 80; i++) {
+ 290:	0000                	c.unimp
+ 292:	1f00                	c.addi4spn	s0,sp,944
+ 294:	1000                	c.addi4spn	s0,sp,32
+ 296:	0000027b          	0x27b
+ 29a:	0190                	c.addi4spn	a2,sp,192
+ 29c:	6204                	c.flw	fs1,0(a2)
+ 29e:	b608                	c.fsd	fa0,40(a2)
+ 2a0:	0002                	c.slli64	zero
+ 2a2:	0b00                	c.addi4spn	s0,sp,400
+ 2a4:	0000038b          	0x38b
+ 2a8:	6304                	c.flw	fs1,0(a4)
+ 2aa:	b612                	c.fsdsp	ft4,296(sp)
+    } else if (b == 9) {
+ 2ac:	0002                	c.slli64	zero
+ 2ae:	0000                	c.unimp
+ 2b0:	0003a30b          	0x3a30b
+ 2b4:	0400                	c.addi4spn	s0,sp,512
+ 2b6:	0664                	c.addi4spn	s1,sp,780
+        for (int i = 0; i < 90; i++) {
+ 2b8:	005d                	c.addi	zero,23
+ 2ba:	0000                	c.unimp
+ 2bc:	0b04                	c.addi4spn	s1,sp,400
+ 2be:	0181                	c.addi	gp,0
+            a = a + 1;
+ 2c0:	0000                	c.unimp
+ 2c2:	6604                	c.flw	fs1,8(a2)
+ 2c4:	bc09                	c.j	fffffcd6 <_sp+0xfffefcd6>
+ 2c6:	0002                	c.slli64	zero
+ 2c8:	0800                	c.addi4spn	s0,sp,16
+ 2ca:	00010d0b          	0x10d0b
+        for (int i = 0; i < 90; i++) {
+ 2ce:	0400                	c.addi4spn	s0,sp,512
+ 2d0:	021e1e67          	0x21e1e67
+ 2d4:	0000                	c.unimp
+ 2d6:	0088                	c.addi4spn	a0,sp,64
+ 2d8:	0273040f          	0x273040f
+ 2dc:	0000                	c.unimp
+ 2de:	cc08                	c.sw	a0,24(s0)
+ 2e0:	0002                	c.slli64	zero
+ 2e2:	cc00                	c.sw	s0,24(s0)
+ 2e4:	0002                	c.slli64	zero
+ 2e6:	0900                	c.addi4spn	s0,sp,144
+    } else if (b == 10) {
+ 2e8:	0064                	c.addi4spn	s1,sp,12
+ 2ea:	0000                	c.unimp
+ 2ec:	001f 040f 02d2      	0x2d2040f001f
+ 2f2:	0000                	c.unimp
+        for (int i = 0; i < 100; i++) {
+ 2f4:	0d12                	c.slli	s10,0x4
+ 2f6:	0356                	c.slli	t1,0x15
+ 2f8:	0000                	c.unimp
+ 2fa:	0408                	c.addi4spn	a0,sp,512
+            a = a + 1;
+ 2fc:	087a                	c.slli	a6,0x1e
+ 2fe:	000002fb          	0x2fb
+ 302:	0000f80b          	0xf80b
+ 306:	0400                	c.addi4spn	s0,sp,512
+        for (int i = 0; i < 100; i++) {
+ 308:	02fb117b          	0x2fb117b
+ 30c:	0000                	c.unimp
+ 30e:	0b00                	c.addi4spn	s0,sp,400
+ 310:	0054                	c.addi4spn	a3,sp,4
+ 312:	0000                	c.unimp
+ 314:	7c04                	c.flw	fs1,56(s0)
+ 316:	5d06                	c.lwsp	s10,96(sp)
+ 318:	0000                	c.unimp
+ 31a:	0400                	c.addi4spn	s0,sp,512
+ 31c:	0f00                	c.addi4spn	s0,sp,912
+ 31e:	2c04                	c.fld	fs1,24(s0)
+ 320:	0000                	c.unimp
+ 322:	0d00                	c.addi4spn	s0,sp,656
+    } else if (b == 11) {
+ 324:	0375                	c.addi	t1,29
+ 326:	0000                	c.unimp
+ 328:	0468                	c.addi4spn	a0,sp,524
+ 32a:	08ba                	c.slli	a7,0xe
+ 32c:	0444                	c.addi4spn	s1,sp,516
+ 32e:	0000                	c.unimp
+        for (int i = 0; i < 110; i++) {
+ 330:	5f0e                	c.lwsp	t5,224(sp)
+ 332:	0070                	c.addi4spn	a2,sp,12
+ 334:	bb04                	c.fsd	fs1,48(a4)
+ 336:	fb12                	c.fswsp	ft4,180(sp)
+            a = a + 1;
+ 338:	0002                	c.slli64	zero
+ 33a:	0000                	c.unimp
+ 33c:	5f0e                	c.lwsp	t5,224(sp)
+ 33e:	0072                	c.slli	zero,0x1c
+ 340:	bc04                	c.fsd	fs1,56(s0)
+ 342:	00005d07          	0x5d07
+        for (int i = 0; i < 110; i++) {
+ 346:	0400                	c.addi4spn	s0,sp,512
+ 348:	5f0e                	c.lwsp	t5,224(sp)
+ 34a:	bd040077          	0xbd040077
+ 34e:	00005d07          	0x5d07
+ 352:	0800                	c.addi4spn	s0,sp,16
+ 354:	00012b0b          	0x12b0b
+ 358:	0400                	c.addi4spn	s0,sp,512
+ 35a:	09be                	c.slli	s3,0xf
+ 35c:	00000033          	add	zero,zero,zero
+    } else if (b == 12) {
+ 360:	0b0c                	c.addi4spn	a1,sp,400
+ 362:	01e0                	c.addi4spn	s0,sp,204
+ 364:	0000                	c.unimp
+ 366:	bf04                	c.fsd	fs1,56(a4)
+ 368:	3309                	c.jal	6a <crt+0x6a>
+ 36a:	0000                	c.unimp
+        for (int i = 0; i < 120; i++) {
+ 36c:	0e00                	c.addi4spn	s0,sp,784
+ 36e:	5f0e                	c.lwsp	t5,224(sp)
+ 370:	6662                	c.flwsp	fa2,24(sp)
+ 372:	0400                	c.addi4spn	s0,sp,512
+            a = a + 1;
+ 374:	11c0                	c.addi4spn	s0,sp,228
+ 376:	000002d3          	fadd.s	ft5,ft0,ft0,rne
+ 37a:	0b10                	c.addi4spn	a2,sp,400
+ 37c:	00aa                	c.slli	ra,0xa
+ 37e:	0000                	c.unimp
+        for (int i = 0; i < 120; i++) {
+ 380:	c104                	c.sw	s1,0(a0)
+ 382:	00005d07          	0x5d07
+ 386:	1800                	c.addi4spn	s0,sp,48
+ 388:	00011b0b          	0x11b0b
+ 38c:	0400                	c.addi4spn	s0,sp,512
+ 38e:	0ac8                	c.addi4spn	a0,sp,340
+ 390:	0105                	c.addi	sp,1
+ 392:	0000                	c.unimp
+ 394:	0b1c                	c.addi4spn	a5,sp,400
+ 396:	01b4                	c.addi4spn	a3,sp,200
+ 398:	0000                	c.unimp
+ 39a:	ca04                	c.sw	s1,16(a2)
+    } else if (b == 13) {
+ 39c:	c81d                	c.beqz	s0,3d2 <main+0x31e>
+ 39e:	0005                	c.addi	zero,1
+ 3a0:	2000                	c.fld	fs0,0(s0)
+ 3a2:	0002450b          	0x2450b
+ 3a6:	0400                	c.addi4spn	s0,sp,512
+        for (int i = 0; i < 130; i++) {
+ 3a8:	1dcc                	c.addi4spn	a1,sp,756
+ 3aa:	05f2                	c.slli	a1,0x1c
+ 3ac:	0000                	c.unimp
+ 3ae:	0b24                	c.addi4spn	s1,sp,408
+            a = a + 1;
+ 3b0:	0408                	c.addi4spn	a0,sp,512
+ 3b2:	0000                	c.unimp
+ 3b4:	cf04                	c.sw	s1,24(a4)
+ 3b6:	160d                	c.addi	a2,-29
+ 3b8:	0006                	c.slli	zero,0x1
+ 3ba:	2800                	c.fld	fs0,16(s0)
+        for (int i = 0; i < 130; i++) {
+ 3bc:	0004d50b          	0x4d50b
+ 3c0:	0400                	c.addi4spn	s0,sp,512
+ 3c2:	09d0                	c.addi4spn	a2,sp,212
+ 3c4:	0630                	c.addi4spn	a2,sp,776
+ 3c6:	0000                	c.unimp
+ 3c8:	0e2c                	c.addi4spn	a1,sp,792
+ 3ca:	755f 0062 d304      	0xd3040062755f
+ 3d0:	d311                	c.beqz	a4,2d4 <main+0x220>
+ 3d2:	0002                	c.slli64	zero
+ 3d4:	3000                	c.fld	fs0,32(s0)
+ 3d6:	5f0e                	c.lwsp	t5,224(sp)
+    } else if (b == 14) {
+ 3d8:	7075                	c.lui	zero,0xffffd
+ 3da:	0400                	c.addi4spn	s0,sp,512
+ 3dc:	12d4                	c.addi4spn	a3,sp,356
+ 3de:	000002fb          	0x2fb
+ 3e2:	0e38                	c.addi4spn	a4,sp,792
+        for (int i = 0; i < 140; i++) {
+ 3e4:	755f 0072 d504      	0xd5040072755f
+ 3ea:	00005d07          	0x5d07
+            a = a + 1;
+ 3ee:	3c00                	c.fld	fs0,56(s0)
+ 3f0:	0000f20b          	0xf20b
+ 3f4:	0400                	c.addi4spn	s0,sp,512
+ 3f6:	11d8                	c.addi4spn	a4,sp,228
+        for (int i = 0; i < 140; i++) {
+ 3f8:	0636                	c.slli	a2,0xd
+ 3fa:	0000                	c.unimp
+ 3fc:	0b40                	c.addi4spn	s0,sp,404
+ 3fe:	04ad                	c.addi	s1,11
+ 400:	0000                	c.unimp
+ 402:	d904                	c.sw	s1,48(a0)
+ 404:	4611                	c.li	a2,4
+ 406:	0006                	c.slli	zero,0x1
+ 408:	4300                	c.lw	s0,0(a4)
+ 40a:	5f0e                	c.lwsp	t5,224(sp)
+ 40c:	626c                	c.flw	fa1,68(a2)
+ 40e:	0400                	c.addi4spn	s0,sp,512
+ 410:	11dc                	c.addi4spn	a5,sp,228
+ 412:	000002d3          	fadd.s	ft5,ft0,ft0,rne
+    } else if (b == 15) {
+ 416:	0b44                	c.addi4spn	s1,sp,404
+ 418:	0141                	c.addi	sp,16
+ 41a:	0000                	c.unimp
+ 41c:	df04                	c.sw	s1,56(a4)
+ 41e:	00005d07          	0x5d07
+        for (int i = 0; i < 150; i++) {
+ 422:	4c00                	c.lw	s0,24(s0)
+ 424:	0001520b          	0x1520b
+            a = a + 1;
+ 428:	0400                	c.addi4spn	s0,sp,512
+ 42a:	0ae0                	c.addi4spn	s0,sp,348
+ 42c:	007f                	0x7f
+ 42e:	0000                	c.unimp
+ 430:	0b50                	c.addi4spn	a2,sp,404
+ 432:	006d                	c.addi	zero,27
+        for (int i = 0; i < 150; i++) {
+ 434:	0000                	c.unimp
+ 436:	e304                	c.fsw	fs1,0(a4)
+ 438:	6212                	c.flwsp	ft4,4(sp)
+ 43a:	0004                	0x4
+ 43c:	5400                	c.lw	s0,40(s0)
+ 43e:	0002370b          	0x2370b
+ 442:	0400                	c.addi4spn	s0,sp,512
+ 444:	011f0ce7          	jalr	s9,17(t5)
+ 448:	0000                	c.unimp
+ 44a:	0b58                	c.addi4spn	a4,sp,404
+ 44c:	037d                	c.addi	t1,31
+ 44e:	0000                	c.unimp
+    } else if (b == 16) {
+ 450:	e904                	c.fsw	fs1,16(a0)
+ 452:	f90e                	c.fswsp	ft3,176(sp)
+ 454:	0000                	c.unimp
+ 456:	5c00                	c.lw	s0,56(s0)
+ 458:	00023d0b          	0x23d0b
+        for (int i = 0; i < 160; i++) {
+ 45c:	0400                	c.addi4spn	s0,sp,512
+ 45e:	09ea                	c.slli	s3,0x1a
+ 460:	005d                	c.addi	zero,23
+ 462:	0000                	c.unimp
+            a = a + 1;
+ 464:	0064                	c.addi4spn	s1,sp,12
+ 466:	00009713          	slli	a4,ra,0x0
+ 46a:	6200                	c.flw	fs0,0(a2)
+ 46c:	0004                	0x4
+ 46e:	1400                	c.addi4spn	s0,sp,544
+        for (int i = 0; i < 160; i++) {
+ 470:	0462                	c.slli	s0,0x18
+ 472:	0000                	c.unimp
+ 474:	0514                	c.addi4spn	a3,sp,640
+ 476:	0001                	c.addi	zero,0
+ 478:	1400                	c.addi4spn	s0,sp,544
+ 47a:	05b6                	c.slli	a1,0xd
+ 47c:	0000                	c.unimp
+ 47e:	5d14                	c.lw	a3,56(a0)
+ 480:	0000                	c.unimp
+ 482:	0000                	c.unimp
+ 484:	046d040f          	0x46d040f
+ 488:	0000                	c.unimp
+ 48a:	6215                	c.lui	tp,0x5
+    } else if (b == 17) {
+ 48c:	0004                	0x4
+ 48e:	1600                	c.addi4spn	s0,sp,800
+ 490:	000003db          	0x3db
+ 494:	0428                	c.addi4spn	a0,sp,520
+ 496:	6504                	c.flw	fs1,8(a0)
+        for (int i = 0; i < 170; i++) {
+ 498:	0802                	c.slli64	a6
+ 49a:	05b6                	c.slli	a1,0xd
+ 49c:	0000                	c.unimp
+ 49e:	00033b17          	auipc	s6,0x33
+            a = a + 1;
+ 4a2:	0400                	c.addi4spn	s0,sp,512
+ 4a4:	5d070267          	jalr	tp,1488(a4)
+ 4a8:	0000                	c.unimp
+ 4aa:	0000                	c.unimp
+        for (int i = 0; i < 170; i++) {
+ 4ac:	00013a17          	auipc	s4,0x13
+ 4b0:	0400                	c.addi4spn	s0,sp,512
+ 4b2:	026c                	c.addi4spn	a1,sp,268
+ 4b4:	0006a20b          	0x6a20b
+ 4b8:	0400                	c.addi4spn	s0,sp,512
+ 4ba:	0001d017          	auipc	zero,0x1d
+ 4be:	0400                	c.addi4spn	s0,sp,512
+ 4c0:	026c                	c.addi4spn	a1,sp,268
+ 4c2:	a214                	c.fsd	fa3,0(a2)
+ 4c4:	0006                	c.slli	zero,0x1
+ 4c6:	0800                	c.addi4spn	s0,sp,16
+    } else if (b == 18) {
+ 4c8:	00019517          	auipc	a0,0x19
+ 4cc:	0400                	c.addi4spn	s0,sp,512
+ 4ce:	026c                	c.addi4spn	a1,sp,268
+ 4d0:	a21e                	c.fsdsp	ft7,256(sp)
+ 4d2:	0006                	c.slli	zero,0x1
+        for (int i = 0; i < 180; i++) {
+ 4d4:	0c00                	c.addi4spn	s0,sp,528
+ 4d6:	00039e17          	auipc	t3,0x39
+ 4da:	0400                	c.addi4spn	s0,sp,512
+            a = a + 1;
+ 4dc:	026e                	c.slli	tp,0x1b
+ 4de:	5d08                	c.lw	a0,56(a0)
+ 4e0:	0000                	c.unimp
+ 4e2:	1000                	c.addi4spn	s0,sp,32
+ 4e4:	00006217          	auipc	tp,0x6
+        for (int i = 0; i < 180; i++) {
+ 4e8:	0400                	c.addi4spn	s0,sp,512
+ 4ea:	a208026f          	jal	tp,fff8070a <_sp+0xfff7070a>
+ 4ee:	0008                	0x8
+ 4f0:	1400                	c.addi4spn	s0,sp,544
+ 4f2:	0003ba17          	auipc	s4,0x3b
+ 4f6:	0400                	c.addi4spn	s0,sp,512
+ 4f8:	0272                	c.slli	tp,0x1c
+ 4fa:	00005d07          	0x5d07
+ 4fe:	3000                	c.fld	fs0,32(s0)
+ 500:	0003a817          	auipc	a6,0x3a
+    } else if (b == 19) {
+ 504:	0400                	c.addi4spn	s0,sp,512
+ 506:	b7160273          	0xb7160273
+ 50a:	0008                	0x8
+ 50c:	3400                	c.fld	fs0,40(s0)
+ 50e:	00028d17          	auipc	s10,0x28
+        for (int i = 0; i < 190; i++) {
+ 512:	0400                	c.addi4spn	s0,sp,512
+ 514:	0275                	c.addi	tp,29
+ 516:	00005d07          	0x5d07
+            a = a + 1;
+ 51a:	3800                	c.fld	fs0,48(s0)
+ 51c:	0003b017          	auipc	zero,0x3b
+ 520:	0400                	c.addi4spn	s0,sp,512
+ 522:	c80a0277          	0xc80a0277
+        for (int i = 0; i < 190; i++) {
+ 526:	0008                	0x8
+ 528:	3c00                	c.fld	fs0,56(s0)
+ 52a:	00022217          	auipc	tp,0x22
+ 52e:	0400                	c.addi4spn	s0,sp,512
+ 530:	027a                	c.slli	tp,0x1e
+ 532:	00018513          	addi	a0,gp,0 # 1000 <__global_pointer$>
+ 536:	4000                	c.lw	s0,0(s0)
+ 538:	0001ba17          	auipc	s4,0x1b
+ 53c:	0400                	c.addi4spn	s0,sp,512
+ 53e:	5d07027b          	0x5d07027b
+    } else if (b == 20) {
+ 542:	0000                	c.unimp
+ 544:	4400                	c.lw	s0,8(s0)
+ 546:	0004ef17          	auipc	t5,0x4e
+ 54a:	0400                	c.addi4spn	s0,sp,512
+        for (int i = 0; i < 200; i++) {
+ 54c:	027c                	c.addi4spn	a5,sp,268
+ 54e:	00018513          	addi	a0,gp,0 # 1000 <__global_pointer$>
+ 552:	4800                	c.lw	s0,16(s0)
+            a = a + 1;
+ 554:	00029f17          	auipc	t5,0x29
+ 558:	0400                	c.addi4spn	s0,sp,512
+ 55a:	027d                	c.addi	tp,31
+ 55c:	ce14                	c.sw	a3,24(a2)
+ 55e:	0008                	0x8
+        for (int i = 0; i < 200; i++) {
+ 560:	4c00                	c.lw	s0,24(s0)
+ 562:	0001d817          	auipc	a6,0x1d
+ 566:	0400                	c.addi4spn	s0,sp,512
+ 568:	0280                	c.addi4spn	s0,sp,320
+ 56a:	00005d07          	0x5d07
+ 56e:	5000                	c.lw	s0,32(s0)
+ 570:	00014a17          	auipc	s4,0x14
+ 574:	0400                	c.addi4spn	s0,sp,512
+ 576:	0281                	c.addi	t0,0
+ 578:	b609                	c.j	7a <crt+0x7a>
+ 57a:	0005                	c.addi	zero,1
+    } else if (b == 21) {
+ 57c:	5400                	c.lw	s0,40(s0)
+ 57e:	0002c917          	auipc	s2,0x2c
+ 582:	0400                	c.addi4spn	s0,sp,512
+ 584:	02a4                	c.addi4spn	s1,sp,328
+ 586:	00087d07          	0x87d07
+        for (int i = 0; i < 210; i++) {
+ 58a:	5800                	c.lw	s0,48(s0)
+ 58c:	7b18                	c.flw	fa4,48(a4)
+ 58e:	0002                	c.slli64	zero
+            a = a + 1;
+ 590:	0400                	c.addi4spn	s0,sp,512
+ 592:	02a8                	c.addi4spn	a0,sp,328
+ 594:	0002b613          	sltiu	a2,t0,0
+ 598:	4800                	c.lw	s0,16(s0)
+ 59a:	1801                	c.addi	a6,-32
+        for (int i = 0; i < 210; i++) {
+ 59c:	0200                	c.addi4spn	s0,sp,256
+ 59e:	0000                	c.unimp
+ 5a0:	a904                	c.fsd	fs1,16(a0)
+ 5a2:	1202                	c.slli	tp,0x20
+ 5a4:	00000273          	0x273
+ 5a8:	014c                	c.addi4spn	a1,sp,132
+ 5aa:	a318                	c.fsd	fa4,0(a4)
+ 5ac:	0004                	0x4
+ 5ae:	0400                	c.addi4spn	s0,sp,512
+ 5b0:	02ad                	c.addi	t0,11
+ 5b2:	df0c                	c.sw	a1,56(a4)
+ 5b4:	0008                	0x8
+ 5b6:	dc00                	c.sw	s0,56(s0)
+    } else if (b == 22) {
+ 5b8:	1802                	c.slli	a6,0x20
+ 5ba:	00000123          	sb	zero,2(zero) # 2 <crt+0x2>
+ 5be:	b204                	c.fsd	fs1,32(a2)
+ 5c0:	1002                	c.slli	zero,0x20
+ 5c2:	00000663          	beq	zero,zero,5ce <main+0x51a>
+        for (int i = 0; i < 220; i++) {
+ 5c6:	02e0                	c.addi4spn	s0,sp,332
+ 5c8:	0818                	c.addi4spn	a4,sp,16
+ 5ca:	0001                	c.addi	zero,0
+            a = a + 1;
+ 5cc:	0400                	c.addi4spn	s0,sp,512
+ 5ce:	02b4                	c.addi4spn	a3,sp,328
+ 5d0:	eb0a                	c.fswsp	ft2,148(sp)
+ 5d2:	0008                	0x8
+ 5d4:	ec00                	c.fsw	fs0,24(s0)
+ 5d6:	0002                	c.slli64	zero
+        for (int i = 0; i < 220; i++) {
+ 5d8:	05bc040f          	0x5bc040f
+ 5dc:	0000                	c.unimp
+ 5de:	0102                	c.slli64	sp
+ 5e0:	c408                	c.sw	a0,8(s0)
+ 5e2:	0002                	c.slli64	zero
+ 5e4:	1500                	c.addi4spn	s0,sp,672
+ 5e6:	05bc                	c.addi4spn	a5,sp,712
+ 5e8:	0000                	c.unimp
+ 5ea:	0444040f          	0x444040f
+ 5ee:	0000                	c.unimp
+ 5f0:	00009713          	slli	a4,ra,0x0
+    } else if (b == 23) {
+ 5f4:	ec00                	c.fsw	fs0,24(s0)
+ 5f6:	0005                	c.addi	zero,1
+ 5f8:	1400                	c.addi4spn	s0,sp,544
+ 5fa:	0462                	c.slli	s0,0x18
+ 5fc:	0000                	c.unimp
+ 5fe:	0514                	c.addi4spn	a3,sp,640
+        for (int i = 0; i < 230; i++) {
+ 600:	0001                	c.addi	zero,0
+ 602:	1400                	c.addi4spn	s0,sp,544
+ 604:	05ec                	c.addi4spn	a1,sp,716
+ 606:	0000                	c.unimp
+            a = a + 1;
+ 608:	5d14                	c.lw	a3,56(a0)
+ 60a:	0000                	c.unimp
+ 60c:	0000                	c.unimp
+ 60e:	05c3040f          	0x5c3040f
+ 612:	0000                	c.unimp
+        for (int i = 0; i < 230; i++) {
+ 614:	05ce040f          	0x5ce040f
+ 618:	0000                	c.unimp
+ 61a:	00008b13          	addi	s6,ra,0
+ 61e:	1600                	c.addi4spn	s0,sp,800
+ 620:	0006                	c.slli	zero,0x1
+ 622:	1400                	c.addi4spn	s0,sp,544
+ 624:	0462                	c.slli	s0,0x18
+ 626:	0000                	c.unimp
+ 628:	0514                	c.addi4spn	a3,sp,640
+ 62a:	0001                	c.addi	zero,0
+ 62c:	1400                	c.addi4spn	s0,sp,544
+ 62e:	0000008b          	0x8b
+    } else if (b == 24) {
+ 632:	5d14                	c.lw	a3,56(a0)
+ 634:	0000                	c.unimp
+ 636:	0000                	c.unimp
+ 638:	05f8040f          	0x5f8040f
+        for (int i = 0; i < 240; i++) {
+ 63c:	0000                	c.unimp
+ 63e:	00005d13          	srli	s10,zero,0x0
+ 642:	3000                	c.fld	fs0,32(s0)
+            a = a + 1;
+ 644:	0006                	c.slli	zero,0x1
+ 646:	1400                	c.addi4spn	s0,sp,544
+ 648:	0462                	c.slli	s0,0x18
+ 64a:	0000                	c.unimp
+ 64c:	0514                	c.addi4spn	a3,sp,640
+ 64e:	0001                	c.addi	zero,0
+        for (int i = 0; i < 240; i++) {
+ 650:	0000                	c.unimp
+ 652:	061c040f          	0x61c040f
+ 656:	0000                	c.unimp
+ 658:	2c08                	c.fld	fa0,24(s0)
+ 65a:	0000                	c.unimp
+ 65c:	4600                	c.lw	s0,8(a2)
+ 65e:	0006                	c.slli	zero,0x1
+ 660:	0900                	c.addi4spn	s0,sp,144
+ 662:	0064                	c.addi4spn	s1,sp,12
+ 664:	0000                	c.unimp
+ 666:	0002                	c.slli64	zero
+ 668:	2c08                	c.fld	fa0,24(s0)
+ 66a:	0000                	c.unimp
+    } else if (b == 25) {
+ 66c:	5600                	c.lw	s0,40(a2)
+ 66e:	0006                	c.slli	zero,0x1
+ 670:	0900                	c.addi4spn	s0,sp,144
+ 672:	0064                	c.addi4spn	s1,sp,12
+ 674:	0000                	c.unimp
+ 676:	0000                	c.unimp
+        for (int i = 0; i < 250; i++) {
+ 678:	6304                	c.flw	fs1,0(a4)
+ 67a:	04000003          	lb	zero,64(zero) # 40 <crt+0x40>
+ 67e:	0124                	c.addi4spn	s1,sp,136
+            a = a + 1;
+ 680:	011a                	c.slli	sp,0x6
+ 682:	19000003          	lb	zero,400(zero) # 190 <main+0xdc>
+ 686:	048a                	c.slli	s1,0x2
+ 688:	0000                	c.unimp
+ 68a:	040c                	c.addi4spn	a1,sp,512
+        for (int i = 0; i < 250; i++) {
+ 68c:	0128                	c.addi4spn	a0,sp,136
+ 68e:	9c08                	0x9c08
+ 690:	0006                	c.slli	zero,0x1
+ 692:	1700                	c.addi4spn	s0,sp,928
+ 694:	0000038b          	0x38b
+ 698:	2a04                	c.fld	fs1,16(a2)
+ 69a:	1101                	c.addi	sp,-32
+ 69c:	069c                	c.addi4spn	a5,sp,832
+ 69e:	0000                	c.unimp
+ 6a0:	1700                	c.addi4spn	s0,sp,928
+ 6a2:	01e6                	c.slli	gp,0x19
+ 6a4:	0000                	c.unimp
+ 6a6:	2b04                	c.fld	fs1,16(a4)
+    } else if (b == 26) {
+ 6a8:	0701                	c.addi	a4,0
+ 6aa:	005d                	c.addi	zero,23
+ 6ac:	0000                	c.unimp
+ 6ae:	1704                	c.addi4spn	s1,sp,928
+ 6b0:	035d                	c.addi	t1,23
+ 6b2:	0000                	c.unimp
+        for (int i = 0; i < 260; i++) {
+ 6b4:	2c04                	c.fld	fs1,24(s0)
+ 6b6:	0b01                	c.addi	s6,0
+ 6b8:	06a2                	c.slli	a3,0x8
+ 6ba:	0000                	c.unimp
+            a = a + 1;
+ 6bc:	0008                	0x8
+ 6be:	0663040f          	0x663040f
+ 6c2:	0000                	c.unimp
+ 6c4:	0656040f          	0x656040f
+        for (int i = 0; i < 260; i++) {
+ 6c8:	0000                	c.unimp
+ 6ca:	5a19                	c.li	s4,-26
+ 6cc:	0000                	c.unimp
+ 6ce:	0e00                	c.addi4spn	s0,sp,784
+ 6d0:	4404                	c.lw	s1,8(s0)
+ 6d2:	0801                	c.addi	a6,0
+ 6d4:	06e1                	c.addi	a3,24
+ 6d6:	0000                	c.unimp
+ 6d8:	00041f17          	auipc	t5,0x41
+ 6dc:	0400                	c.addi4spn	s0,sp,512
+ 6de:	0145                	c.addi	sp,17
+ 6e0:	e112                	c.fswsp	ft4,128(sp)
+ 6e2:	0006                	c.slli	zero,0x1
+    } else if (b == 27) {
+ 6e4:	0000                	c.unimp
+ 6e6:	00042517          	auipc	a0,0x42
+ 6ea:	0400                	c.addi4spn	s0,sp,512
+ 6ec:	0146                	c.slli	sp,0x11
+ 6ee:	e112                	c.fswsp	ft4,128(sp)
+        for (int i = 0; i < 270; i++) {
+ 6f0:	0006                	c.slli	zero,0x1
+ 6f2:	0600                	c.addi4spn	s0,sp,768
+ 6f4:	00044117          	auipc	sp,0x44
+            a = a + 1;
+ 6f8:	0400                	c.addi4spn	s0,sp,512
+ 6fa:	3a120147          	fmsub.d	ft2,ft4,ft1,ft7,rne
+ 6fe:	0000                	c.unimp
+ 700:	0c00                	c.addi4spn	s0,sp,528
+ 702:	0800                	c.addi4spn	s0,sp,16
+        for (int i = 0; i < 270; i++) {
+ 704:	003a                	c.slli	zero,0xe
+ 706:	0000                	c.unimp
+ 708:	06f1                	c.addi	a3,28
+ 70a:	0000                	c.unimp
+ 70c:	6409                	c.lui	s0,0x2
+ 70e:	0000                	c.unimp
+ 710:	0200                	c.addi4spn	s0,sp,256
+ 712:	1a00                	c.addi4spn	s0,sp,304
+ 714:	04d0                	c.addi4spn	a2,sp,580
+ 716:	0285                	c.addi	t0,1
+ 718:	00080607          	0x80607
+ 71c:	1700                	c.addi4spn	s0,sp,928
+ 71e:	046e                	c.slli	s0,0x1b
+    } else if (b == 28) {
+ 720:	0000                	c.unimp
+ 722:	8704                	0x8704
+ 724:	1802                	c.slli	a6,0x20
+ 726:	0064                	c.addi4spn	s1,sp,12
+ 728:	0000                	c.unimp
+ 72a:	1700                	c.addi4spn	s0,sp,928
+        for (int i = 0; i < 280; i++) {
+ 72c:	0000042b          	0x42b
+ 730:	8804                	0x8804
+ 732:	1202                	c.slli	tp,0x20
+            a = a + 1;
+ 734:	05b6                	c.slli	a1,0xd
+ 736:	0000                	c.unimp
+ 738:	1704                	c.addi4spn	s1,sp,928
+ 73a:	0215                	c.addi	tp,5
+ 73c:	0000                	c.unimp
+ 73e:	8904                	0x8904
+        for (int i = 0; i < 280; i++) {
+ 740:	1002                	c.slli	zero,0x20
+ 742:	0806                	c.slli	a6,0x1
+ 744:	0000                	c.unimp
+ 746:	1708                	c.addi4spn	a0,sp,928
+ 748:	04c6                	c.slli	s1,0x11
+ 74a:	0000                	c.unimp
+ 74c:	8a04                	0x8a04
+ 74e:	1702                	c.slli	a4,0x20
+ 750:	0000019b          	0x19b
+ 754:	1724                	c.addi4spn	s1,sp,936
+ 756:	01a5                	c.addi	gp,9
+ 758:	0000                	c.unimp
+ 75a:	8b04                	0x8b04
+    } else if (b == 29) {
+ 75c:	0f02                	c.slli64	t5
+ 75e:	005d                	c.addi	zero,23
+ 760:	0000                	c.unimp
+ 762:	1748                	c.addi4spn	a0,sp,932
+ 764:	0386                	c.slli	t2,0x1
+ 766:	0000                	c.unimp
+        for (int i = 0; i < 290; i++) {
+ 768:	8c04                	0x8c04
+ 76a:	2c02                	c.fldsp	fs8,0(sp)
+ 76c:	0056                	c.slli	zero,0x15
+ 76e:	0000                	c.unimp
+            a = a + 1;
+ 770:	1750                	c.addi4spn	a2,sp,932
+ 772:	04dc                	c.addi4spn	a5,sp,580
+ 774:	0000                	c.unimp
+ 776:	8d04                	0x8d04
+ 778:	1a02                	c.slli	s4,0x20
+ 77a:	06a8                	c.addi4spn	a0,sp,840
+        for (int i = 0; i < 290; i++) {
+ 77c:	0000                	c.unimp
+ 77e:	1758                	c.addi4spn	a4,sp,932
+ 780:	0391                	c.addi	t2,4
+ 782:	0000                	c.unimp
+ 784:	8e04                	0x8e04
+ 786:	1602                	c.slli	a2,0x20
+ 788:	00f9                	c.addi	ra,30
+ 78a:	0000                	c.unimp
+ 78c:	1768                	c.addi4spn	a0,sp,940
+ 78e:	04e1                	c.addi	s1,24
+ 790:	0000                	c.unimp
+ 792:	8f04                	0x8f04
+ 794:	1602                	c.slli	a2,0x20
+ 796:	00f9                	c.addi	ra,30
+    } else if (b == 30) {
+ 798:	0000                	c.unimp
+ 79a:	1770                	c.addi4spn	a2,sp,940
+ 79c:	00cd                	c.addi	ra,19
+ 79e:	0000                	c.unimp
+ 7a0:	9004                	0x9004
+ 7a2:	1602                	c.slli	a2,0x20
+        for (int i = 0; i < 300; i++) {
+ 7a4:	00f9                	c.addi	ra,30
+ 7a6:	0000                	c.unimp
+ 7a8:	1778                	c.addi4spn	a4,sp,940
+ 7aa:	0499                	c.addi	s1,6
+            a = a + 1;
+ 7ac:	0000                	c.unimp
+ 7ae:	9104                	0x9104
+ 7b0:	1002                	c.slli	zero,0x20
+ 7b2:	0816                	c.slli	a6,0x5
+ 7b4:	0000                	c.unimp
+ 7b6:	1780                	c.addi4spn	s0,sp,992
+        for (int i = 0; i < 300; i++) {
+ 7b8:	0209                	c.addi	tp,2
+ 7ba:	0000                	c.unimp
+ 7bc:	9204                	0x9204
+ 7be:	1002                	c.slli	zero,0x20
+ 7c0:	0826                	c.slli	a6,0x9
+ 7c2:	0000                	c.unimp
+ 7c4:	1788                	c.addi4spn	a0,sp,992
+ 7c6:	044e                	c.slli	s0,0x13
+ 7c8:	0000                	c.unimp
+ 7ca:	9304                	0x9304
+ 7cc:	0f02                	c.slli64	t5
+ 7ce:	005d                	c.addi	zero,23
+    return 0;
+ 7d0:	0000                	c.unimp
+ 7d2:	17a0                	c.addi4spn	s0,sp,1000
+}
+ 7d4:	0000016b          	0x16b
+ 7d8:	9404                	0x9404
+ 7da:	1602                	c.slli	a2,0x20
+ 7dc:	00f9                	c.addi	ra,30
+ 7de:	0000                	c.unimp
+ 7e0:	17a4                	c.addi4spn	s1,sp,1000
+ 7e2:	00be                	c.slli	ra,0xf
+ 7e4:	0000                	c.unimp
+ 7e6:	9504                	0x9504
+ 7e8:	1602                	c.slli	a2,0x20
+ 7ea:	00f9                	c.addi	ra,30
+ 7ec:	0000                	c.unimp
+ 7ee:	17ac                	c.addi4spn	a1,sp,1000
+ 7f0:	015a                	c.slli	sp,0x16
+ 7f2:	0000                	c.unimp
+ 7f4:	9604                	0x9604
+ 7f6:	1602                	c.slli	a2,0x20
+ 7f8:	00f9                	c.addi	ra,30
+ 7fa:	0000                	c.unimp
+ 7fc:	17b4                	c.addi4spn	a3,sp,1000
+ 7fe:	00000073          	ecall
+ 802:	9704                	0x9704
+ 804:	1602                	c.slli	a2,0x20
+ 806:	00f9                	c.addi	ra,30
+ 808:	0000                	c.unimp
+ 80a:	17bc                	c.addi4spn	a5,sp,1000
+ 80c:	0082                	c.slli64	ra
+ 80e:	0000                	c.unimp
+ 810:	9804                	0x9804
+ 812:	1602                	c.slli	a2,0x20
+ 814:	00f9                	c.addi	ra,30
+ 816:	0000                	c.unimp
+ 818:	17c4                	c.addi4spn	s1,sp,996
+ 81a:	0339                	c.addi	t1,14
+ 81c:	0000                	c.unimp
+ 81e:	9904                	0x9904
+ 820:	0802                	c.slli64	a6
+ 822:	005d                	c.addi	zero,23
+ 824:	0000                	c.unimp
+ 826:	00cc                	c.addi4spn	a1,sp,68
+ 828:	bc08                	c.fsd	fa0,56(s0)
+ 82a:	0005                	c.addi	zero,1
+ 82c:	1600                	c.addi4spn	s0,sp,800
+ 82e:	0008                	0x8
+ 830:	0900                	c.addi4spn	s0,sp,144
+ 832:	0064                	c.addi4spn	s1,sp,12
+ 834:	0000                	c.unimp
+ 836:	0019                	c.addi	zero,6
+ 838:	bc08                	c.fsd	fa0,56(s0)
+ 83a:	0005                	c.addi	zero,1
+ 83c:	2600                	c.fld	fs0,8(a2)
+ 83e:	0008                	0x8
+ 840:	0900                	c.addi4spn	s0,sp,144
+ 842:	0064                	c.addi4spn	s1,sp,12
+ 844:	0000                	c.unimp
+ 846:	bc080007          	0xbc080007
+ 84a:	0005                	c.addi	zero,1
+ 84c:	3600                	c.fld	fs0,40(a2)
+ 84e:	0008                	0x8
+ 850:	0900                	c.addi4spn	s0,sp,144
+ 852:	0064                	c.addi4spn	s1,sp,12
+ 854:	0000                	c.unimp
+ 856:	f01a0017          	auipc	zero,0xf01a0
+ 85a:	9e04                	0x9e04
+ 85c:	0702                	c.slli64	a4
+ 85e:	085d                	c.addi	a6,23
+ 860:	0000                	c.unimp
+ 862:	00026b17          	auipc	s6,0x26
+ 866:	0400                	c.addi4spn	s0,sp,512
+ 868:	02a1                	c.addi	t0,8
+ 86a:	00085d1b          	0x85d1b
+ 86e:	0000                	c.unimp
+ 870:	00025617          	auipc	a2,0x25
+ 874:	0400                	c.addi4spn	s0,sp,512
+ 876:	02a2                	c.slli	t0,0x8
+ 878:	6d18                	c.flw	fa4,24(a0)
+ 87a:	0008                	0x8
+ 87c:	7800                	c.flw	fs0,48(s0)
+ 87e:	0800                	c.addi4spn	s0,sp,16
+ 880:	000002fb          	0x2fb
+ 884:	086d                	c.addi	a6,27
+ 886:	0000                	c.unimp
+ 888:	6409                	c.lui	s0,0x2
+ 88a:	0000                	c.unimp
+ 88c:	1d00                	c.addi4spn	s0,sp,688
+ 88e:	0800                	c.addi4spn	s0,sp,16
+ 890:	0064                	c.addi4spn	s1,sp,12
+ 892:	0000                	c.unimp
+ 894:	087d                	c.addi	a6,31
+ 896:	0000                	c.unimp
+ 898:	6409                	c.lui	s0,0x2
+ 89a:	0000                	c.unimp
+ 89c:	1d00                	c.addi4spn	s0,sp,688
+ 89e:	1b00                	c.addi4spn	s0,sp,432
+ 8a0:	04f0                	c.addi4spn	a2,sp,588
+ 8a2:	a2030283          	lb	t0,-1504(t1) # 1a20 <__global_pointer$+0xa20>
+ 8a6:	0008                	0x8
+ 8a8:	1c00                	c.addi4spn	s0,sp,560
+ 8aa:	000003db          	0x3db
+ 8ae:	9a04                	0x9a04
+ 8b0:	0b02                	c.slli64	s6
+ 8b2:	06f1                	c.addi	a3,28
+ 8b4:	0000                	c.unimp
+ 8b6:	b31c                	c.fsd	fa5,32(a4)
+ 8b8:	0004                	0x4
+ 8ba:	0400                	c.addi4spn	s0,sp,512
+ 8bc:	360b02a3          	sb	zero,869(s6) # 26bc7 <_sp+0x16bc7>
+ 8c0:	0008                	0x8
+ 8c2:	0000                	c.unimp
+ 8c4:	bc08                	c.fsd	fa0,56(s0)
+ 8c6:	0005                	c.addi	zero,1
+ 8c8:	b200                	c.fsd	fs0,32(a2)
+ 8ca:	0008                	0x8
+ 8cc:	0900                	c.addi4spn	s0,sp,144
+ 8ce:	0064                	c.addi4spn	s1,sp,12
+ 8d0:	0000                	c.unimp
+ 8d2:	0018                	0x18
+ 8d4:	b31d                	c.j	5fa <main+0x546>
+ 8d6:	0000                	c.unimp
+ 8d8:	0f00                	c.addi4spn	s0,sp,912
+ 8da:	b204                	c.fsd	fs1,32(a2)
+ 8dc:	0008                	0x8
+ 8de:	1e00                	c.addi4spn	s0,sp,816
+ 8e0:	08c8                	c.addi4spn	a0,sp,84
+ 8e2:	0000                	c.unimp
+ 8e4:	6214                	c.flw	fa3,0(a2)
+ 8e6:	0004                	0x4
+ 8e8:	0000                	c.unimp
+ 8ea:	08bd040f          	0x8bd040f
+ 8ee:	0000                	c.unimp
+ 8f0:	0185040f          	0x185040f
+ 8f4:	0000                	c.unimp
+ 8f6:	df1e                	c.swsp	t2,188(sp)
+ 8f8:	0008                	0x8
+ 8fa:	1400                	c.addi4spn	s0,sp,544
+ 8fc:	005d                	c.addi	zero,23
+ 8fe:	0000                	c.unimp
+ 900:	0f00                	c.addi4spn	s0,sp,912
+ 902:	e504                	c.fsw	fs1,8(a0)
+ 904:	0008                	0x8
+ 906:	0f00                	c.addi4spn	s0,sp,912
+ 908:	d404                	c.sw	s1,40(s0)
+ 90a:	0008                	0x8
+ 90c:	0800                	c.addi4spn	s0,sp,16
+ 90e:	0656                	c.slli	a2,0x15
+ 910:	0000                	c.unimp
+ 912:	000008fb          	0x8fb
+ 916:	6409                	c.lui	s0,0x2
+ 918:	0000                	c.unimp
+ 91a:	0200                	c.addi4spn	s0,sp,256
+ 91c:	1f00                	c.addi4spn	s0,sp,944
+ 91e:	0462                	c.slli	s0,0x18
+ 920:	0000                	c.unimp
+ 922:	3304                	c.fld	fs1,32(a4)
+ 924:	04621703          	lh	a4,70(tp) # 22570 <_sp+0x12570>
+ 928:	0000                	c.unimp
+ 92a:	5b1f 0004 0400      	0x40000045b1f
+ 930:	0334                	c.addi4spn	a3,sp,392
+ 932:	681d                	c.lui	a6,0x7
+ 934:	0004                	0x4
+ 936:	2000                	c.fld	fs0,0(s0)
+ 938:	00000283          	lb	t0,0(zero) # 0 <crt>
+ 93c:	6706                	c.flwsp	fa4,64(sp)
+ 93e:	b60e                	c.fsdsp	ft3,296(sp)
+ 940:	0005                	c.addi	zero,1
+ 942:	2100                	c.fld	fs0,0(a0)
+ 944:	04f4                	c.addi4spn	a3,sp,588
+ 946:	0000                	c.unimp
+ 948:	0f01                	c.addi	t5,0
+ 94a:	5d05                	c.li	s10,-31
+ 94c:	0000                	c.unimp
+ 94e:	b400                	c.fsd	fs0,40(s0)
+ 950:	0000                	c.unimp
+ 952:	3000                	c.fld	fs0,32(s0)
+ 954:	01000007          	0x1000007
+ 958:	229c                	c.fld	fa5,0(a3)
+ 95a:	0062                	c.slli	zero,0x18
+ 95c:	1101                	c.addi	sp,-32
+ 95e:	5d09                	c.li	s10,-30
+ 960:	0000                	c.unimp
+ 962:	0300                	c.addi4spn	s0,sp,384
+ 964:	f091                	c.bnez	s1,868 <_ebss+0x28>
+ 966:	227e                	c.fldsp	ft4,472(sp)
+ 968:	0061                	c.addi	zero,24
+ 96a:	1201                	c.addi	tp,-32
+ 96c:	5d09                	c.li	s10,-30
+ 96e:	0000                	c.unimp
+ 970:	0200                	c.addi4spn	s0,sp,256
+ 972:	6c91                	c.lui	s9,0x4
+ 974:	0000d823          	0xd823
+ 978:	3000                	c.fld	fs0,32(s0)
+ 97a:	0000                	c.unimp
+ 97c:	6d00                	c.flw	fs0,24(a0)
+ 97e:	0009                	c.addi	zero,2
+ 980:	2200                	c.fld	fs0,0(a2)
+ 982:	0069                	c.addi	zero,26
+ 984:	2201                	c.jal	a84 <_ebss+0x244>
+ 986:	5d12                	c.lwsp	s10,36(sp)
+ 988:	0000                	c.unimp
+ 98a:	0200                	c.addi4spn	s0,sp,256
+ 98c:	6891                	c.lui	a7,0x4
+ 98e:	2300                	c.fld	fs0,0(a4)
+ 990:	0114                	c.addi4spn	a3,sp,128
+ 992:	0000                	c.unimp
+ 994:	0030                	c.addi4spn	a2,sp,8
+ 996:	0000                	c.unimp
+ 998:	0988                	c.addi4spn	a0,sp,208
+ 99a:	0000                	c.unimp
+ 99c:	6922                	c.flwsp	fs2,8(sp)
+ 99e:	0100                	c.addi4spn	s0,sp,128
+ 9a0:	1226                	c.slli	tp,0x29
+ 9a2:	005d                	c.addi	zero,23
+ 9a4:	0000                	c.unimp
+ 9a6:	9102                	c.jalr	sp
+ 9a8:	0064                	c.addi4spn	s1,sp,12
+ 9aa:	00015023          	0x15023
+ 9ae:	3000                	c.fld	fs0,32(s0)
+ 9b0:	0000                	c.unimp
+ 9b2:	a300                	c.fsd	fs0,0(a4)
+ 9b4:	0009                	c.addi	zero,2
+ 9b6:	2200                	c.fld	fs0,0(a2)
+ 9b8:	0069                	c.addi	zero,26
+ 9ba:	2a01                	c.jal	aca <_ebss+0x28a>
+ 9bc:	5d12                	c.lwsp	s10,36(sp)
+ 9be:	0000                	c.unimp
+ 9c0:	0200                	c.addi4spn	s0,sp,256
+ 9c2:	6091                	c.lui	ra,0x4
+ 9c4:	2300                	c.fld	fs0,0(a4)
+ 9c6:	018c                	c.addi4spn	a1,sp,192
+ 9c8:	0000                	c.unimp
+ 9ca:	0030                	c.addi4spn	a2,sp,8
+ 9cc:	0000                	c.unimp
+ 9ce:	09be                	c.slli	s3,0xf
+ 9d0:	0000                	c.unimp
+ 9d2:	6922                	c.flwsp	fs2,8(sp)
+ 9d4:	0100                	c.addi4spn	s0,sp,128
+ 9d6:	122e                	c.slli	tp,0x2b
+ 9d8:	005d                	c.addi	zero,23
+ 9da:	0000                	c.unimp
+ 9dc:	9102                	c.jalr	sp
+ 9de:	005c                	c.addi4spn	a5,sp,4
+ 9e0:	0001c823          	0x1c823
+ 9e4:	3000                	c.fld	fs0,32(s0)
+ 9e6:	0000                	c.unimp
+ 9e8:	d900                	c.sw	s0,48(a0)
+ 9ea:	0009                	c.addi	zero,2
+ 9ec:	2200                	c.fld	fs0,0(a2)
+ 9ee:	0069                	c.addi	zero,26
+ 9f0:	3201                	c.jal	2f0 <main+0x23c>
+ 9f2:	5d12                	c.lwsp	s10,36(sp)
+ 9f4:	0000                	c.unimp
+ 9f6:	0200                	c.addi4spn	s0,sp,256
+ 9f8:	5891                	c.li	a7,-28
+ 9fa:	2300                	c.fld	fs0,0(a4)
+ 9fc:	0204                	c.addi4spn	s1,sp,256
+ 9fe:	0000                	c.unimp
+ a00:	0030                	c.addi4spn	a2,sp,8
+ a02:	0000                	c.unimp
+ a04:	09f4                	c.addi4spn	a3,sp,220
+ a06:	0000                	c.unimp
+ a08:	6922                	c.flwsp	fs2,8(sp)
+ a0a:	0100                	c.addi4spn	s0,sp,128
+ a0c:	1236                	c.slli	tp,0x2d
+ a0e:	005d                	c.addi	zero,23
+ a10:	0000                	c.unimp
+ a12:	9102                	c.jalr	sp
+ a14:	0054                	c.addi4spn	a3,sp,4
+ a16:	00024023          	0x24023
+ a1a:	3000                	c.fld	fs0,32(s0)
+ a1c:	0000                	c.unimp
+ a1e:	0f00                	c.addi4spn	s0,sp,912
+ a20:	000a                	c.slli	zero,0x2
+ a22:	2200                	c.fld	fs0,0(a2)
+ a24:	0069                	c.addi	zero,26
+ a26:	3a01                	c.jal	336 <main+0x282>
+ a28:	5d12                	c.lwsp	s10,36(sp)
+ a2a:	0000                	c.unimp
+ a2c:	0200                	c.addi4spn	s0,sp,256
+ a2e:	5091                	c.li	ra,-28
+ a30:	2300                	c.fld	fs0,0(a4)
+ a32:	027c                	c.addi4spn	a5,sp,268
+ a34:	0000                	c.unimp
+ a36:	0030                	c.addi4spn	a2,sp,8
+ a38:	0000                	c.unimp
+ a3a:	0a2a                	c.slli	s4,0xa
+ a3c:	0000                	c.unimp
+ a3e:	6922                	c.flwsp	fs2,8(sp)
+ a40:	0100                	c.addi4spn	s0,sp,128
+ a42:	123e                	c.slli	tp,0x2f
+ a44:	005d                	c.addi	zero,23
+ a46:	0000                	c.unimp
+ a48:	9102                	c.jalr	sp
+ a4a:	004c                	c.addi4spn	a1,sp,4
+ a4c:	0002b823          	0x2b823
+ a50:	3000                	c.fld	fs0,32(s0)
+ a52:	0000                	c.unimp
+ a54:	4500                	c.lw	s0,8(a0)
+ a56:	000a                	c.slli	zero,0x2
+ a58:	2200                	c.fld	fs0,0(a2)
+ a5a:	0069                	c.addi	zero,26
+ a5c:	4201                	c.li	tp,0
+ a5e:	5d12                	c.lwsp	s10,36(sp)
+ a60:	0000                	c.unimp
+ a62:	0200                	c.addi4spn	s0,sp,256
+ a64:	4891                	c.li	a7,4
+ a66:	2300                	c.fld	fs0,0(a4)
+ a68:	02f4                	c.addi4spn	a3,sp,332
+ a6a:	0000                	c.unimp
+ a6c:	0030                	c.addi4spn	a2,sp,8
+ a6e:	0000                	c.unimp
+ a70:	0a60                	c.addi4spn	s0,sp,284
+ a72:	0000                	c.unimp
+ a74:	6922                	c.flwsp	fs2,8(sp)
+ a76:	0100                	c.addi4spn	s0,sp,128
+ a78:	1246                	c.slli	tp,0x31
+ a7a:	005d                	c.addi	zero,23
+ a7c:	0000                	c.unimp
+ a7e:	9102                	c.jalr	sp
+ a80:	0044                	c.addi4spn	s1,sp,4
+ a82:	00033023          	0x33023
+ a86:	3000                	c.fld	fs0,32(s0)
+ a88:	0000                	c.unimp
+ a8a:	7b00                	c.flw	fs0,48(a4)
+ a8c:	000a                	c.slli	zero,0x2
+ a8e:	2200                	c.fld	fs0,0(a2)
+ a90:	0069                	c.addi	zero,26
+ a92:	4a01                	c.li	s4,0
+ a94:	5d12                	c.lwsp	s10,36(sp)
+ a96:	0000                	c.unimp
+ a98:	0200                	c.addi4spn	s0,sp,256
+ a9a:	4091                	c.li	ra,4
+ a9c:	2300                	c.fld	fs0,0(a4)
+ a9e:	036c                	c.addi4spn	a1,sp,396
+ aa0:	0000                	c.unimp
+ aa2:	0030                	c.addi4spn	a2,sp,8
+ aa4:	0000                	c.unimp
+ aa6:	00000a97          	auipc	s5,0x0
+ aaa:	6922                	c.flwsp	fs2,8(sp)
+ aac:	0100                	c.addi4spn	s0,sp,128
+ aae:	124e                	c.slli	tp,0x33
+ ab0:	005d                	c.addi	zero,23
+ ab2:	0000                	c.unimp
+ ab4:	7fbc9103          	lh	sp,2043(s9) # 47fb <__global_pointer$+0x37fb>
+ ab8:	2300                	c.fld	fs0,0(a4)
+ aba:	03a8                	c.addi4spn	a0,sp,456
+ abc:	0000                	c.unimp
+ abe:	0030                	c.addi4spn	a2,sp,8
+ ac0:	0000                	c.unimp
+ ac2:	00000ab3          	add	s5,zero,zero
+ ac6:	6922                	c.flwsp	fs2,8(sp)
+ ac8:	0100                	c.addi4spn	s0,sp,128
+ aca:	1252                	c.slli	tp,0x34
+ acc:	005d                	c.addi	zero,23
+ ace:	0000                	c.unimp
+ ad0:	7fb89103          	lh	sp,2043(a7) # 47fb <__global_pointer$+0x37fb>
+ ad4:	2300                	c.fld	fs0,0(a4)
+ ad6:	03e4                	c.addi4spn	s1,sp,460
+ ad8:	0000                	c.unimp
+ ada:	0030                	c.addi4spn	a2,sp,8
+ adc:	0000                	c.unimp
+ ade:	00000acf          	fnmadd.s	fs5,ft0,ft0,ft0,rne
+ ae2:	6922                	c.flwsp	fs2,8(sp)
+ ae4:	0100                	c.addi4spn	s0,sp,128
+ ae6:	1256                	c.slli	tp,0x35
+ ae8:	005d                	c.addi	zero,23
+ aea:	0000                	c.unimp
+ aec:	7fb49103          	lh	sp,2043(s1)
+ af0:	2300                	c.fld	fs0,0(a4)
+ af2:	0420                	c.addi4spn	s0,sp,520
+ af4:	0000                	c.unimp
+ af6:	0030                	c.addi4spn	a2,sp,8
+ af8:	0000                	c.unimp
+ afa:	00000aeb          	0xaeb
+ afe:	6922                	c.flwsp	fs2,8(sp)
+ b00:	0100                	c.addi4spn	s0,sp,128
+ b02:	125a                	c.slli	tp,0x36
+ b04:	005d                	c.addi	zero,23
+ b06:	0000                	c.unimp
+ b08:	7fb09103          	lh	sp,2043(ra) # 47fb <__global_pointer$+0x37fb>
+ b0c:	2300                	c.fld	fs0,0(a4)
+ b0e:	045c                	c.addi4spn	a5,sp,516
+ b10:	0000                	c.unimp
+ b12:	0030                	c.addi4spn	a2,sp,8
+ b14:	0000                	c.unimp
+ b16:	00000b07          	0xb07
+ b1a:	6922                	c.flwsp	fs2,8(sp)
+ b1c:	0100                	c.addi4spn	s0,sp,128
+ b1e:	125e                	c.slli	tp,0x37
+ b20:	005d                	c.addi	zero,23
+ b22:	0000                	c.unimp
+ b24:	7fac9103          	lh	sp,2042(s9)
+ b28:	2300                	c.fld	fs0,0(a4)
+ b2a:	0498                	c.addi4spn	a4,sp,576
+ b2c:	0000                	c.unimp
+ b2e:	0030                	c.addi4spn	a2,sp,8
+ b30:	0000                	c.unimp
+ b32:	00000b23          	sb	zero,22(zero) # 16 <crt+0x16>
+ b36:	6922                	c.flwsp	fs2,8(sp)
+ b38:	0100                	c.addi4spn	s0,sp,128
+ b3a:	1262                	c.slli	tp,0x38
+ b3c:	005d                	c.addi	zero,23
+ b3e:	0000                	c.unimp
+ b40:	7fa89103          	lh	sp,2042(a7)
+ b44:	2300                	c.fld	fs0,0(a4)
+ b46:	04d4                	c.addi4spn	a3,sp,580
+ b48:	0000                	c.unimp
+ b4a:	0030                	c.addi4spn	a2,sp,8
+ b4c:	0000                	c.unimp
+ b4e:	00000b3f 01006922 	0x100692200000b3f
+ b56:	1266                	c.slli	tp,0x39
+ b58:	005d                	c.addi	zero,23
+ b5a:	0000                	c.unimp
+ b5c:	7fa49103          	lh	sp,2042(s1)
+ b60:	2300                	c.fld	fs0,0(a4)
+ b62:	0510                	c.addi4spn	a2,sp,640
+ b64:	0000                	c.unimp
+ b66:	0030                	c.addi4spn	a2,sp,8
+ b68:	0000                	c.unimp
+ b6a:	00000b5b          	0xb5b
+ b6e:	6922                	c.flwsp	fs2,8(sp)
+ b70:	0100                	c.addi4spn	s0,sp,128
+ b72:	126a                	c.slli	tp,0x3a
+ b74:	005d                	c.addi	zero,23
+ b76:	0000                	c.unimp
+ b78:	7fa09103          	lh	sp,2042(ra)
+ b7c:	2300                	c.fld	fs0,0(a4)
+ b7e:	054c                	c.addi4spn	a1,sp,644
+ b80:	0000                	c.unimp
+ b82:	0030                	c.addi4spn	a2,sp,8
+ b84:	0000                	c.unimp
+ b86:	00000b77          	0xb77
+ b8a:	6922                	c.flwsp	fs2,8(sp)
+ b8c:	0100                	c.addi4spn	s0,sp,128
+ b8e:	126e                	c.slli	tp,0x3b
+ b90:	005d                	c.addi	zero,23
+ b92:	0000                	c.unimp
+ b94:	7f9c9103          	lh	sp,2041(s9)
+ b98:	2300                	c.fld	fs0,0(a4)
+ b9a:	0588                	c.addi4spn	a0,sp,704
+ b9c:	0000                	c.unimp
+ b9e:	0030                	c.addi4spn	a2,sp,8
+ ba0:	0000                	c.unimp
+ ba2:	00000b93          	addi	s7,zero,0
+ ba6:	6922                	c.flwsp	fs2,8(sp)
+ ba8:	0100                	c.addi4spn	s0,sp,128
+ baa:	1272                	c.slli	tp,0x3c
+ bac:	005d                	c.addi	zero,23
+ bae:	0000                	c.unimp
+ bb0:	7f989103          	lh	sp,2041(a7)
+ bb4:	2300                	c.fld	fs0,0(a4)
+ bb6:	05c4                	c.addi4spn	s1,sp,708
+ bb8:	0000                	c.unimp
+ bba:	0030                	c.addi4spn	a2,sp,8
+ bbc:	0000                	c.unimp
+ bbe:	00000baf          	0xbaf
+ bc2:	6922                	c.flwsp	fs2,8(sp)
+ bc4:	0100                	c.addi4spn	s0,sp,128
+ bc6:	1276                	c.slli	tp,0x3d
+ bc8:	005d                	c.addi	zero,23
+ bca:	0000                	c.unimp
+ bcc:	7f949103          	lh	sp,2041(s1)
+ bd0:	2300                	c.fld	fs0,0(a4)
+ bd2:	0600                	c.addi4spn	s0,sp,768
+ bd4:	0000                	c.unimp
+ bd6:	0030                	c.addi4spn	a2,sp,8
+ bd8:	0000                	c.unimp
+ bda:	00000bcb          	fnmsub.s	fs7,ft0,ft0,ft0,rne
+ bde:	6922                	c.flwsp	fs2,8(sp)
+ be0:	0100                	c.addi4spn	s0,sp,128
+ be2:	127a                	c.slli	tp,0x3e
+ be4:	005d                	c.addi	zero,23
+ be6:	0000                	c.unimp
+ be8:	7f909103          	lh	sp,2041(ra)
+ bec:	2300                	c.fld	fs0,0(a4)
+ bee:	063c                	c.addi4spn	a5,sp,776
+ bf0:	0000                	c.unimp
+ bf2:	0030                	c.addi4spn	a2,sp,8
+ bf4:	0000                	c.unimp
+ bf6:	00000be7          	jalr	s7,0(zero) # 0 <crt>
+ bfa:	6922                	c.flwsp	fs2,8(sp)
+ bfc:	0100                	c.addi4spn	s0,sp,128
+ bfe:	127e                	c.slli	tp,0x3f
+ c00:	005d                	c.addi	zero,23
+ c02:	0000                	c.unimp
+ c04:	7f8c9103          	lh	sp,2040(s9)
+ c08:	2300                	c.fld	fs0,0(a4)
+ c0a:	0678                	c.addi4spn	a4,sp,780
+ c0c:	0000                	c.unimp
+ c0e:	0030                	c.addi4spn	a2,sp,8
+ c10:	0000                	c.unimp
+ c12:	00000c03          	lb	s8,0(zero) # 0 <crt>
+ c16:	6922                	c.flwsp	fs2,8(sp)
+ c18:	0100                	c.addi4spn	s0,sp,128
+ c1a:	1282                	c.slli	t0,0x20
+ c1c:	005d                	c.addi	zero,23
+ c1e:	0000                	c.unimp
+ c20:	7f889103          	lh	sp,2040(a7)
+ c24:	2300                	c.fld	fs0,0(a4)
+ c26:	06b4                	c.addi4spn	a3,sp,840
+ c28:	0000                	c.unimp
+ c2a:	0030                	c.addi4spn	a2,sp,8
+ c2c:	0000                	c.unimp
+ c2e:	0c1f 0000 6922      	0x692200000c1f
+ c34:	0100                	c.addi4spn	s0,sp,128
+ c36:	1286                	c.slli	t0,0x21
+ c38:	005d                	c.addi	zero,23
+ c3a:	0000                	c.unimp
+ c3c:	7f849103          	lh	sp,2040(s1)
+ c40:	2300                	c.fld	fs0,0(a4)
+ c42:	06f0                	c.addi4spn	a2,sp,844
+ c44:	0000                	c.unimp
+ c46:	0030                	c.addi4spn	a2,sp,8
+ c48:	0000                	c.unimp
+ c4a:	00000c3b          	0xc3b
+ c4e:	6922                	c.flwsp	fs2,8(sp)
+ c50:	0100                	c.addi4spn	s0,sp,128
+ c52:	128a                	c.slli	t0,0x22
+ c54:	005d                	c.addi	zero,23
+ c56:	0000                	c.unimp
+ c58:	7f809103          	lh	sp,2040(ra)
+ c5c:	2300                	c.fld	fs0,0(a4)
+ c5e:	072c                	c.addi4spn	a1,sp,904
+ c60:	0000                	c.unimp
+ c62:	0030                	c.addi4spn	a2,sp,8
+ c64:	0000                	c.unimp
+ c66:	00000c57          	0xc57
+ c6a:	6922                	c.flwsp	fs2,8(sp)
+ c6c:	0100                	c.addi4spn	s0,sp,128
+ c6e:	128e                	c.slli	t0,0x23
+ c70:	005d                	c.addi	zero,23
+ c72:	0000                	c.unimp
+ c74:	7efc9103          	lh	sp,2031(s9)
+ c78:	2300                	c.fld	fs0,0(a4)
+ c7a:	0768                	c.addi4spn	a0,sp,908
+ c7c:	0000                	c.unimp
+ c7e:	0030                	c.addi4spn	a2,sp,8
+ c80:	0000                	c.unimp
+ c82:	00000c73          	0xc73
+ c86:	6922                	c.flwsp	fs2,8(sp)
+ c88:	0100                	c.addi4spn	s0,sp,128
+ c8a:	1292                	c.slli	t0,0x24
+ c8c:	005d                	c.addi	zero,23
+ c8e:	0000                	c.unimp
+ c90:	7ef89103          	lh	sp,2031(a7)
+ c94:	2400                	c.fld	fs0,8(s0)
+ c96:	07a4                	c.addi4spn	s1,sp,968
+ c98:	0000                	c.unimp
+ c9a:	002c                	c.addi4spn	a1,sp,8
+ c9c:	0000                	c.unimp
+ c9e:	6922                	c.flwsp	fs2,8(sp)
+ ca0:	0100                	c.addi4spn	s0,sp,128
+ ca2:	1296                	c.slli	t0,0x25
+ ca4:	005d                	c.addi	zero,23
+ ca6:	0000                	c.unimp
+ ca8:	7ef49103          	lh	sp,2031(s1)
+ cac:	0000                	c.unimp
+	...
+
+Disassembly of section .debug_abbrev:
+
+00000000 <.debug_abbrev>:
+    nop
+   0:	1101                	c.addi	sp,-32
+   2:	1000                	c.addi4spn	s0,sp,32
+    la ra, exit
+   4:	5506                	c.lwsp	a0,96(sp)
+   6:	0306                	c.slli	t1,0x1
+   8:	1b0e                	c.slli	s6,0x23
+   a:	250e                	c.fldsp	fa0,192(sp)
+    la sp, _sp
+   c:	130e                	c.slli	t1,0x23
+   e:	0005                	c.addi	zero,1
+  10:	0000                	c.unimp
+  12:	1101                	c.addi	sp,-32
+    mv s0, sp
+  14:	2501                	c.jal	614 <main+0x560>
+  16:	130e                	c.slli	t1,0x23
+    la gp, __global_pointer$
+  18:	1b0e030b          	0x1b0e030b
+  1c:	110e                	c.slli	sp,0x23
+  1e:	1201                	c.addi	tp,-32
+    li tp, 0
+  20:	1006                	c.slli	zero,0x21
+  22:	02000017          	auipc	zero,0x2000
+    li t0, 0
+  26:	0024                	c.addi4spn	s1,sp,8
+    li t1, 0
+  28:	0b3e0b0b          	0xb3e0b0b
+    li t2, 0
+  2c:	00000e03          	lb	t3,0(zero) # 0 <crt>
+    li s1, 0
+  30:	0b002403          	lw	s0,176(zero) # b0 <exit+0x10>
+    li a0, 0
+  34:	030b3e0b          	0x30b3e0b
+    li a1, 0
+  38:	0008                	0x8
+  3a:	0400                	c.addi4spn	s0,sp,512
+    li a2, 0
+  3c:	0016                	c.slli	zero,0x5
+  3e:	0b3a0e03          	lb	t3,179(s4) # 14623 <_sp+0x4623>
+    li a3, 0
+  42:	0b39053b          	0xb39053b
+    li a4, 0
+  46:	1349                	c.addi	t1,-14
+    li a5, 0
+  48:	0000                	c.unimp
+  4a:	1605                	c.addi	a2,-31
+    li a6, 0
+  4c:	0300                	c.addi4spn	s0,sp,384
+  4e:	3a0e                	c.fldsp	fs4,224(sp)
+    li a7, 0
+  50:	390b3b0b          	0x390b3b0b
+    li s2, 0
+  54:	0013490b          	0x13490b
+    li s3, 0
+  58:	0600                	c.addi4spn	s0,sp,768
+  5a:	0b0b0117          	auipc	sp,0xb0b0
+    li s4, 0
+  5e:	0b3a                	c.slli	s6,0xe
+    li s5, 0
+  60:	0b390b3b          	0xb390b3b
+    li s6, 0
+  64:	1301                	c.addi	t1,-32
+  66:	0000                	c.unimp
+    li s7, 0
+  68:	03000d07          	0x3000d07
+    li s8, 0
+  6c:	3a0e                	c.fldsp	fs4,224(sp)
+  6e:	390b3b0b          	0x390b3b0b
+    li s9, 0
+  72:	0013490b          	0x13490b
+    li s10, 0
+  76:	0800                	c.addi4spn	s0,sp,16
+    li s11, 0
+  78:	0101                	c.addi	sp,0
+  7a:	1349                	c.addi	t1,-14
+    li t3, 0
+  7c:	1301                	c.addi	t1,-32
+  7e:	0000                	c.unimp
+    li t4, 0
+  80:	2109                	c.jal	482 <main+0x3ce>
+  82:	4900                	c.lw	s0,16(a0)
+    li t5, 0
+  84:	000b2f13          	slti	t5,s6,0
+    li t6, 0
+  88:	0a00                	c.addi4spn	s0,sp,272
+  8a:	0b0b0113          	addi	sp,s6,176
+    j main
+  8e:	0b3a                	c.slli	s6,0xe
+  90:	0b390b3b          	0xb390b3b
+  94:	1301                	c.addi	t1,-32
+  96:	0000                	c.unimp
+  98:	03000d0b          	0x3000d0b
+  9c:	3a0e                	c.fldsp	fs4,224(sp)
+  9e:	390b3b0b          	0x390b3b0b
+    la sp, _sp
+  a2:	3813490b          	0x3813490b
+  a6:	0c00000b          	0xc00000b
+    sw a0, -8(sp)
+  aa:	0b0b000f          	0xb0b000f
+    nop
+  ae:	0000                	c.unimp
+    wfi
+  b0:	130d                	c.addi	t1,-29
+  b2:	0301                	c.addi	t1,0
+{
+  b4:	0b0e                	c.slli	s6,0x3
+  b6:	3b0b3a0b          	0x3b0b3a0b
+  ba:	010b390b          	0x10b390b
+  be:	0e000013          	addi	zero,zero,224
+    a = 0;
+  c2:	000d                	c.addi	zero,3
+    b = 20;
+  c4:	0b3a0803          	lb	a6,179(s4)
+  c8:	0b390b3b          	0xb390b3b
+    if (b == 1) {
+  cc:	1349                	c.addi	t1,-14
+  ce:	0b38                	c.addi4spn	a4,sp,408
+  d0:	0000                	c.unimp
+  d2:	0b000f0f          	0xb000f0f
+  d6:	0013490b          	0x13490b
+        for (int i = 0; i < 50; i++) {
+  da:	1000                	c.addi4spn	s0,sp,32
+  dc:	0e030113          	addi	sp,t1,224
+            a = a + 1;
+  e0:	0b3a050b          	0xb3a050b
+  e4:	0b390b3b          	0xb390b3b
+  e8:	1301                	c.addi	t1,-32
+  ea:	0000                	c.unimp
+        for (int i = 0; i < 50; i++) {
+  ec:	0d11                	c.addi	s10,4
+  ee:	0300                	c.addi4spn	s0,sp,384
+  f0:	3a0e                	c.fldsp	fs4,224(sp)
+  f2:	390b3b0b          	0x390b3b0b
+  f6:	3813490b          	0x3813490b
+  fa:	0005                	c.addi	zero,1
+  fc:	1200                	c.addi4spn	s0,sp,288
+  fe:	0015                	c.addi	zero,5
+ 100:	00001927          	0x1927
+ 104:	27011513          	0x27011513
+    } else if (b == 2) {
+ 108:	4919                	c.li	s2,6
+ 10a:	00130113          	addi	sp,t1,1
+ 10e:	1400                	c.addi4spn	s0,sp,544
+ 110:	0005                	c.addi	zero,1
+ 112:	1349                	c.addi	t1,-14
+        for (int i = 0; i < 10; i++) {
+ 114:	0000                	c.unimp
+ 116:	2615                	c.jal	43a <main+0x386>
+ 118:	4900                	c.lw	s0,16(a0)
+ 11a:	16000013          	addi	zero,zero,352
+            a = a + 1;
+ 11e:	0e030113          	addi	sp,t1,224
+ 122:	0b3a050b          	0xb3a050b
+ 126:	0b39053b          	0xb39053b
+        for (int i = 0; i < 10; i++) {
+ 12a:	1301                	c.addi	t1,-32
+ 12c:	0000                	c.unimp
+ 12e:	03000d17          	auipc	s10,0x3000
+ 132:	3a0e                	c.fldsp	fs4,224(sp)
+ 134:	39053b0b          	0x39053b0b
+ 138:	3813490b          	0x3813490b
+ 13c:	1800000b          	0x1800000b
+ 140:	000d                	c.addi	zero,3
+ 142:	0b3a0e03          	lb	t3,179(s4)
+    } else if (b == 3) {
+ 146:	0b39053b          	0xb39053b
+ 14a:	1349                	c.addi	t1,-14
+ 14c:	0538                	c.addi4spn	a4,sp,648
+ 14e:	0000                	c.unimp
+        for (int i = 0; i < 10; i++) {
+ 150:	1319                	c.addi	t1,-26
+ 152:	0301                	c.addi	t1,0
+ 154:	0b0e                	c.slli	s6,0x3
+ 156:	3b0b3a0b          	0x3b0b3a0b
+            a = a + 1;
+ 15a:	3905                	c.jal	fffffd8a <_sp+0xfffefd8a>
+ 15c:	0013010b          	0x13010b
+ 160:	1a00                	c.addi4spn	s0,sp,304
+ 162:	0b0b0113          	addi	sp,s6,176
+        for (int i = 0; i < 10; i++) {
+ 166:	0b3a                	c.slli	s6,0xe
+ 168:	0b39053b          	0xb39053b
+ 16c:	1301                	c.addi	t1,-32
+ 16e:	0000                	c.unimp
+ 170:	0b01171b          	0xb01171b
+ 174:	3b0b3a0b          	0x3b0b3a0b
+ 178:	3905                	c.jal	fffffda8 <_sp+0xfffefda8>
+ 17a:	0013010b          	0x13010b
+ 17e:	1c00                	c.addi4spn	s0,sp,560
+    } else if (b == 4) {
+ 180:	000d                	c.addi	zero,3
+ 182:	0b3a0e03          	lb	t3,179(s4)
+ 186:	0b39053b          	0xb39053b
+ 18a:	1349                	c.addi	t1,-14
+        for (int i = 0; i < 100; i++) {
+ 18c:	0000                	c.unimp
+ 18e:	131d                	c.addi	t1,-25
+ 190:	0300                	c.addi4spn	s0,sp,384
+ 192:	3c0e                	c.fldsp	fs8,224(sp)
+            a = a + 1;
+ 194:	0019                	c.addi	zero,6
+ 196:	1e00                	c.addi4spn	s0,sp,816
+ 198:	0115                	c.addi	sp,5
+ 19a:	13011927          	0x13011927
+ 19e:	0000                	c.unimp
+        for (int i = 0; i < 100; i++) {
+ 1a0:	341f 0300 3a0e      	0x3a0e0300341f
+ 1a6:	39053b0b          	0x39053b0b
+ 1aa:	3f13490b          	0x3f13490b
+ 1ae:	3c19                	c.jal	fffffbc4 <_sp+0xfffefbc4>
+ 1b0:	0019                	c.addi	zero,6
+ 1b2:	2000                	c.fld	fs0,0(s0)
+ 1b4:	0034                	c.addi4spn	a3,sp,8
+ 1b6:	0b3a0e03          	lb	t3,179(s4)
+ 1ba:	0b390b3b          	0xb390b3b
+    } else if (b == 5) {
+ 1be:	1349                	c.addi	t1,-14
+ 1c0:	193c193f 2e210000 	0x2e210000193c193f
+        for (int i = 0; i < 50; i++) {
+ 1c8:	3f01                	c.jal	d8 <main+0x24>
+ 1ca:	0319                	c.addi	t1,6
+ 1cc:	3a0e                	c.fldsp	fs4,224(sp)
+ 1ce:	390b3b0b          	0x390b3b0b
+            a = a + 1;
+ 1d2:	4919270b          	0x4919270b
+ 1d6:	12011113          	0x12011113
+ 1da:	4006                	0x4006
+        for (int i = 0; i < 50; i++) {
+ 1dc:	9718                	0x9718
+ 1de:	1942                	c.slli	s2,0x30
+ 1e0:	0000                	c.unimp
+ 1e2:	3422                	c.fldsp	fs0,40(sp)
+ 1e4:	0300                	c.addi4spn	s0,sp,384
+ 1e6:	3a08                	c.fld	fa0,48(a2)
+ 1e8:	390b3b0b          	0x390b3b0b
+ 1ec:	0213490b          	0x213490b
+ 1f0:	0018                	0x18
+ 1f2:	2300                	c.fld	fs0,0(a4)
+ 1f4:	0111010b          	0x111010b
+    } else if (b == 6) {
+ 1f8:	0612                	c.slli	a2,0x4
+ 1fa:	1301                	c.addi	t1,-32
+ 1fc:	0000                	c.unimp
+ 1fe:	0b24                	c.addi4spn	s1,sp,408
+ 200:	1101                	c.addi	sp,-32
+ 202:	1201                	c.addi	tp,-32
+        for (int i = 0; i < 60; i++) {
+ 204:	0006                	c.slli	zero,0x1
+	...
+
+Disassembly of section .debug_aranges:
+
+00000000 <.debug_aranges>:
+    nop
+   0:	0024                	c.addi4spn	s1,sp,8
+   2:	0000                	c.unimp
+    la ra, exit
+   4:	0002                	c.slli64	zero
+   6:	0000                	c.unimp
+   8:	0000                	c.unimp
+   a:	0004                	0x4
+	...
+    mv s0, sp
+  14:	0090                	c.addi4spn	a2,sp,64
+  16:	0000                	c.unimp
+    la gp, __global_pointer$
+  18:	00a0                	c.addi4spn	s0,sp,72
+  1a:	0000                	c.unimp
+  1c:	0014                	0x14
+	...
+    li t0, 0
+  26:	0000                	c.unimp
+    li t1, 0
+  28:	001c                	0x1c
+  2a:	0000                	c.unimp
+    li t2, 0
+  2c:	0002                	c.slli64	zero
+  2e:	0022                	c.slli	zero,0x8
+    li s1, 0
+  30:	0000                	c.unimp
+  32:	0004                	0x4
+    li a0, 0
+  34:	0000                	c.unimp
+  36:	0000                	c.unimp
+    li a1, 0
+  38:	00b4                	c.addi4spn	a3,sp,72
+  3a:	0000                	c.unimp
+    li a2, 0
+  3c:	0730                	c.addi4spn	a2,sp,904
+	...
+
+Disassembly of section .debug_str:
+
+00000000 <.debug_str>:
+    nop
+   0:	7270                	c.flw	fa2,100(a2)
+   2:	6172676f          	jal	a4,26e18 <_sp+0x16e18>
+    la ra, exit
+   6:	736d                	c.lui	t1,0xffffb
+   8:	7472632f          	0x7472632f
+    la sp, _sp
+   c:	732e                	c.flwsp	ft6,232(sp)
+   e:	2f00                	c.fld	fs0,24(a4)
+  10:	2f6e                	c.fldsp	ft10,216(sp)
+  12:	6162                	c.flwsp	ft2,24(sp)
+    mv s0, sp
+  14:	7764                	c.flw	fs1,108(a4)
+  16:	7461                	c.lui	s0,0xffff8
+    la gp, __global_pointer$
+  18:	7265                	c.lui	tp,0xffff9
+  1a:	682f7a2f          	0x682f7a2f
+  1e:	7579                	c.lui	a0,0xffffe
+    li tp, 0
+  20:	776e                	c.flwsp	fa4,248(sp)
+  22:	442f6e6f          	jal	t3,f6464 <_sp+0xe6464>
+    li t0, 0
+  26:	6d75636f          	jal	t1,56efc <_sp+0x46efc>
+    li t1, 0
+  2a:	6e65                	c.lui	t3,0x19
+    li t2, 0
+  2c:	7374                	c.flw	fa3,100(a4)
+  2e:	49475f2f          	0x49475f2f
+    li s1, 0
+  32:	2f54                	c.fld	fa3,152(a4)
+    li a0, 0
+  34:	4545                	c.li	a0,17
+  36:	37355343          	fmadd.q	ft6,fa0,fs3,ft6,unknown
+    li a1, 0
+  3a:	4e470033          	0x4e470033
+    li a2, 0
+  3e:	2055                	c.jal	e2 <main+0x2e>
+    li a3, 0
+  40:	5341                	c.li	t1,-16
+  42:	3220                	c.fld	fs0,96(a2)
+    li a4, 0
+  44:	332e                	c.fldsp	ft6,232(sp)
+  46:	0034                	c.addi4spn	a3,sp,8
+    li a5, 0
+  48:	645f 6f73 685f      	0x685f6f73645f
+    li a6, 0
+  4e:	6e61                	c.lui	t3,0x18
+    li a7, 0
+  50:	6c64                	c.flw	fs1,92(s0)
+  52:	0065                	c.addi	zero,25
+    li s2, 0
+  54:	735f 7a69 0065      	0x657a69735f
+    li s3, 0
+  5a:	725f 6e61 3464      	0x34646e61725f
+    li s5, 0
+  60:	0038                	c.addi4spn	a4,sp,8
+  62:	655f 656d 6772      	0x6772656d655f
+    li s7, 0
+  68:	6e65                	c.lui	t3,0x19
+  6a:	5f007963          	bgeu	zero,a6,65c <main+0x5a8>
+    li s8, 0
+  6e:	6164                	c.flw	fs1,68(a0)
+    li s9, 0
+  70:	6174                	c.flw	fa3,68(a0)
+  72:	5f00                	c.lw	s0,56(a4)
+    li s10, 0
+  74:	74726377          	0x74726377
+    li s11, 0
+  78:	5f626d6f          	jal	s10,2666e <_sp+0x1666e>
+    li t3, 0
+  7c:	74617473          	csrrci	s0,0x746,2
+    li t4, 0
+  80:	0065                	c.addi	zero,25
+  82:	775f 7363 7472      	0x74727363775f
+    li t6, 0
+  88:	73626d6f          	jal	s10,267be <_sp+0x167be>
+    j main
+  8c:	735f 6174 6574      	0x65746174735f
+  92:	6c00                	c.flw	fs0,24(s0)
+  94:	20676e6f          	jal	t3,7629a <_sp+0x6629a>
+  98:	6f6c                	c.flw	fa1,92(a4)
+  9a:	676e                	c.flwsp	fa4,216(sp)
+  9c:	7520                	c.flw	fs0,104(a0)
+  9e:	736e                	c.flwsp	ft6,248(sp)
+    la sp, _sp
+  a0:	6769                	c.lui	a4,0x1a
+  a2:	656e                	c.flwsp	fa0,216(sp)
+  a4:	2064                	c.fld	fs1,192(s0)
+  a6:	6e69                	c.lui	t3,0x1a
+    sw a0, -8(sp)
+  a8:	0074                	c.addi4spn	a3,sp,12
+  aa:	6c5f 6662 6973      	0x697366626c5f
+    wfi
+  b0:	657a                	c.flwsp	fa0,156(sp)
+  b2:	5f00                	c.lw	s0,56(a4)
+{
+  b4:	6c5f 636f 6c61      	0x6c61636f6c5f
+  ba:	5f65                	c.li	t5,-7
+  bc:	0074                	c.addi4spn	a3,sp,12
+  be:	6d5f 7262 6f74      	0x6f7472626d5f
+    b = 20;
+  c4:	735f6377          	0x735f6377
+  c8:	6174                	c.flw	fa3,68(a0)
+  ca:	6574                	c.flw	fa3,76(a0)
+    if (b == 1) {
+  cc:	5f00                	c.lw	s0,56(a4)
+  ce:	6f746377          	0x6f746377
+  d2:	626d                	c.lui	tp,0x1b
+  d4:	735f 6174 6574      	0x65746174735f
+        for (int i = 0; i < 50; i++) {
+  da:	5f00                	c.lw	s0,56(a4)
+  dc:	745f 5f6d 6573      	0x65735f6d745f
+            a = a + 1;
+  e2:	6f6c0063          	beq	s8,s6,7c2 <main+0x70e>
+  e6:	676e                	c.flwsp	fa4,216(sp)
+  e8:	6c20                	c.flw	fs0,88(s0)
+  ea:	20676e6f          	jal	t3,762f0 <_sp+0x662f0>
+        for (int i = 0; i < 50; i++) {
+  ee:	6e69                	c.lui	t3,0x1a
+  f0:	0074                	c.addi4spn	a3,sp,12
+  f2:	755f 7562 0066      	0x667562755f
+  f8:	625f 7361 0065      	0x657361625f
+  fe:	5f5f 6d74 685f      	0x685f6d745f5f
+ 104:	0072756f          	jal	a0,2790a <_sp+0x1790a>
+    } else if (b == 2) {
+ 108:	5f5f 6673 5f00      	0x5f0066735f5f
+ 10e:	655f6e6f          	jal	t3,f6f62 <_sp+0xe6f62>
+ 112:	6978                	c.flw	fa4,84(a0)
+        for (int i = 0; i < 10; i++) {
+ 114:	5f74                	c.lw	a3,124(a4)
+ 116:	7261                	c.lui	tp,0xffff8
+ 118:	5f007367          	0x5f007367
+            a = a + 1;
+ 11c:	6b6f6f63          	bltu	t5,s6,7da <main+0x726>
+ 120:	6569                	c.lui	a0,0x1a
+ 122:	5f00                	c.lw	s0,56(a4)
+ 124:	735f 6c67 6575      	0x65756c67735f
+        for (int i = 0; i < 10; i++) {
+ 12a:	5f00                	c.lw	s0,56(a4)
+ 12c:	6c66                	c.flwsp	fs8,88(sp)
+ 12e:	6761                	c.lui	a4,0x18
+ 130:	695f0073          	0x695f0073
+ 134:	78635f73          	csrrwi	t5,0x786,6
+ 138:	0061                	c.addi	zero,24
+ 13a:	735f 6474 6e69      	0x6e696474735f
+ 140:	5f00                	c.lw	s0,56(a4)
+ 142:	6c62                	c.flwsp	fs8,24(sp)
+    } else if (b == 3) {
+ 144:	7a69736b          	0x7a69736b
+ 148:	0065                	c.addi	zero,25
+ 14a:	635f 7476 7562      	0x75627476635f
+        for (int i = 0; i < 10; i++) {
+ 150:	0066                	c.slli	zero,0x19
+ 152:	6f5f 6666 6573      	0x657366666f5f
+            a = a + 1;
+ 158:	0074                	c.addi4spn	a3,sp,12
+ 15a:	6d5f 7362 7472      	0x747273626d5f
+ 160:	7363776f          	jal	a4,37896 <_sp+0x27896>
+        for (int i = 0; i < 10; i++) {
+ 164:	735f 6174 6574      	0x65746174735f
+ 16a:	5f00                	c.lw	s0,56(a4)
+ 16c:	626d                	c.lui	tp,0x1b
+ 16e:	6c72                	c.flwsp	fs8,28(sp)
+ 170:	6e65                	c.lui	t3,0x19
+ 172:	735f 6174 6574      	0x65746174735f
+ 178:	5f00                	c.lw	s0,56(a4)
+ 17a:	6e66                	c.flwsp	ft8,88(sp)
+ 17c:	7261                	c.lui	tp,0xffff8
+ 17e:	5f007367          	0x5f007367
+    } else if (b == 4) {
+ 182:	6e66                	c.flwsp	ft8,88(sp)
+ 184:	735f0073          	0x735f0073
+ 188:	6769                	c.lui	a4,0x1a
+ 18a:	006e                	c.slli	zero,0x1b
+        for (int i = 0; i < 100; i++) {
+ 18c:	665f 6f6c 6b63      	0x6b636f6c665f
+ 192:	745f 5f00 7473      	0x74735f00745f
+            a = a + 1;
+ 198:	6564                	c.flw	fs1,76(a0)
+ 19a:	7272                	c.flwsp	ft4,60(sp)
+ 19c:	5f00                	c.lw	s0,56(a4)
+ 19e:	6942                	c.flwsp	fs2,16(sp)
+        for (int i = 0; i < 100; i++) {
+ 1a0:	746e6967          	0x746e6967
+ 1a4:	5f00                	c.lw	s0,56(a4)
+ 1a6:	6d6d6167          	0x6d6d6167
+ 1aa:	5f61                	c.li	t5,-8
+ 1ac:	6e676973          	csrrsi	s2,0x6e6,14
+ 1b0:	006d6167          	0x6d6167
+ 1b4:	725f 6165 0064      	0x646165725f
+ 1ba:	725f 7365 6c75      	0x6c757365725f
+    } else if (b == 5) {
+ 1c0:	5f74                	c.lw	a3,124(a4)
+ 1c2:	5f5f006b          	0x5f5f006b
+ 1c6:	6d74                	c.flw	fa3,92(a0)
+        for (int i = 0; i < 50; i++) {
+ 1c8:	5f00                	c.lw	s0,56(a4)
+ 1ca:	775f 6863 0062      	0x626863775f
+            a = a + 1;
+ 1d0:	735f 6474 756f      	0x756f6474735f
+ 1d6:	0074                	c.addi4spn	a3,sp,12
+ 1d8:	635f 7476 656c      	0x656c7476635f
+        for (int i = 0; i < 50; i++) {
+ 1de:	006e                	c.slli	zero,0x1b
+ 1e0:	665f 6c69 0065      	0x656c69665f
+ 1e6:	6e5f 6f69 7362      	0x73626f696e5f
+ 1ec:	7300                	c.flw	fs0,32(a4)
+ 1ee:	6f68                	c.flw	fa0,92(a4)
+ 1f0:	7472                	c.flwsp	fs0,60(sp)
+ 1f2:	7520                	c.flw	fs0,104(a0)
+ 1f4:	736e                	c.flwsp	ft6,248(sp)
+ 1f6:	6769                	c.lui	a4,0x1a
+    } else if (b == 6) {
+ 1f8:	656e                	c.flwsp	fa0,216(sp)
+ 1fa:	2064                	c.fld	fs1,192(s0)
+ 1fc:	6e69                	c.lui	t3,0x1a
+ 1fe:	0074                	c.addi4spn	a3,sp,12
+ 200:	615f 6574 6978      	0x69786574615f
+        for (int i = 0; i < 60; i++) {
+ 206:	3074                	c.fld	fa3,224(s0)
+ 208:	5f00                	c.lw	s0,56(a4)
+ 20a:	6e676973          	csrrsi	s2,0x6e6,14
+            a = a + 1;
+ 20e:	6c61                	c.lui	s8,0x18
+ 210:	625f 6675 5f00      	0x5f006675625f
+ 216:	7361                	c.lui	t1,0xffff8
+        for (int i = 0; i < 60; i++) {
+ 218:	6d697463          	bgeu	s2,s6,8e0 <_ebss+0xa0>
+ 21c:	5f65                	c.li	t5,-7
+ 21e:	7562                	c.flwsp	fa0,56(sp)
+ 220:	0066                	c.slli	zero,0x19
+ 222:	725f 7365 6c75      	0x6c757365725f
+ 228:	0074                	c.addi4spn	a3,sp,12
+ 22a:	5f5f 6377 0068      	0x6863775f5f
+ 230:	746e6977          	0x746e6977
+    } else if (b == 7) {
+ 234:	745f 5f00 6f6c      	0x6f6c5f00745f
+ 23a:	5f006b63          	bltu	zero,a6,830 <main+0x77c>
+ 23e:	6c66                	c.flwsp	fs8,88(sp)
+        for (int i = 0; i < 70; i++) {
+ 240:	6761                	c.lui	a4,0x18
+ 242:	5f003273          	csrrc	tp,0x5f0,zero
+ 246:	74697277          	0x74697277
+            a = a + 1;
+ 24a:	0065                	c.addi	zero,25
+ 24c:	5f5f 6d74 795f      	0x795f6d745f5f
+ 252:	6165                	c.addi16sp	sp,112
+        for (int i = 0; i < 70; i++) {
+ 254:	0072                	c.slli	zero,0x1c
+ 256:	6e5f 616d 6c6c      	0x6c6c616d6e5f
+ 25c:	6c00636f          	jal	t1,691c <__global_pointer$+0x591c>
+ 260:	20676e6f          	jal	t3,76466 <_sp+0x66466>
+ 264:	6f64                	c.flw	fs1,92(a4)
+ 266:	6275                	c.lui	tp,0x1d
+ 268:	656c                	c.flw	fa1,76(a0)
+ 26a:	5f00                	c.lw	s0,56(a4)
+ 26c:	656e                	c.flwsp	fa0,216(sp)
+ 26e:	7478                	c.flw	fa4,108(s0)
+    } else if (b == 8) {
+ 270:	0066                	c.slli	zero,0x19
+ 272:	5f5f 6d74 6d5f      	0x6d5f6d745f5f
+ 278:	5f006e6f          	jal	t3,6868 <__global_pointer$+0x5868>
+        for (int i = 0; i < 80; i++) {
+ 27c:	7461                	c.lui	s0,0xffff8
+ 27e:	7865                	c.lui	a6,0xffff9
+ 280:	7469                	c.lui	s0,0xffffa
+ 282:	7300                	c.flw	fs0,32(a4)
+            a = a + 1;
+ 284:	6275                	c.lui	tp,0x1d
+ 286:	6174706f          	jal	zero,4809c <_sp+0x3809c>
+ 28a:	6772                	c.flwsp	fa4,28(sp)
+ 28c:	5f00                	c.lw	s0,56(a4)
+ 28e:	735f 6964 6964      	0x69646964735f
+        for (int i = 0; i < 80; i++) {
+ 294:	696e                	c.flwsp	fs2,216(sp)
+ 296:	0074                	c.addi4spn	a3,sp,12
+ 298:	6f5f 6666 745f      	0x745f66666f5f
+ 29e:	5f00                	c.lw	s0,56(a4)
+ 2a0:	7266                	c.flwsp	ft4,120(sp)
+ 2a2:	6565                	c.lui	a0,0x19
+ 2a4:	696c                	c.flw	fa1,84(a0)
+ 2a6:	5f007473          	csrrci	s0,0x5f0,0
+ 2aa:	4f4c                	c.lw	a1,28(a4)
+    } else if (b == 9) {
+ 2ac:	525f4b43          	fmadd.d	fs6,ft10,ft5,fa0,rmm
+ 2b0:	4345                	c.li	t1,17
+ 2b2:	5255                	c.li	tp,-11
+ 2b4:	45564953          	0x45564953
+        for (int i = 0; i < 90; i++) {
+ 2b8:	545f 7500 736e      	0x736e7500545f
+ 2be:	6769                	c.lui	a4,0x1a
+            a = a + 1;
+ 2c0:	656e                	c.flwsp	fa0,216(sp)
+ 2c2:	2064                	c.fld	fs1,192(s0)
+ 2c4:	72616863          	bltu	sp,t1,9f4 <_ebss+0x1b4>
+ 2c8:	5f00                	c.lw	s0,56(a4)
+ 2ca:	656e                	c.flwsp	fa0,216(sp)
+        for (int i = 0; i < 90; i++) {
+ 2cc:	4e470077          	0x4e470077
+ 2d0:	2055                	c.jal	374 <main+0x2c0>
+ 2d2:	20313143          	fmadd.s	ft2,ft2,ft3,ft4,rup
+ 2d6:	2e39                	c.jal	5f4 <main+0x540>
+ 2d8:	2e32                	c.fldsp	ft8,264(sp)
+ 2da:	2030                	c.fld	fa2,64(s0)
+ 2dc:	6d2d                	c.lui	s10,0xb
+ 2de:	6f6e                	c.flwsp	ft10,216(sp)
+ 2e0:	722d                	c.lui	tp,0xfffeb
+ 2e2:	6c65                	c.lui	s8,0x19
+ 2e4:	7861                	c.lui	a6,0xffff8
+ 2e6:	2d20                	c.fld	fs0,88(a0)
+    } else if (b == 10) {
+ 2e8:	616d                	c.addi16sp	sp,240
+ 2ea:	6372                	c.flwsp	ft6,28(sp)
+ 2ec:	3d68                	c.fld	fa0,248(a0)
+ 2ee:	7672                	c.flwsp	fa2,60(sp)
+ 2f0:	6d693233          	0x6d693233
+        for (int i = 0; i < 100; i++) {
+ 2f4:	2d20                	c.fld	fs0,88(a0)
+ 2f6:	616d                	c.addi16sp	sp,240
+ 2f8:	6962                	c.flwsp	fs2,24(sp)
+ 2fa:	693d                	c.lui	s2,0xf
+            a = a + 1;
+ 2fc:	706c                	c.flw	fa1,100(s0)
+ 2fe:	2d203233          	0x2d203233
+ 302:	736d                	c.lui	t1,0xffffb
+ 304:	7274                	c.flw	fa3,100(a2)
+ 306:	6369                	c.lui	t1,0x1a
+        for (int i = 0; i < 100; i++) {
+ 308:	2d74                	c.fld	fa3,216(a0)
+ 30a:	6c61                	c.lui	s8,0x18
+ 30c:	6769                	c.lui	a4,0x1a
+ 30e:	206e                	c.fldsp	ft0,216(sp)
+ 310:	6d2d                	c.lui	s10,0xb
+ 312:	6f6e                	c.flwsp	ft10,216(sp)
+ 314:	642d                	c.lui	s0,0xb
+ 316:	7669                	c.lui	a2,0xffffa
+ 318:	2d20                	c.fld	fs0,88(a0)
+ 31a:	746d                	c.lui	s0,0xffffb
+ 31c:	6e75                	c.lui	t3,0x1d
+ 31e:	3d65                	c.jal	1d6 <main+0x122>
+ 320:	6f72                	c.flwsp	ft10,28(sp)
+ 322:	74656b63          	bltu	a0,t1,a78 <_ebss+0x238>
+    } else if (b == 11) {
+ 326:	2d20                	c.fld	fs0,88(a0)
+ 328:	4f2d2067          	0x4f2d2067
+ 32c:	2030                	c.fld	fa2,64(s0)
+ 32e:	732d                	c.lui	t1,0xfffeb
+        for (int i = 0; i < 110; i++) {
+ 330:	6474                	c.flw	fa3,76(s0)
+ 332:	673d                	c.lui	a4,0xf
+ 334:	756e                	c.flwsp	fa0,248(sp)
+ 336:	3131                	c.jal	ffffff42 <_sp+0xfffeff42>
+            a = a + 1;
+ 338:	5f00                	c.lw	s0,56(a4)
+ 33a:	5f68                	c.lw	a0,124(a4)
+ 33c:	7265                	c.lui	tp,0xffff9
+ 33e:	6e72                	c.flwsp	ft8,28(sp)
+ 340:	6873006f          	jal	zero,311c6 <_sp+0x211c6>
+        for (int i = 0; i < 110; i++) {
+ 344:	2074726f          	jal	tp,47d4a <_sp+0x37d4a>
+ 348:	6e69                	c.lui	t3,0x1a
+ 34a:	0074                	c.addi4spn	a3,sp,12
+ 34c:	5f5f 6d74 795f      	0x795f6d745f5f
+ 352:	6164                	c.flw	fs1,68(a0)
+ 354:	0079                	c.addi	zero,30
+ 356:	5f5f 6273 6675      	0x667562735f5f
+ 35c:	5f00                	c.lw	s0,56(a4)
+ 35e:	6f69                	c.lui	t5,0x1a
+    } else if (b == 12) {
+ 360:	7362                	c.flwsp	ft6,56(sp)
+ 362:	5f00                	c.lw	s0,56(a4)
+ 364:	465f 4c49 0045      	0x454c49465f
+ 36a:	6d5f 7362 6174      	0x617473626d5f
+        for (int i = 0; i < 120; i++) {
+ 370:	6574                	c.flw	fa3,76(a0)
+ 372:	745f 5f00 735f      	0x735f5f00745f
+            a = a + 1;
+ 378:	4946                	c.lwsp	s2,80(sp)
+ 37a:	454c                	c.lw	a1,12(a0)
+ 37c:	5f00                	c.lw	s0,56(a4)
+ 37e:	626d                	c.lui	tp,0x1b
+        for (int i = 0; i < 120; i++) {
+ 380:	74617473          	csrrci	s0,0x746,2
+ 384:	0065                	c.addi	zero,25
+ 386:	725f 6e61 5f64      	0x5f646e61725f
+ 38c:	656e                	c.flwsp	fa0,216(sp)
+ 38e:	7478                	c.flw	fa4,108(s0)
+ 390:	5f00                	c.lw	s0,56(a4)
+ 392:	626d                	c.lui	tp,0x1b
+ 394:	656c                	c.flw	fa1,76(a0)
+ 396:	5f6e                	c.lwsp	t5,248(sp)
+ 398:	74617473          	csrrci	s0,0x746,2
+    } else if (b == 13) {
+ 39c:	0065                	c.addi	zero,25
+ 39e:	695f 636e 5f00      	0x5f00636e695f
+ 3a4:	6e69                	c.lui	t3,0x1a
+ 3a6:	0064                	c.addi4spn	s1,sp,12
+        for (int i = 0; i < 130; i++) {
+ 3a8:	6c5f 636f 6c61      	0x6c61636f6c5f
+ 3ae:	0065                	c.addi	zero,25
+            a = a + 1;
+ 3b0:	5f5f 6c63 6165      	0x61656c635f5f
+ 3b6:	756e                	c.flwsp	fa0,248(sp)
+ 3b8:	0070                	c.addi4spn	a2,sp,12
+ 3ba:	755f 736e 6570      	0x6570736e755f
+        for (int i = 0; i < 130; i++) {
+ 3c0:	69666963          	bltu	a2,s6,a52 <_ebss+0x212>
+ 3c4:	6465                	c.lui	s0,0x19
+ 3c6:	6c5f 636f 6c61      	0x6c61636f6c5f
+ 3cc:	5f65                	c.li	t5,-7
+ 3ce:	6e69                	c.lui	t3,0x1a
+ 3d0:	6f66                	c.flwsp	ft10,88(sp)
+ 3d2:	5f00                	c.lw	s0,56(a4)
+ 3d4:	616d                	c.addi16sp	sp,240
+ 3d6:	7778                	c.flw	fa4,108(a4)
+    } else if (b == 14) {
+ 3d8:	7364                	c.flw	fs1,100(a4)
+ 3da:	5f00                	c.lw	s0,56(a4)
+ 3dc:	6572                	c.flwsp	fa0,28(sp)
+ 3de:	6e65                	c.lui	t3,0x19
+ 3e0:	0074                	c.addi4spn	a3,sp,12
+ 3e2:	7270                	c.flw	fa2,100(a2)
+        for (int i = 0; i < 140; i++) {
+ 3e4:	6172676f          	jal	a4,271fa <_sp+0x171fa>
+ 3e8:	736d                	c.lui	t1,0xffffb
+ 3ea:	6863732f          	0x6863732f
+            a = a + 1;
+ 3ee:	6465                	c.lui	s0,0x19
+ 3f0:	6c75                	c.lui	s8,0x1d
+ 3f2:	7265                	c.lui	tp,0xffff9
+ 3f4:	00632e33          	slt	t3,t1,t1
+        for (int i = 0; i < 140; i++) {
+ 3f8:	5f5f 6f63 6e75      	0x6e756f635f5f
+ 3fe:	0074                	c.addi4spn	a3,sp,12
+ 400:	5f5f 6176 756c      	0x756c61765f5f
+ 406:	0065                	c.addi	zero,25
+ 408:	735f 6565 006b      	0x6b6565735f
+ 40e:	665f 6f70 5f73      	0x5f736f70665f
+    } else if (b == 15) {
+ 414:	0074                	c.addi4spn	a3,sp,12
+ 416:	5f5f 6d74 6d5f      	0x6d5f6d745f5f
+ 41c:	6e69                	c.lui	t3,0x1a
+ 41e:	5f00                	c.lw	s0,56(a4)
+        for (int i = 0; i < 150; i++) {
+ 420:	64656573          	csrrsi	a0,0x646,10
+ 424:	5f00                	c.lw	s0,56(a4)
+ 426:	756d                	c.lui	a0,0xffffb
+            a = a + 1;
+ 428:	746c                	c.flw	fa1,108(s0)
+ 42a:	5f00                	c.lw	s0,56(a4)
+ 42c:	74727473          	csrrci	s0,0x747,4
+ 430:	6c5f6b6f          	jal	s6,f72f4 <_sp+0xe72f4>
+        for (int i = 0; i < 150; i++) {
+ 434:	7361                	c.lui	t1,0xffff8
+ 436:	0074                	c.addi4spn	a3,sp,12
+ 438:	665f 746e 7079      	0x7079746e665f
+ 43e:	7365                	c.lui	t1,0xffff9
+ 440:	5f00                	c.lw	s0,56(a4)
+ 442:	6461                	c.lui	s0,0x18
+ 444:	0064                	c.addi4spn	s1,sp,12
+ 446:	5f5f 4c55 6e6f      	0x6e6f4c555f5f
+ 44c:	675f0067          	jalr	zero,1653(t5) # 1a675 <_sp+0xa675>
+    } else if (b == 16) {
+ 450:	7465                	c.lui	s0,0xffff9
+ 452:	6164                	c.flw	fs1,68(a0)
+ 454:	6574                	c.flw	fa3,76(a0)
+ 456:	655f 7272 5f00      	0x5f007272655f
+        for (int i = 0; i < 160; i++) {
+ 45c:	626f6c67          	0x626f6c67
+ 460:	6c61                	c.lui	s8,0x18
+ 462:	695f 706d 7275      	0x7275706d695f
+            a = a + 1;
+ 468:	5f65                	c.li	t5,-7
+ 46a:	7470                	c.flw	fa2,108(s0)
+ 46c:	0072                	c.slli	zero,0x1c
+ 46e:	755f 756e 6573      	0x6573756e755f
+        for (int i = 0; i < 160; i++) {
+ 474:	5f64                	c.lw	s1,124(a4)
+ 476:	6172                	c.flwsp	ft2,28(sp)
+ 478:	646e                	c.flwsp	fs0,216(sp)
+ 47a:	5f00                	c.lw	s0,56(a4)
+ 47c:	00736477          	0x736477
+ 480:	5f5f 6d74 775f      	0x775f6d745f5f
+ 486:	6164                	c.flw	fs1,68(a0)
+ 488:	0079                	c.addi	zero,30
+ 48a:	675f 756c 0065      	0x65756c675f
+    } else if (b == 17) {
+ 490:	735f 6973 657a      	0x657a6973735f
+ 496:	745f 5f00 366c      	0x366c5f00745f
+        for (int i = 0; i < 170; i++) {
+ 49c:	6134                	c.flw	fa3,64(a0)
+ 49e:	625f 6675 5f00      	0x5f006675625f
+            a = a + 1;
+ 4a4:	5f676973          	csrrsi	s2,0x5f6,14
+ 4a8:	7566                	c.flwsp	fa0,120(sp)
+ 4aa:	636e                	c.flwsp	ft6,216(sp)
+        for (int i = 0; i < 170; i++) {
+ 4ac:	5f00                	c.lw	s0,56(a4)
+ 4ae:	626e                	c.flwsp	ft4,216(sp)
+ 4b0:	6675                	c.lui	a2,0x1d
+ 4b2:	5f00                	c.lw	s0,56(a4)
+ 4b4:	6e75                	c.lui	t3,0x1d
+ 4b6:	7375                	c.lui	t1,0xffffd
+ 4b8:	6465                	c.lui	s0,0x19
+ 4ba:	5f00                	c.lw	s0,56(a4)
+ 4bc:	745f 5f6d 7369      	0x73695f6d745f
+ 4c2:	7364                	c.flw	fs1,100(a4)
+ 4c4:	0074                	c.addi4spn	a3,sp,12
+ 4c6:	6c5f 636f 6c61      	0x6c61636f6c5f
+    } else if (b == 18) {
+ 4cc:	6974                	c.flw	fa3,84(a0)
+ 4ce:	656d                	c.lui	a0,0x1b
+ 4d0:	625f 6675 5f00      	0x5f006675625f
+        for (int i = 0; i < 180; i++) {
+ 4d6:	736f6c63          	bltu	t5,s6,c0e <_ebss+0x3ce>
+ 4da:	0065                	c.addi	zero,25
+            a = a + 1;
+ 4dc:	725f 3834 5f00      	0x5f003834725f
+ 4e2:	626d                	c.lui	tp,0x1b
+ 4e4:	6f74                	c.flw	fa3,92(a4)
+ 4e6:	735f6377          	0x735f6377
+        for (int i = 0; i < 180; i++) {
+ 4ea:	6174                	c.flw	fa3,68(a0)
+ 4ec:	6574                	c.flw	fa3,76(a0)
+ 4ee:	5f00                	c.lw	s0,56(a4)
+ 4f0:	3570                	c.fld	fa2,232(a0)
+ 4f2:	616d0073          	0x616d0073
+ 4f6:	6e69                	c.lui	t3,0x1a
+ 4f8:	5f00                	c.lw	s0,56(a4)
+ 4fa:	745f 5f6d 646d      	0x646d5f6d745f
+ 500:	7961                	c.lui	s2,0xffff8
+	...
+
+Disassembly of section .debug_ranges:
+
+00000000 <.debug_ranges>:
+    nop
+   0:	ffff                	0xffff
+   2:	ffff                	0xffff
+	...
+    la sp, _sp
+   c:	0090                	c.addi4spn	a2,sp,64
+   e:	0000                	c.unimp
+  10:	00a0                	c.addi4spn	s0,sp,72
+  12:	0000                	c.unimp
+    mv s0, sp
+  14:	00b4                	c.addi4spn	a3,sp,72
+	...
+
+Disassembly of section .debug_frame:
+
+00000000 <.debug_frame>:
+    nop
+   0:	000c                	0xc
+   2:	0000                	c.unimp
+    la ra, exit
+   4:	ffff                	0xffff
+   6:	ffff                	0xffff
+   8:	7c010003          	lb	zero,1984(sp) # b0b081a <_sp+0xb0a081a>
+    la sp, _sp
+   c:	0d01                	c.addi	s10,0
+   e:	0002                	c.slli64	zero
+  10:	0024                	c.addi4spn	s1,sp,8
+  12:	0000                	c.unimp
+    mv s0, sp
+  14:	0000                	c.unimp
+  16:	0000                	c.unimp
+    la gp, __global_pointer$
+  18:	00b4                	c.addi4spn	a3,sp,72
+  1a:	0000                	c.unimp
+  1c:	0730                	c.addi4spn	a2,sp,904
+  1e:	0000                	c.unimp
+    li tp, 0
+  20:	0e44                	c.addi4spn	s1,sp,788
+  22:	0190                	c.addi4spn	a2,sp,192
+    li t0, 0
+  24:	8844                	0x8844
+  26:	4401                	c.li	s0,0
+    li t1, 0
+  28:	080c                	c.addi4spn	a1,sp,16
+  2a:	0300                	c.addi4spn	s0,sp,384
+    li t2, 0
+  2c:	071c                	c.addi4spn	a5,sp,896
+  2e:	0cc8                	c.addi4spn	a0,sp,596
+    li s1, 0
+  30:	9002                	c.ebreak
+  32:	4401                	c.li	s0,0
+    li a0, 0
+  34:	000e                	c.slli	zero,0x3
+	...

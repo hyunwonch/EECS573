@@ -12,60 +12,41 @@
 # reference table of all make targets:
 
 # make  <- runs the default target, set explicitly below as 'make no_hazard.out'
-.DEFAULT_GOAL = mult.pass
+.DEFAULT_GOAL = no_hazard.out
 # ^ this overrides using the first listed target as the default
 
-# ---- Module Testbenches ---- #
-# NOTE: these require files like: 'verilog/rob.sv' and 'test/rob_test.sv'
-#       which implement and test the module: 'rob'
-
-# make <module>.pass   <- greps for "@@@ Passed" or "@@@ Failed" in the output
-# make <module>.out    <- run the testbench (via build/<module>.simv)
-# make <module>.verdi  <- run in verdi (via <module>.simv)
-# make build/<module>.simv  <- compile the testbench executable
-
-# make <module>.syn.pass   <- greps for "@@@ Passed" or "@@@ Failed" in the output
-# make <module>.syn.out    <- run the synthesized module on the testbench
-# make <module>.syn.verdi  <- run in verdi (via <module>.syn.simv)
-# make synth/<module>.vg        <- synthesize the module
-# make build/<module>.syn.simv  <- compile the synthesized module with the testbench
-
-# make slack     <- grep the slack status of any synthesized modules
-
-# ---- module testbench coverage ---- #
-# make <module>.cov        <- print the coverage hierarchy report to the terminal
-# make <module>.cov.verdi  <- open the coverage report in verdi
-# make build/<module>.cov.simv  <- compiles a coverage executable for the testbench
-# make build/<module>.cov.vdb   <- runs the executable and makes a coverage output dir
-# make cov_report_<module>      <- run urg to create human readable coverage reports
-
 # ---- Program Execution ---- #
-# These are your main commands for running programs and generating output
-# make <my_program>.out      <- run a program on build/cpu.simv and output *.out, *.cpi, *.wb, and *.ppln files
-# make <my_program>.syn.out  <- run a program on build/cpu.syn.simv and do the same
+# these are your main commands for running programs and generating output
+# make <my_program>.out      <- run a program on simv and output .out, .cpi, .wb, and .ppln files
+# make <my_program>.syn.out  <- run a program on syn.simv and do the same
 # make simulate_all          <- run every program on simv at once (in parallel with -j)
-# make simulate_all_syn      <- run every program on syn_simv at once (in parallel with -j)
+# make simulate_all.syn      <- run every program on syn.simv at once (in parallel with -j)
 
 # ---- Executable Compilation ---- #
-# make simv      <- compiles build/cpu.simv from the CPU_TESTBENCH and CPU_SOURCES
-# make syn_simv  <- compiles syn_simv from CPU_TESTBENCH and CPU_SYNTH
-# make synth/cpu.vg  <- synthesize modules in CPU_SOURCES for use in syn_simv
+# make build/simv      <- compiles simv from the TESTBENCH and SOURCES
+# make build/syn.simv  <- compiles syn.simv from TESTBENCH and SYNTH_FILES
+# make synth/*.vg      <- synthesize modules in SOURCES for use in syn.simv
+# make slack           <- grep the slack status of any synthesized modules
 
 # ---- Program Memory Compilation ---- #
-# Programs to run are in the programs/ directory
-# make programs/<my_program>.mem  <- compile a program to a RISC-V memory file
-# make compile_all                <- compile every program at once (in parallel with -j)
+# NOTE: programs to run are in the programs/ directory
+# make programs/mem/<my_program>.mem  <- compiles a program to a RISC-V memory file for running on the processor
+# make compile_all                    <- compile every program at once (in parallel with -j)
 
 # ---- Dump Files ---- #
-# make <my_program>.dump  <- disassembles compiled memory into RISC-V assembly dump files
-# make *.debug.dump       <- for a .c program, creates dump files with a debug flag
+# make <my_program>.dump  <- disassembles <my_program>.mem into .dump_x and .dump_abi RISC-V assembly files
+# make *.debug.dump       <- for a .c program, creates dump files after compiling with a debug flag
 # make programs/<my_program>.dump_x    <- numeric dump files use x0-x31 as register names
 # make programs/<my_program>.dump_abi  <- abi dump files use the abi register names (sp, a0, etc.)
 # make dump_all  <- create all dump files at once (in parallel with -j)
 
 # ---- Verdi ---- #
-# make <my_program>.verdi     <- run a program in verdi via build/cpu.simv
-# make <my_program>.syn.verdi <- run a program in verdi via build/cpu.syn.simv
+# make <my_program>.verdi     <- run a program in verdi via simv
+# make <my_program>.syn.verdi <- run a program in verdi via syn.simv
+
+# ---- Visual Debugger ---- #
+# make <my_program>.vis  <- run a program on the project 3 vtuber visual debugger!
+# make build/vis.simv    <- compile the vtuber executable from VTUBER and SOURCES
 
 # ---- Cleanup ---- #
 # make clean            <- remove per-run files and compiled executable files
@@ -96,20 +77,21 @@
 # there should be no need to change anything for project 3
 
 # this is a global clock period variable used in the tcl script and referenced in testbenches
-# uncomment this to use with testrunner.sh
-# export N = 4
-
+export CLOCK_PERIOD = 30.0
 
 # the Verilog Compiler command and arguments
-VCS =  vcs -sverilog -xprop=tmerge +vc -Mupdate -Mdir=build/csrc -line -full64 -kdb -lca -nc \
-      -debug_access+all+reverse -debug_region+cell+lib +memcbk $(VCS_BAD_WARNINGS) \
-      +incdir+verilog/
+VCS = vcs -sverilog -xprop=tmerge +vc -Mupdate -Mdir=build/csrc -line -full64 -kdb -lca -nc \
+      -debug_access+all+reverse $(VCS_BAD_WARNINGS) +define+CLOCK_PERIOD=$(CLOCK_PERIOD) +incdir+verilog/
 # a SYNTH define is added when compiling for synthesis that can be used in testbenches
-
-RUN_VERDI = -gui=verdi -verdi_opts "-ultra"
 
 # remove certain warnings that generate MB of text but can be safely ignored
 VCS_BAD_WARNINGS = +warn=noTFIPC +warn=noDEBUG_DEP +warn=noENUMASSIGN +warn=noLCA_FEATURES_ENABLED
+
+# a reference library of standard structural cells that we link against when synthesizing
+LIB = /usr/caen/misc/class/eecs470/lib/verilog/lec25dscc25.v
+
+# the EECS 470 synthesis script
+TCL_SCRIPT = 470synth.tcl
 
 # Set the shell's pipefail option: causes return values through pipes to match the last non-zero value
 # (useful for, i.e. piping to `tee`)
@@ -145,267 +127,69 @@ else
     ELF2HEX = elf2hex
 endif
 
-GREP = grep -E --color=auto
-
-####################################
-# ---- Milestone 1 Submission ---- #
-####################################
-
-# Update this section with your main module for milestone 1
-
-# The autograder will give some feedback if you output "@@@ Passed" and "@@@ Failed"
-# This is mostly so you can know that your module builds and runs on the ag
-# Your actual milestone 1 grade will be done manually
-
-# MS_1_MODULE = cpu
-
-# autograder_milestone_1_simulation: $(MS_1_MODULE).out ;
-# autograder_milestone_1_synthesis: $(MS_1_MODULE).syn.out ;
-# autograder_milestone_1_coverage: $(MS_1_MODULE).cov ;
-# .PHONY: autograder_%
-
-################################
-# ---- Module Testbenches ---- #
-################################
-
-# This section adds Make targets for running individual module testbenches
-# It requires using the following naming convention:
-# 1. the source file: 'verilog/rob.sv'
-# 2. should declare a module: 'rob'
-# 3. with a testbench file: 'test/rob_test.sv'
-# 4. and added to the MODULES variable as: 'rob'
-# 5. with extra sources specified for: 'build/rob.simv', 'build/rob.cov', and 'synth/rob.vg'
-
-
-# This allows you to use the following make targets:
-
-# Simulation
-# make <module>.pass   <- greps for "@@@ Passed" or "@@@ Failed" in the output
-# make <module>.out    <- run the testbench (via build/<module>.simv)
-# make <module>.verdi  <- run in verdi (via <module>.simv)
-# make build/<module>.simv  <- compile the testbench executable
-
-# Synthesis
-# make <module>.syn.pass   <- greps for "@@@ Passed" or "@@@ Failed" in the output
-# make <module>.syn.out    <- run the synthesized module on the testbench
-# make <module>.syn.verdi  <- run in verdi (via <module>.syn.simv)
-# make synth/<module>.vg        <- synthesize the module
-# make build/<module>.syn.simv  <- compile the synthesized module with the testbench
-
-# We have also added targets for checking testbench coverage:
-
-# make <module>.cov        <- print the coverage hierarchy report to the terminal
-# make <module>.cov.verdi  <- open the coverage report in verdi
-# make build/<module>.cov.simv  <- compiles a coverage executable for the testbench
-# make build/<module>.cov.vdb   <- runs the executable and makes a coverage output dir
-# make cov_report_<module>      <- run urg to create human readable coverage reports
-
-# ---- Modules to Test ---- #
-
-MODULES = cpu
-
-# MODULES = cpu r10k mult rob rs fu issue bpred binary_encoder freelist maptable allocation backend psel_gen_msb frontend \
-# 			icache mshr dcache victim_cache lsq icache2	dcache_wrapper frontend_mem
-
-ALL_HEADERS = $(CPU_HEADERS)
-
-##################################
-# ---- Main R10K Definition ---- #
-##################################
-
-CPU_FILES = verilog/sys_defs.svh		\
-			verilog/decoder.sv			\
-			verilog/bpred.sv			\
-			verilog/bpred2.sv			\
-			verilog/psel_gen.sv 		\
-			verilog/regfile.sv  		\
-			verilog/ROB_FIFO.sv 		\
-			verilog/frontend.sv			\
-			verilog/rs.sv				\
-			verilog/rob.sv				\
-			verilog/backend.sv			\
-			verilog/psel_gen_msb.sv 	\
-			verilog/regfile.sv 			\
-			verilog/memDP.sv     		\
-			verilog/mult.sv      		\
-			verilog/execute.sv     		\
-			verilog/issue.sv     		\
-			verilog/writeback.sv		\
-			verilog/maptable.sv			\
-			verilog/binary_encoder.sv	\
-			verilog/branchfu.sv			\
-			verilog/freelist.sv			\
-			verilog/dcache.sv			\
-			verilog/dcache_wrapper.sv	\
-			verilog/lsq.sv				\
-			verilog/frontend_mem.sv		\
-			verilog/mshr.sv				\
-			verilog/mshr_icache.sv		\
-			verilog/icache.sv
-
-CPU_TESTBENCH = 	test/pipeline_print.c \
-					test/decode_inst.c \
-					test/decode_avail.c \
-					test/mem.sv
-
-build/cpu.simv: $(CPU_FILES) $(CPU_TESTBENCH)
-build/cpu.cov: $(CPU_FILES) $(CPU_TESTBENCH)
-synth/cpu.vg: $(CPU_FILES)
-build/cpu.syn.simv: $(CPU_TESTBENCH)
-build/cpu.debug.simv: $(CPU_FILES) $(CPU_TESTBENCH)
-
-
-#################################
-# ---- Main CPU Definition ---- #
-#################################
-
-# We also reuse this section to compile the cpu, but not to run it
-# You should still run programs in the same way as project 3
-
-CPU_HEADERS = verilog/sys_defs.svh \
-              verilog/ISA.svh
-
-# test/cpu_test.sv is implicit
-CPU_TESTBENCH = test/pipeline_print.c \
-				test/decode_inst.c \
-                test/mem.sv
-# NOTE: you CANNOT alter the given memory module
-
-# verilog/cpu.sv is implicit
-CPU_SOURCES = verilog/cpu.sv \
-              verilog/icache.sv \
-              verilog/memDP.sv \
-			  verilog/p3/regfile.sv \
-			  verilog/p3/stage_if.sv \
-			  verilog/p3/stage_id.sv \
-			  verilog/p3/stage_ex.sv \
-			  verilog/p3/stage_mem.sv \
-			  verilog/p3/stage_wb.sv \
-			  verilog/mult.sv
-
-# build/cpu.simv: $(CPU_SOURCES) $(CPU_HEADERS) $(CPU_TESTBENCH)
-# synth/cpu.vg: $(CPU_SOURCES) $(CPU_HEADERS)
-# build/cpu.syn.simv: $(CPU_TESTBENCH)
-# Don't need coverage for the CPU
-
-# Connect the simv and syn_simv targets for the autograder
-simv: build/cpu.simv ;
-syn_simv: build/cpu.syn.simv ;
-
-# rob: build/rob.simv
-
-# You shouldn't need to change things below here
-
-#####################
-# ---- Running ---- #
-#####################
-
-# The following Makefile targets heavily use pattern substitution and static pattern rules
-# See these links if you want to hack on them and understand how they work:
-# - https://www.gnu.org/software/make/manual/html_node/Text-Functions.html
-# - https://www.gnu.org/software/make/manual/html_node/Static-Usage.html
-# - https://www.gnu.org/software/make/manual/html_node/Automatic-Variables.html
-
-# run compiled executables ('make %.out' is linked to 'make output/%.out' further below)
-# using this syntax avoids overlapping with the 'make <my_program>.out' targets
-$(MODULES:%=build/%.out) $(MODULES:%=build/%.syn.out): build/%.out: build/%.simv
-	@$(call PRINT_COLOR, 5, running $<)
-	cd build && ./$(<F) | tee $(@F)
-
-# Connect 'make build/mod.out' to 'make mod.out'
-$(MODULES:%=./%.out) $(MODULES:%=./%.syn.out): ./%.out: build/%.out
-	@$(call PRINT_COLOR, 2, Finished $* testbench output is in: $<)
-
-# Print in green or red the pass/fail status (must $display() "@@@ Passed" or "@@@ Failed")
-%.pass: build/%.out
-	@$(call PRINT_COLOR, 6, Grepping for pass/fail in $<:)
-	@GREP_COLOR="01;31" $(GREP) -i '@@@ ?Failed' $< || \
-	GREP_COLOR="01;32" $(GREP) -i '@@@ ?Passed' $<
-.PHONY: %.pass
-
-# run the module in verdi
-./%.verdi: build/%.simv
-	@$(call PRINT_COLOR, 5, running $< with verdi )
-	cd build && ./$(<F) $(RUN_VERDI)
-.PHONY: %.verdi
-
-###############################
-# ---- Compiling Verilog ---- #
-###############################
-
-# # The normal simulation executable will run your testbench on simulated modules
-# $(MODULES:%=build/%.simv): build/%.simv: verilog/%.sv | build
-# 	@$(call PRINT_COLOR, 5, compiling the simulation executable $@)
-# 	$(VCS) $(filter-out $(ALL_HEADERS),$^) -o $@
-# 	@$(call PRINT_COLOR, 6, finished compiling $@)
-
-# The normal simulation executable will run your testbench on simulated modules
-$(MODULES:%=build/%.simv): build/%.simv: test/%_test.sv verilog/%.sv | build
-	@$(call PRINT_COLOR, 5, compiling the simulation executable $@)
-	$(VCS) $(filter-out $(ALL_HEADERS),$^) -o $@
-	@$(call PRINT_COLOR, 6, finished compiling $@)
-
-
-# The normal simulation executable will run your testbench on simulated modules
-$(MODULES:%=build/%.debug.simv): build/%.debug.simv: test/%_test.sv verilog/%.sv | build
-	@$(call PRINT_COLOR, 5, compiling the simulation executable $@)
-	$(VCS) +define+DEBUG $(filter-out $(ALL_HEADERS),$^) -o $@
-	@$(call PRINT_COLOR, 6, finished compiling $@)
-
-
-# This also generates many other files, see the tcl script's introduction for info on each of them
-synth/%.vg: verilog/%.sv $(TCL_SCRIPT) | synth
-	@$(call PRINT_COLOR, 5, synthesizing the $* module)
-	@$(call PRINT_COLOR, 3, this might take a while...)
-	cd synth && \
-	MODULE=$* SOURCES="$(filter-out $(TCL_SCRIPT) $(ALL_HEADERS),$^)" \
-	dc_shell-t -f $(notdir $(TCL_SCRIPT)) | tee $*_synth.out
-	@$(call PRINT_COLOR, 6, finished synthesizing $@)
-	$(GREP) "warning" synth/$*_synth.out > synth/$*_synth.warning
-	$(GREP) "error" synth/$*_synth.out > synth/$*_synth.error
-	$(GREP) "slack" synth/$*.rep
-
-
-# Allow us to type 'make <my_program>.vg' instead of 'make synth/<my_program>.vg'
-./%.vg:	synth/%.vg;
-.PHONY: ./%.vg
-
-# A phony target to view the slack in all the *.rep synthesis reports
-slack:
-	$(GREP) "slack" synth/*.rep
-.PHONY: slack
-
-# The synthesis executable runs your testbench on the synthesized versions of your modules
-$(MODULES:%=build/%.syn.simv): build/%.syn.simv: test/%_test.sv synth/%.vg | build
-	@$(call PRINT_COLOR, 5, compiling the synthesis executable $@)
-	$(VCS) +define+SYNTH $(filter-out $(ALL_HEADERS),$^) $(LIB) -o $@
-	@$(call PRINT_COLOR, 6, finished compiling $@)
-
-#############################
-# ---- Visual Debugger ---- #
-#############################
-
-# Add your own GUI debugger here!
-
-VTUBER = test/vtuber_test.sv \
-         test/vtuber.cpp \
-		 test/mem.sv
-
-VISFLAGS = -lncurses
-
-build/vis.simv: $(CPU_HEADERS) $(VTUBER) $(CPU_SOURCES) | build
-	@$(call PRINT_COLOR, 5, compiling visual debugger testbench)
-	$(VCS) $(VISFLAGS) $^ -o $@
-	@$(call PRINT_COLOR, 6, finished compiling visual debugger testbench)
-
-%.vis: programs/mem/%.mem build/vis.simv
-	cd build && ./vis.simv +MEMORY=../$<
-	@$(call PRINT_COLOR, 6, Fullscreen your terminal for the best VTUBER experience!)
-.PHONY: %.vis
-
 ####################################
 # ---- Executable Compilation ---- #
 ####################################
+
+# NOTE: the executables are not the only things you need to compile
+# you must also create a build/*.mem file for each program you run
+# which will be loaded into test/mem.sv by the testbench on startup
+# To run a program on simv or syn.simv, see the program execution section
+# This is done automatically with 'make <my_program>.out'
+
+HEADERS = verilog/sys_defs.svh \
+          verilog/ISA.svh
+
+TESTBENCH = test/cpu_test.sv \
+            test/decode_inst.c \
+            test/pipeline_print.c \
+            test/mem.sv
+
+# This could simplify to $(wildcard verilog/*.sv) - but the manual way is more explicit
+SOURCES = verilog/cpu.sv \
+          verilog/regfile.sv \
+          verilog/stage_if.sv \
+          verilog/stage_id.sv \
+          verilog/stage_ex.sv \
+          verilog/stage_mem.sv \
+          verilog/stage_wb.sv
+
+SOURCES_ORIGINAL = verilog/cpu_original.sv \
+          verilog/regfile.sv \
+          verilog/stage_if.sv \
+          verilog/stage_id.sv \
+          verilog/stage_ex.sv \
+          verilog/stage_mem.sv \
+          verilog/stage_wb.sv
+
+SYNTH_FILES = synth/cpu.vg
+
+# the normal simulation executable will run your testbench on the original modules
+build/simv: $(TESTBENCH) $(SOURCES) $(HEADERS) | build
+	@$(call PRINT_COLOR, 5, compiling the simulation executable $@)
+	$(VCS) $(filter-out $(HEADERS),$^) -o $@
+	@$(call PRINT_COLOR, 6, finished compiling $@)
+
+# a make pattern rule to generate the .vg synthesis files
+# pattern rules use the % as a wildcard to match multiple possible targets
+synth/%.vg: $(SOURCES) $(TCL_SCRIPT) $(HEADERS) | synth
+	@$(call PRINT_COLOR, 5, synthesizing the $* module)
+	@$(call PRINT_COLOR, 3, this might take a while...)
+	cd synth && \
+	MODULE=$* SOURCES="$(SOURCES)" \
+	dc_shell-t -f ../$(TCL_SCRIPT) | tee $*-synth.out
+	@$(call PRINT_COLOR, 6, finished synthesizing $@)
+
+# the synthesis executable runs your testbench on the synthesized versions of your modules
+build/syn.simv: $(TESTBENCH) $(SYNTH_FILES) $(HEADERS) | build
+	@$(call PRINT_COLOR, 5, compiling the synthesis executable $@)
+	$(VCS) +define+SYNTH $(filter-out $(HEADERS),$^) $(LIB) -o $@
+	@$(call PRINT_COLOR, 6, finished compiling $@)
+
+# a phony target to view the slack in the *.rep synthesis report file
+slack:
+	grep --color=auto "slack" synth/*.rep
+.PHONY: slack
 
 ########################################
 # ---- Program Memory Compilation ---- #
@@ -447,7 +231,7 @@ programs/mem/%.elf: programs/%.c $(CRT) $(LINKERS) | programs/mem
 	$(GCC) $(CFLAGS) $(OFLAGS) $(CRT) $< -T $(LINKERS) -o $@
 
 # C programs can also be compiled in debug mode, this is solely meant for use in the .dump files below
-programs/mem/%.debug.elf: %.c $(CRT) $(LINKERS) | programs/mem
+programs/mem/%.debug.elf: programs/%.c $(CRT) $(LINKERS) | programs/mem
 	@$(call PRINT_COLOR, 5, compiling debug C code file $<)
 	$(GCC) $(CFLAGS) $(OFLAGS) $(CRT) $< -T $(LINKERS) -o $@
 	$(GCC) $(DEBUG_FLAG) $(CFLAGS) $(OFLAGS) $(CRT) $< -T $(LINKERS) -o $@
@@ -458,8 +242,8 @@ programs/mem/%.debug.elf: %.c $(CRT) $(LINKERS) | programs/mem
 .INTERMEDIATE: programs/mem/%.elf
 
 # turn any elf file into a hex memory file ready for the testbench
-programs/mem/%.mem: programs/mem/%.elf
-	$(ELF2HEX) 8 262144 $< > $@
+programs/mem/%.mem: programs/mem/%.elf programs/%.dump_x
+	$(ELF2HEX) 8 8192 $< > $@
 	@$(call PRINT_COLOR, 6, created memory file $@)
 	@$(call PRINT_COLOR, 3, NOTE: to see RISC-V assembly run: '"make $*.dump"')
 	@$(call PRINT_COLOR, 3, for \*.c sources also try: '"make $*.debug.dump"')
@@ -467,13 +251,6 @@ programs/mem/%.mem: programs/mem/%.elf
 # compile all programs in one command (use 'make -j' to run multithreaded)
 compile_all: $(PROGRAMS:programs/%=programs/mem/%.mem)
 .PHONY: compile_all
-
-# compile: programs/mem/scheduler.elf
-# 	$(ELF2HEX) 8 32768 $< > programs/mem/scheduler.mem
-# 	@$(call PRINT_COLOR, 6, created memory file $@)
-# 	@$(call PRINT_COLOR, 3, NOTE: to see RISC-V assembly run: '"make $*.dump"')
-# 	@$(call PRINT_COLOR, 3, for \*.c sources also try: '"make $*.debug.dump"')
-# .PHONY: compile
 
 ########################
 # ---- Dump Files ---- #
@@ -514,71 +291,35 @@ dump_all: $(DUMP_PROGRAMS:=.dump_x) $(DUMP_PROGRAMS:=.dump_abi)
 # ---- Program Execution ---- #
 ###############################
 
-# run one of the executables (simv/syn_simv) using the chosen program
+# run one of the executables (simv/syn.simv) using the chosen program
 # e.g. 'make sampler.out' does the following from a clean directory:
 #   1. compiles simv
 #   2. compiles programs/sampler.s into its .elf and then .mem files (in programs/)
-#   3. runs ./simv +MEMORY=programs/sampler.mem +OUTPUT=output/sampler > output/sampler.out
+#   3. runs cd build && ./simv +MEMORY=../programs/sampler.mem +OUTPUT=../output/sampler > ../output/sampler.out
 #   4. which creates the sampler.out, sampler.cpi, sampler.wb, and sampler.ppln files in output/
 # the same can be done for synthesis by doing 'make sampler.syn.out'
 # which will also create .syn.cpi, .syn.wb, and .syn.ppln files in output/
 
-
-compare/%.out:
-	diff output/$*.wb correct_out/$*.wb > $*.compare
-	diff output/$*.out correct_out/$*.out
-
-
-link:
-	cd output; ln -sf ../correct_out/*.retire_inst ./
-
-
-
 # run a program and produce output files
-output/%.out: programs/mem/%.mem build/cpu.simv | output
+output/%.out: programs/mem/%.mem build/simv | output
 	@$(call PRINT_COLOR, 5, running simv on $<)
-		./build/cpu.simv +MEMORY=$< +OUTPUT=output/$* > output/$*.log
-# ./build/cpu.simv +MEMORY=$< +OUTPUT=output/$* | tee $*.print
-#./build/cpu.simv +MEMORY=$< +OUTPUT=output/$* > /dev/null 2>&1
-# ./build/cpu.simv +MEMORY=$< +OUTPUT=output/$* > output/$*.log
+	cd build && ./simv +MEMORY=../$< +OUTPUT=../output/$* | tee $*.print
 	@$(call PRINT_COLOR, 6, finished running simv on $<)
-	@$(call PRINT_COLOR, 2, output is in output/$*.{out cpi wb ppln log})
-	diff output/$*.wb correct_out/$*.wb
-	diff output/$*.out correct_out/$*.out
-# NOTE: this uses a 'static pattern rule' to match a list of known targets to a pattern
-# and then generates the correct rule based on the pattern, where % and $* match
-# so for the target 'output/sampler.out' the % matches 'sampler' and depends on programs/sampler.mem
-# see: https://www.gnu.org/software/make/manual/html_node/Static-Usage.html
-# $(@D) is an automatic variable for the directory of the target, in this case, 'output'
+	@$(call PRINT_COLOR, 2, output is in output/$*.{out finalmem cpi wb ppln})
+# -diff golden/$*.out output/$*.out
+# -diff golden/$*.wb output/$*.wb
 
-output2/%.out: programs/mem/%.mem build/cpu.simv | output
-	@$(call PRINT_COLOR, 5, running simv on $<)
-	./build/cpu.simv +MEMORY=$< +OUTPUT=output/$* > /dev/null 2>&1
-# ./build/cpu.simv +MEMORY=$< +OUTPUT=output/$* | tee $*.print
-# ./build/cpu.simv +MEMORY=$< +OUTPUT=output/$* > /dev/null 2>&1
-	@$(call PRINT_COLOR, 6, finished running simv on $<)
-	@$(call PRINT_COLOR, 2, output is in output/$*.{out cpi wb ppln log})
-	diff output/$*.wb correct_out/$*.wb > $*.compare
-	diff output/$*.wb correct_out/$*.wb
-	diff output/$*.out correct_out/$*.out
-
-output3/%.out: programs/mem/%.mem build/cpu.simv | output
-	@$(call PRINT_COLOR, 5, running simv on $<)
-	./build/cpu.simv +MEMORY=$< +OUTPUT=output/$* > /dev/null 2>&1
-
-# this does the same as simv, but adds .syn to the output files and compiles syn_simv instead
 # run synthesis with: 'make <my_program>.syn.out'
-output/%.syn.out: programs/mem/%.mem build/cpu.syn.simv | output
-	@$(call PRINT_COLOR, 5, running syn_simv on $<)
+# this does the same as simv, but adds .syn to the output files and compiles syn.simv instead
+output/%.syn.out: programs/mem/%.mem build/syn.simv | output
+	@$(call PRINT_COLOR, 5, running syn.simv on $<)
 	@$(call PRINT_COLOR, 3, this might take a while...)
-	./build/cpu.syn.simv +MEMORY=$< +OUTPUT=output/$*.syn > output/$*.syn.log
-	@$(call PRINT_COLOR, 6, finished running syn_simv on $<)
+	cd build && ./syn.simv +MEMORY=../$< +OUTPUT=../output/$*.syn
+	@$(call PRINT_COLOR, 6, finished running syn.simv on $<)
 	@$(call PRINT_COLOR, 2, output is in output/$*.syn.{out cpi wb ppln})
 
 # Allow us to type 'make <my_program>.out' instead of 'make output/<my_program>.out'
 ./%.out: output/%.out ;
-./%: output/%.out;
-./%.syn.out: output/%.syn.out ;
 .PHONY: ./%.out
 
 # Declare that creating a %.out file also creates both %.cpi, %.wb, and %.ppln files
@@ -587,9 +328,9 @@ output/%.syn.out: programs/mem/%.mem build/cpu.syn.simv | output
 .PRECIOUS: %.out %.cpi %.wb %.ppln
 
 # run all programs in one command (use 'make -j' to run multithreaded)
-simulate_all: build/cpu.simv compile_all $(PROGRAMS:programs/%=output/%.out)
-simulate_all_syn: build/cpu.syn.simv compile_all $(PROGRAMS:programs/%=output/%.syn.out)
-.PHONY: simulate_all simulate_all_syn
+simulate_all: build/simv compile_all $(PROGRAMS:programs/%=output/%.out)
+simulate_all.syn: build/syn.simv compile_all $(PROGRAMS:programs/%=output/%.syn.out)
+.PHONY: simulate_all simulate_all.syn
 
 ###################
 # ---- Verdi ---- #
@@ -597,28 +338,61 @@ simulate_all_syn: build/cpu.syn.simv compile_all $(PROGRAMS:programs/%=output/%.
 
 # run verdi on a program with: 'make <my_program>.verdi' or 'make <my_program>.syn.verdi'
 
-# this creates a directory verdi will use if it doesn't exist yet
-verdi_dir:
-	mkdir -p /tmp/$${USER}470
-.PHONY: verdi_dir
+# Options to launch Verdi when running the executable
+RUN_VERDI_OPTS = -gui=verdi -verdi_opts "-ultra" -no_save
+# Not sure why no_save is needed right now. Otherwise prints an error
+VERDI_DIR = /tmp/$(USER)470
+VERDI_TEMPLATE = /usr/caen/misc/class/eecs470/verdi-config/initialnovas.rc
 
-novas.rc: initialnovas.rc
-	sed s/UNIQNAME/$$USER/ initialnovas.rc > novas.rc
+# verdi hates us: we must use the /tmp folder for all verdi files or it will crash
+# this adds much unecessary complexity in the makefile
+# A directory for verdi, specified in the build/novas.rc file.
+$(VERDI_DIR) $(VERDI_DIR)/verdiLog:
+	mkdir -p $@
+# Symbolic link from the build folder to VERDI_DIR in /tmp
+build/verdiLog: $(VERDI_DIR) build
+	ln --force -s $(VERDI_DIR)/verdiLog build
+# make a custom novas.rc for your username matching VERDI_DIR
+build/novas.rc: $(VERDI_TEMPLATE) | build
+	sed s/UNIQNAME/$${USER}/ $< > $@
 
-%.verdi: programs/mem/%.mem build/cpu.simv novas.rc verdi_dir | output
-	./build/cpu.simv $(RUN_VERDI) +MEMORY=$< +OUTPUT=output/verdi_output
+# now the actual targets to launch verdi
+%.verdi: programs/mem/%.mem build/simv build/novas.rc build/verdiLog $(VERDI_DIR)
+	cd build && ./simv $(RUN_VERDI_OPTS) +MEMORY=../$< +OUTPUT=../output/verdi_output
 
-%.verdi2: programs/mem/%.mem build/cpu.debug.simv novas.rc verdi_dir | output
-	./build/cpu.debug.simv +MEMORY=$< +OUTPUT=output/$* > /dev/null 2>&1;verdi -ssf novas.fsdb
-
-%.syn.verdi: programs/mem/%.mem build/cpu.syn.simv novas.rc verdi_dir | output
-	./build/cpu.syn.simv $(RUN_VERDI) +MEMORY=$< +OUTPUT=output/syn_verdi_output
+%.syn.verdi: programs/mem/%.mem build/syn.simv build/novas.rc build/verdiLog $(VERDI_DIR)
+	cd build && ./syn.simv $(RUN_VERDI_OPTS) +MEMORY=../$< +OUTPUT=../output/syn_verdi_output
 
 .PHONY: %.verdi
 
-################################
-# ---- Output Directories ---- #
-################################
+#############################
+# ---- Visual Debugger ---- #
+#############################
+
+# this is the visual debugger for project 3, an extremely helpful tool, try it out!
+# compile and run the visual debugger on a program with:
+# 'make <my_program>.vis'
+
+# Don't ask me why we spell VisUal TestBenchER like this...
+VTUBER = test/vtuber_test.sv \
+         test/vtuber.cpp \
+		 test/mem.sv
+
+VISFLAGS = -lncurses
+
+build/vis.simv: $(HEADERS) $(VTUBER) $(SOURCES) | build
+	@$(call PRINT_COLOR, 5, compiling visual debugger testbench)
+	$(VCS) $(VISFLAGS) $^ -o $@
+	@$(call PRINT_COLOR, 6, finished compiling visual debugger testbench)
+
+%.vis:  programs/mem/%.mem build/vis.simv
+	cd build && ./vis.simv +MEMORY=../$<
+	@$(call PRINT_COLOR, 6, Fullscreen your terminal for the best VTUBER experience!)
+.PHONY: %.vis
+
+###############################
+# ---- Build Directories ---- #
+###############################
 
 # Directories for holding build files or run outputs
 # Targets that need these directories should add them after a pipe.
@@ -626,6 +400,13 @@ novas.rc: initialnovas.rc
 build synth output programs/mem:
 	mkdir -p $@
 # Don't leave any files in these, they will be deleted by clean commands
+
+#################################
+# ---- Generate Golden Out ---- #
+#################################
+
+gen:
+	./gen.sh
 
 #####################
 # ---- Cleanup ---- #
@@ -646,40 +427,32 @@ clean: clean_exe clean_run_files
 
 # removes all extra synthesis files and the entire output directory
 # use cautiously, this can cause hours of recompiling in project 4
-nuke: clean clean_output clean_synth clean_programs
+nuke: clean clean_synth clean_programs
 	@$(call PRINT_COLOR, 6, note: nuke is split into multiple commands you can call separately: $^)
 
 clean_exe:
 	@$(call PRINT_COLOR, 3, removing compiled executable files)
-	rm -rf build/                        	# remove the entire 'build' folder
-	rm -rf *simv *.daidir csrc *.key     	# created by simv/syn_simv/vis_simv
-	rm -rf vcdplus.vpd vc_hdrs.h         	# created by simv/syn_simv/vis_simv
-	rm -rf unifiedInference.log xprop.log	# created by simv/syn_simv/vis_simv
-	rm -rf *.cov cov_report_* cm.log     	# coverage files
-	rm -rf *fsdb*                        	# verdi files
-	rm -rf dve* inter.vpd DVEfiles       	# old DVE debugger
-# rm -rf verdi* novas* *fsdb*           # verdi files
-# rm -rf *.ses*						  # verdi files
+	rm -rf build
+	rm -rf *simv *.daidir csrc *.key      # created by simv/syn.simv/vis.simv
+	rm -rf vcdplus.vpd vc_hdrs.h          # created by simv/syn.simv/vis.simv
+	rm -rf unifiedInference.log xprop.log # created by simv/syn.simv/vis.simv
+
+	rm -rf verdi* novas* *fsdb*           # verdi files
+	rm -rf dve* inter.vpd DVEfiles        # old DVE debugger
 
 clean_run_files:
 	@$(call PRINT_COLOR, 3, removing per-run outputs)
-	rm -rf output/*.out output/*.cpi output/*.wb output/*.log
+	rm -rf output
+	rm -rf output/*.out output/*.cpi output/*.wb output/*.ppln
 
 clean_synth:
 	@$(call PRINT_COLOR, 1, removing synthesis files)
-	cd synth && rm -rf *.vg *_svsim.sv *.res *.rep *.ddc *.chk *.syn *.out *.db *.svf *.mr *.pvl command.log
-
-clean_output:
-	@$(call PRINT_COLOR, 1, removing entire output directory)
-	rm -rf output/*.cpi
-	rm -rf output/*.log
-	rm -rf output/*.out
-	rm -rf output/*.retire
-	rm -rf output/*.wb
+	rm -rf synth
+	rm -rf *.vg *_svsim.sv *.res *.rep *.ddc *.chk *.syn *-synth.out *.db *.svf *.mr *.pvl command.log
 
 clean_programs:
 	@$(call PRINT_COLOR, 3, removing program memory files)
-	rm -rf programs/*.mem
+	rm -rf programs/mem
 	@$(call PRINT_COLOR, 3, removing dump files)
 	rm -rf programs/*.dump*
 

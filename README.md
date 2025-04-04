@@ -23,3 +23,12 @@ https://www.youtube.com/watch?v=v9W5CzJkOV8&ab_channel=catblue
 - More instruction -> More scheduling overhead
 - More computation latency -> Less scheduling overhead
 - More complex scheduling -> More scheduling overhead
+
+
+# Slide
+   1. Background  - Accelerator scheduling hard
+   2. Motivation  - How to schedule accelerator fast
+   3. Amber
+   4. Proposal
+   5. Cpu control overhead performance modeling
+   6. Our hardware performance modeling

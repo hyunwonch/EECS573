@@ -2,46 +2,54 @@
 #include <stdlib.h>
 // #define DATA_SIZE   (1024)  // 100 KB of data
 // #define LINE_SIZE   (1024)    // Each line is 1 KB, so 100 lines total
-// #define NUM_LINES   (1000)
+#define NUM_LINES   (1000)
 
 // // Simulated memory for accelerator MMIO (one line of data)
 // volatile unsigned char accelerator_mmio[LINE_SIZE];
 
 // // Global data buffer representing 100 KB memory
-// unsigned char memory_data[DATA_SIZE];
+unsigned int memory_data[NUM_LINES];
+unsigned int command_data[NUM_LINES];
 
-
+unsigned int hardware_data[8][8][100];
 
 int main(void)
 {
     int b;
     int a;
+    int c;
 
 
     // Initialize the memory buffer with some sample data
-    // for (int i = 0; i < DATA_SIZE; i++) {
-    //     memory_data[i] = (unsigned char)(i % 256);
-    // }
+    for (int i = 0; i < NUM_LINES; i++) {
+        memory_data[i] = (unsigned int)(i % 30);
+        command_data[i] = 300;
+    }
 
     // Main scheduling loop (runs indefinitely)
 
     // offload_task(memory_data, 0);
 
-    a = 0;
-    b = 20;
+
+    b = 2;
+    c = 1;
 
     if (b == 1) {
-        for (int i = 0; i < 50; i++) {
-            a = a + 1;
+        a = command_data[c];
+        for (int i = 0; i < a; i++) {
+            hardware_data[0][b][i] = memory_data[i];
         }
+
     } else if (b == 2) {
-        for (int i = 0; i < 10; i++) {
-            a = a + 1;
+        for (int i = 0; i < 200; i++) {
+            hardware_data[0][b][i] = memory_data[i];
         }
+
     } else if (b == 3) {
-        for (int i = 0; i < 10; i++) {
-            a = a + 1;
+        for (int i = 0; i < 700; i++) {
+            hardware_data[0][b][i] = memory_data[i];
         }
+
     } else if (b == 4) {
         for (int i = 0; i < 100; i++) {
             a = a + 1;
@@ -150,6 +158,8 @@ int main(void)
         for (int i = 0; i < 300; i++) {
             a = a + 1;
         }
+    } else {
+        a = 1;
     }
 
 
